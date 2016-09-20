@@ -76,18 +76,18 @@ public class Configuration
 		LDAP_PASSWORD = "Xhngmfxp9"; 
 		System.out.println("SERVER_URL = " + PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL")); */
 		
-		LDAP_SERVER_URL = "ldap://vldap-dev.ceti.etat-ge.ch:636";  
+		/*LDAP_SERVER_URL = "ldap://vldap-dev.ceti.etat-ge.ch:636";  
 		LDAP_BASE_DN = "ou=OAC,o=gina" ; 
 		LDAP_USER = "cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina"; 
 		LDAP_PASSWORD = "Uddyzfsp4"; 
-		System.out.println("SERVER_URL = " + PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL")); 
+		System.out.println("SERVER_URL = " + PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL")); */
 		
 		
-		/*
+		
 		LDAP_SERVER_URL = PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL");  
 		LDAP_BASE_DN = PROPS.getProperty("ct-gina-ldap-client.LDAP_BASE_DN"); 
 		LDAP_USER = PROPS.getProperty("ct-gina-ldap-client.LDAP_USER"); 
-		LDAP_PASSWORD = PROPS.getProperty("ct-gina-ldap-client.LDAP_PASSWORD"); */
+		LDAP_PASSWORD = PROPS.getProperty("ct-gina-ldap-client.LDAP_PASSWORD"); 
 
 		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, LDAP_CONTEXT_FACTORY);
