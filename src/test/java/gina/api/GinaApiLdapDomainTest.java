@@ -10,7 +10,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-public class GinaApiLdapTest {
+public class GinaApiLdapDomainTest {
     
     @Test
     public void getIsValidUserTest() {
@@ -33,6 +33,7 @@ public class GinaApiLdapTest {
 	assertTrue(true);
 	
     }
+    
     
     @Test
     public void getUserAttrsTest() {
