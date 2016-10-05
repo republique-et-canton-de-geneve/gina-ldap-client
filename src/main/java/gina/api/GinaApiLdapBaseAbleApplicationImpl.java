@@ -41,7 +41,7 @@ import javax.naming.NamingException;
 public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble {
     
     private DirContext ctxtDir = null;
-    // LOGGER
+
 
     private static Logger logger = Logger.getLogger(GinaApiLdapBaseAbleApplicationImpl.class);
     
@@ -79,7 +79,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble {
 		SearchControls searchControls = new SearchControls();
 		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 		searchControls.setTimeLimit(30000);
-		NamingEnumeration<?> answer = ctxtDir.search("ou=Users",  "(&(cn=*))" ,searchControls);
+		NamingEnumeration<?> answer = ctxtDir.search("",  "(&(cn=*))" ,searchControls);
 
 		if (answer != null) {
 			while (answer.hasMoreElements()) {

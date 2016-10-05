@@ -84,7 +84,7 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble {
 		if (answer != null) {
 			while (answer.hasMoreElements()) {
 				SearchResult sr = (SearchResult) answer.next();
-				String name =  sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", "");
+				String name =  sr.getName().replace("cn=", "");  //.substring(0, sr.getName().indexOf(":")).replace("cn=", "");
 				if (user.equalsIgnoreCase(name)){
 				    return true;			    
 				}
