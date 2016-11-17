@@ -65,22 +65,32 @@ public class ConfigurationTest
 
     private static final Properties PROPS = loadProps();
   
-    public void init() {
+    public void init(String type) {
 	LOG.info("Start");
 
 	try {
 	    	
+	    if(type.equalsIgnoreCase("domain")) {
 		LDAP_SERVER_URL = "ldap://vldap-dev.ceti.etat-ge.ch:636";  
 		LDAP_BASE_DN = "ou=CSBUGTRACK,o=gina" ; 
 		LDAP_USER = "cn=tcnvldap6470devaag,ou=Users,ou=CSBUGTRACK,o=gina"; 
 		LDAP_PASSWORD = "Xhngmfxp9"; 
-		System.out.println("SERVER_URL = " + PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL")); 
+		LOG.info("SERVER_URL = " + PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL")); 
 		
+		
+	    }
+	    else if(type.equalsIgnoreCase("application")) {
 		LDAP_SERVER_URL = "ldap://vldap-dev.ceti.etat-ge.ch:636";  
 		LDAP_BASE_DN = "ou=OAC,o=gina" ; 
 		LDAP_USER = "cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina"; 
 		LDAP_PASSWORD = "Uddyzfsp4"; 
-		System.out.println("SERVER_URL = " + PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL")); 
+		LOG.info("SERVER_URL = " + PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL")); 
+		
+	    }
+	    
+	    
+		
+		
 	
 		/*LDAP_SERVER_URL = PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL");  
 		LDAP_BASE_DN = PROPS.getProperty("ct-gina-ldap-client.LDAP_BASE_DN"); 

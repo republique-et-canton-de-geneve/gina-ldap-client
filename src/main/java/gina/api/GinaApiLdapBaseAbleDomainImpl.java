@@ -1,42 +1,23 @@
 package gina.api;
 
 import java.rmi.RemoteException;
-import java.util.List;
-import java.util.Map;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.Context;
-import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttribute;
-import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+
 import org.apache.log4j.Logger;
 
 import gina.api.util.Configuration;
-
-
-
-/*
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Node;
-import org.dom4j.io.SAXReader;*/
-
-import javax.naming.NamingException;
 
 public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble {
     
@@ -666,6 +647,18 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble {
     public List<String> getOwnPPProprieteMetier(String paramString) {
 	
 	return null;
+    }
+
+    @Override 
+    public boolean hasRole(String paramString1) throws GinaException, RemoteException {
+	// TODO Auto-generated method stub
+	throw new  GinaException("Not implemented");
+    }
+
+    @Override
+    public boolean hasUserRole(String user, String role) throws GinaException, RemoteException {
+	// TODO Auto-generated method stub
+	return false;
     }
 
 
