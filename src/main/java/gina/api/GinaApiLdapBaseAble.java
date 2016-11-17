@@ -31,6 +31,12 @@ public abstract interface GinaApiLdapBaseAble
 
   public abstract boolean hasRole(String paramString1, String paramString2)
     throws GinaException, RemoteException;
+  
+  public abstract boolean hasRole(String paramString1)
+	    throws GinaException, RemoteException;
+  
+  public boolean hasUserRole(String user,  String role)
+	    throws GinaException, RemoteException;
 
   public abstract boolean hasUserRole(String paramString1, String paramString2, String paramString3)
     throws GinaException, RemoteException;

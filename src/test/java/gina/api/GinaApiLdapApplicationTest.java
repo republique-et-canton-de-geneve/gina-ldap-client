@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.naming.directory.DirContext;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,14 +19,15 @@ import gina.api.util.Configuration;
 public class GinaApiLdapApplicationTest {
     
     private DirContext ctxtDir = null;
-    
+    private static final Logger LOG = Logger.getLogger(GinaApiLdapApplicationTest.class);
+
     @Before
     public void init(){
 	 
 	if (ctxtDir == null) {
-	    System.out.println("init()");
-	    Configuration conf = new Configuration();
-	    conf.init();
+	    LOG.info("init()");
+	    ConfigurationTest conf = new ConfigurationTest();
+	    conf.init("application");
 	    ctxtDir = conf.getCtxtDir();
 	    if (ctxtDir == null) {
 		throw new GinaException("initialisation impossible");
@@ -36,15 +38,17 @@ public class GinaApiLdapApplicationTest {
     
     @Test
     public void getIsValidUserTest() {
-	System.out.println("getIsValidUserTest");
-	//Indique si le login passé en paramètre est un login existant ou non.
+	LOG.info("getIsValidUserTest");
+
 	try {
 
-	    boolean ret = GinaApiLdapBaseFactory.getInstanceDomain().isValidUser("benammoura");
-	    System.out.println("user valid " + ret);	    
+	    boolean ret = GinaApiLdapBaseFactory.getInstanceApplication().isValidUser("DRIVONOL");
+	    LOG.info("user valid " + ret);	    
 	    
 	    if (!ret){	
 		  assertTrue(false);
+	    } else {
+		  assertTrue(true);
 	    }
 	    
 	} catch (GinaException e) {
@@ -52,9 +56,71 @@ public class GinaApiLdapApplicationTest {
 	} catch (RemoteException e) {
 	    assertTrue(false);
 	}
-	assertTrue(true);
+	
 	
     }
+    
+    @Test
+    public void getUserAttrsTest() {
+	LOG.info("getUserAttrsTest");
+
+	try {
+	    String[] paramArrayOfString = {"uid"};
+	    Map<String, String> ret = GinaApiLdapBaseFactory.getInstanceApplication().getUserAttrs("DRIVONOL", paramArrayOfString);
+	    for (Map.Entry<String,String> e : ret.entrySet()){
+		LOG.info(e.getKey() + " : " + e.getValue());
+		if(e.getKey().equalsIgnoreCase("uid")) {
+		    assertTrue(e.getValue().equalsIgnoreCase("DRIVONOL"));	    
+		}
+		
+	    }
+	    LOG.info("user valid " + ret);	    
+	    
+	    
+	    
+	} catch (GinaException e) {
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
+    }
+    
+    @Test
+    public void hasRoleTest() {
+	LOG.info("hasRoleTest");
+
+	try {
+	    String[] paramArrayOfString = {"uid"};
+	    boolean ret = GinaApiLdapBaseFactory.getInstanceApplication().hasRole("ADMIN");
+	    assertSame(false , ret);	   
+    
+	    
+	} catch (GinaException e) {
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
+    }
+    
+    @Test
+    public void hasRoleUserTest() {
+	LOG.info("hasRoleUserTest");
+
+	try {
+	    String[] paramArrayOfString = {"uid"};
+	    boolean ret = GinaApiLdapBaseFactory.getInstanceApplication().hasUserRole("DRIVONOL", "ADMIN");
+	    assertSame(true , ret);	   
+    
+	    
+	} catch (GinaException e) {
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
+    }
+    
+    
+    
     
     
 }
