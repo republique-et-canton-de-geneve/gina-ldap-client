@@ -36,6 +36,26 @@ public class GinaApiLdapApplicationTest {
 	    
     }
     
+   
+    
+    
+    @Test
+    public void getUserRolesTest(){
+	LOG.info("getUserRolesTest");
+	
+	try {
+	    List<String> ret = GinaApiLdapBaseFactory.getInstanceApplication().getUserRoles("DRIVONOL");
+	    assertSame(13 , ret.size());	   
+    
+	    
+	} catch (GinaException e) {
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
+    }
+    
+   
     @Test
     public void getIsValidUserTest() {
 	LOG.info("getIsValidUserTest");
@@ -107,7 +127,6 @@ public class GinaApiLdapApplicationTest {
 	LOG.info("hasRoleUserTest");
 
 	try {
-	    String[] paramArrayOfString = {"uid"};
 	    boolean ret = GinaApiLdapBaseFactory.getInstanceApplication().hasUserRole("DRIVONOL", "ADMIN");
 	    assertSame(true , ret);	   
     
@@ -118,6 +137,40 @@ public class GinaApiLdapApplicationTest {
 	    assertTrue(false);
 	}
     }
+    
+    
+    @Test
+    public void getRolesTest(){
+	LOG.info("getRolesTest");
+	
+	try {
+	    List<String> ret = GinaApiLdapBaseFactory.getInstanceApplication().getRoles();
+	    assertSame(0 , ret.size());	   
+    
+	    
+	} catch (GinaException e) {
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
+    }
+    
+    @Test
+    public void getAppRolesTest(){
+	LOG.info("getAppRolesTest");
+	
+	try {
+	    List<String> ret = GinaApiLdapBaseFactory.getInstanceApplication().getAppRoles("CAMAC-GENEVE");
+	    assertSame(21 , ret.size());	   
+    
+	    
+	} catch (GinaException e) {
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
+    }
+    
     
     
     
