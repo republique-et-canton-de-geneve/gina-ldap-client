@@ -4,11 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -21,13 +17,9 @@ import org.apache.log4j.Logger;
 
 public class Configuration
 {
-    private static final String DISTRIBUTION_PROPERTIES_FILENAME = "Distribution.properties";
-    private static final String PROPERTY_DISTRIBUTION_BASE = "distribution.dir";
-    private static final String PROPERTY_JONAS_BASE = "jonas.base";
+
     private static final Logger LOG = Logger.getLogger(Configuration.class);
 
-    //Groupe Gina de base
-    private static String GINA_APPLICATION_PRINCIPAL = "GLOBAL-ACCESS";
     // LDAP
     private static String LDAP_CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
     private static String LDAP_AUTHENTICATION_MODE = "simple";
@@ -37,15 +29,7 @@ public class Configuration
     private String LDAP_USER = null;
     private String LDAP_PASSWORD = null;
     //
-    private List<String> applications = new ArrayList<String>();
-    private List<String> allGinaRoles = new ArrayList<String>();
-    private List<String> allGinaUsers = new ArrayList<String>();
-    private Map<String, List<String>> allGinaUsersByGroup = new HashMap<String, List<String>>();
-    //
     private DirContext ctxtDir = null;
-    //
-    private boolean initialized = false;
-    private boolean syncUsersSucceeded = false;
 
     private static final Properties PROPS = loadProps();
   
@@ -84,17 +68,14 @@ public class Configuration
 		env.put("java.naming.ldap.version", "3");
 
 		ctxtDir = new InitialDirContext(env);
-		initialized = true;
 		LOG.debug("InitialDirContext ok");
 		
 	}
 	catch (NamingException e) {
 	    	LOG.error("InitialDirContext failed", e);
-		initialized = false;
 	}
 	catch (Exception e) {
 	    	LOG.error(e);
-		initialized = false;
 	}
 
 	LOG.info("End");

@@ -3,7 +3,6 @@ package gina.api;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
-import javax.naming.NamingException;
 
 public abstract interface GinaApiLdapBaseAble
 {

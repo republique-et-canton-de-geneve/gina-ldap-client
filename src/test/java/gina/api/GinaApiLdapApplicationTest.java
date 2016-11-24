@@ -14,7 +14,6 @@ import org.junit.Test;
 
 public class GinaApiLdapApplicationTest {
     
-    private DirContext ctxtDir = null;
     private static final Logger LOG = Logger.getLogger(GinaApiLdapApplicationTest.class);
 
 
