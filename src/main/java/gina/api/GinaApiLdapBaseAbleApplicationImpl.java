@@ -32,7 +32,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	if (ctxtDir == null) {
 	    logger.info("init()");
 	    Configuration conf = new Configuration();
-	    conf.init();
+	    conf.init("application");
 	    ctxtDir = conf.getCtxtDir();
 	    if (ctxtDir == null) {
 		throw new GinaException("initialisation impossible");

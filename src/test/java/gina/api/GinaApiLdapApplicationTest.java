@@ -21,7 +21,7 @@ public class GinaApiLdapApplicationTest {
     private DirContext ctxtDir = null;
     private static final Logger LOG = Logger.getLogger(GinaApiLdapApplicationTest.class);
 
-    @Before
+   /* @Before
     public void init(){
 	 
 	if (ctxtDir == null) {
@@ -35,7 +35,7 @@ public class GinaApiLdapApplicationTest {
 	    }
 	}
 	    
-    }
+    }*/
     
    
     
