@@ -82,13 +82,11 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 			String  s = (String) nameEnum.next();
 			logger.info("value: " + s);
 		    }
-		    //logger.info("attribut: " + at.getID() + ":" + sr.getAttributes().get(at.getID()).get());
 		}
 		if (attrs != null) {
 		    Attribute attmember = attrs.get("cn");
 		    logger.info(attmember.getID());
 		}
-		//String name =  sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", "");
 		String name =  (String) sr.getAttributes().get("cn").get();
 		logger.info("name:" + name);
 		if (user.equalsIgnoreCase(name)){
@@ -378,10 +376,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	return null;
     }
 
-    /* (non-Javadoc)
-     * retoune les roles de l'application
-     * @see gina.api.GinaApiLdapBaseAble#getAppRoles(java.lang.String)
-     */
+
     @Override
     public List<String> getAppRoles(String appli) throws GinaException, RemoteException {
 
@@ -426,10 +421,6 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	return null;
     }
 
-    /* (non-Javadoc)
-     * Donne la liste des utilisateurs ayant accès à l'application passée en paramètre, avec les attributs demandés 
-     * @see gina.api.GinaApiLdapBaseAble#getUsers(java.lang.String)
-     */
     @Override
     public List<Map<String, String>> getUsers(String appli, String[] paramArrayOfString)
 	    throws GinaException, RemoteException {
@@ -447,10 +438,8 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
-		    System.out.println("name : " +  sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
-
 		    Attributes attrs = sr.getAttributes();
-		    System.out.println("sr : " + sr);
+
 		    if (attrs != null) {
 			Attribute attmember = attrs.get("member");
 
@@ -465,20 +454,6 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 					Map<String, String> map = new HashMap<String, String>();
 					users.add(username);
 					map = this.getUserAttrs(username, paramArrayOfString);
-					/*  for (int i = 0; i < paramArrayOfString.length; i++) {
-									Attribute attribute = attrs.get(paramArrayOfString[i]);   //Attribute attmember = attrs.get("member");
-
-									if (attribute != null) {
-
-									    for (int k = 0; k < attribute.size(); k++) {
-										String tribute = (String) attribute.get(k);
-										if (tribute != null) {
-										    map.put(paramArrayOfString[i], tribute.toString());
-										}
-									    }
-									}
-								    } */
-
 					list.add(map);
 				    }							   
 				}
@@ -617,14 +592,12 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 
     @Override
     public List<String> getUserRoles(String paramString1, String paramString2) throws GinaException, RemoteException {
-	// TODO Auto-generated method stub
-	return null;
+	throw new  GinaException("Not implemented");
     }
 
     @Override
     public List<String> getAppRoles() throws GinaException, RemoteException {
-	// TODO Auto-generated method stub
-	return null;
+	throw new  GinaException("Not implemented");
     }
 
 
