@@ -30,7 +30,7 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble, GinaA
 	if (ctxtDir == null) {
 	    logger.info("init()");
 	    Configuration conf = new Configuration();
-	    conf.init();
+	    conf.init("domain");
 	    ctxtDir = conf.getCtxtDir();
 	    if (ctxtDir == null) {
 		throw new GinaException("initialisation impossible");
@@ -110,26 +110,26 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble, GinaA
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
-		   // String name =  sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", "");
-		   // if (user.equalsIgnoreCase(name)){
 
-			Attributes attrs = sr.getAttributes();
-			System.out.println("sr : " + sr);
-			if (attrs != null) {
-			    for (int i = 0; i < paramArrayOfString.length; i++) {
-				Attribute attribute = attrs.get(paramArrayOfString[i]);   //Attribute attmember = attrs.get("member");
-				
-				if (attribute != null) {
-				    for (int j = 0; j < attribute.size(); j++) {
-					String member = (String) attribute.get(j);
-					if (member != null) {
-					    myMap.put(paramArrayOfString[i], attribute.toString().substring(attribute.toString().indexOf(":") + 2 ));
-					}
-				    }
-				}
-			    } 
-			}
-		   // }
+		    Attributes attrs = sr.getAttributes();
+		    logger.info("sr : " + sr);
+		    if (attrs != null) {
+			for (int i = 0; i < paramArrayOfString.length; i++) {
+
+			    NamingEnumeration<?> nameEnum = sr.getAttributes().get(paramArrayOfString[i]).getAll();
+			    String  value = "";
+			    while (nameEnum.hasMoreElements()) {
+				if (value.isEmpty()) {
+				    value = (String) nameEnum.next();
+				} else {
+				    value = value + ":" + (String) nameEnum.next();
+				}									
+			    }
+			    logger.info("value: " + value);
+			    myMap.put(paramArrayOfString[i], value);
+
+			} 
+		    }
 		}
 	    }
 	}
@@ -163,26 +163,25 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble, GinaA
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
-		   // String name =  sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", "");
-		   // if (user.equalsIgnoreCase(name)){
 
 			Attributes attrs = sr.getAttributes();
-			System.out.println("sr : " + sr);
+			logger.info("sr : " + sr);
 			if (attrs != null) {
 			    for (int i = 0; i < paramArrayOfString.length; i++) {
-				Attribute attribute = attrs.get(paramArrayOfString[i]);   //Attribute attmember = attrs.get("member");
-				
-				if (attribute != null) {
-				    for (int j = 0; j < attribute.size(); j++) {
-					String member = (String) attribute.get(j);
-					if (member != null) {
-					    myMap.put(paramArrayOfString[i], attribute.toString().substring(attribute.toString().indexOf(":") + 2 ));
-					}
+				 NamingEnumeration<?> nameEnum = sr.getAttributes().get(paramArrayOfString[i]).getAll();
+				    String  value = "";
+				    while (nameEnum.hasMoreElements()) {
+					if (value.isEmpty()) {
+					    value = (String) nameEnum.next();
+					} else {
+					    value = value + ":" + (String) nameEnum.next();
+					}									
 				    }
-				}
+				    logger.info("value: " + value);
+				    myMap.put(paramArrayOfString[i], value);
 			    } 
 			}
-		   // }
+	
 		}
 	    }
 	}
@@ -216,36 +215,25 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble, GinaA
 	List<String> users = new ArrayList<String>();
 	String user = System.getProperty("user.name");
 	try {
-		SearchControls searchControls = new SearchControls();
-		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-		searchControls.setTimeLimit(30000);;
+	    SearchControls searchControls = new SearchControls();
+	    searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+	    searchControls.setTimeLimit(30000);;
 
-		NamingEnumeration<?> answer = ctxtDir.search("ou=" + appli,  "(&(cn=*))" ,searchControls);
+	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + appli,  "(&(cn=" + role + "))" ,searchControls);
 
-		if (answer != null) {
-			while (answer.hasMoreElements()) {
-				SearchResult sr = (SearchResult) answer.next();
-				System.out.println("name : " +  sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
-				
-				Attributes attrs = sr.getAttributes();
-			        System.out.println("sr : " + sr);
-				if (attrs != null) {
-					Attribute attmember = attrs.get("member");
-				
-					if (attmember != null) {
-						for (int j = 0; j < attmember.size(); j++) {
-							String member = (String) attmember.get(j);
-							if (member != null) {
-							    String username = member.substring(0, member.indexOf(",")).replace("cn=", "").toLowerCase();
-							    if (user.equalsIgnoreCase(username)) {
-								return true;
-							    }
-							}
-						}
-					}
-				}
-			}
+	    while (answer.hasMoreElements()) {
+		SearchResult sr = (SearchResult) answer.next();
+
+		Attributes attrs = sr.getAttributes();
+		if ( sr.getAttributes().get("member") != null) {
+
+		    NamingEnumeration<?> answerAtt = sr.getAttributes().get("member").getAll();
+		    while (answerAtt.hasMoreElements()) {
+			String att = (String) answerAtt.next();
+			if (att.toUpperCase().contains(user.toUpperCase())) {return true;}
+		    }
 		}
+	    }
 	}
 	catch (NamingException e) {
 	    logger.error(e);
@@ -266,36 +254,25 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble, GinaA
 	List<String> users = new ArrayList<String>();
 
 	try {
-		SearchControls searchControls = new SearchControls();
-		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-		searchControls.setTimeLimit(30000);;
+	    SearchControls searchControls = new SearchControls();
+	    searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+	    searchControls.setTimeLimit(30000);
 
-		NamingEnumeration<?> answer = ctxtDir.search("ou=" + appli,  "(&(cn=*))" ,searchControls);
+	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + appli,  "(&(cn=" + role + "))" ,searchControls);
 
-		if (answer != null) {
-			while (answer.hasMoreElements()) {
-				SearchResult sr = (SearchResult) answer.next();
-				System.out.println("name : " +  sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
-				
-				Attributes attrs = sr.getAttributes();
-			        System.out.println("sr : " + sr);
-				if (attrs != null) {
-					Attribute attmember = attrs.get("member");
-				
-					if (attmember != null) {
-						for (int j = 0; j < attmember.size(); j++) {
-							String member = (String) attmember.get(j);
-							if (member != null) {
-							    String username = member.substring(0, member.indexOf(",")).replace("cn=", "").toLowerCase();
-							    if (user.equalsIgnoreCase(username)) {
-								return true;
-							    }
-							}
-						}
-					}
-				}
-			}
+	    while (answer.hasMoreElements()) {
+		SearchResult sr = (SearchResult) answer.next();
+
+		Attributes attrs = sr.getAttributes();
+		if ( sr.getAttributes().get("member") != null) {
+
+		    NamingEnumeration<?> answerAtt = sr.getAttributes().get("member").getAll();
+		    while (answerAtt.hasMoreElements()) {
+			String att = (String) answerAtt.next();
+			if (att.toUpperCase().contains(user.toUpperCase())) {return true;}
+		    }
 		}
+	    }
 	}
 	catch (NamingException e) {
 	    logger.error(e);
@@ -313,36 +290,27 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble, GinaA
 	init();
 	List<String> roles = new ArrayList<String>();
 	String user = System.getProperty("user.name");
-	String role = "";
 	try {
 
 		SearchControls searchControls = new SearchControls();
 		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 		searchControls.setTimeLimit(30000);
-		NamingEnumeration<?> answer = ctxtDir.search("ou=" + appli,  "(&(cn=*))" ,searchControls);
-
+		NamingEnumeration<?> answer = ctxtDir.search("ou=Users" ,  "(&(cn=" + user + "))" ,searchControls);
+	
 		if (answer != null) {
 			while (answer.hasMoreElements()) {
 				SearchResult sr = (SearchResult) answer.next();
-				System.out.println("sr : " + sr);
-				role = sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", "");
+				logger.info("sr" + sr);
 				Attributes attrs = sr.getAttributes();
-				if (attrs != null) {
-					Attribute attmember = attrs.get("member");
+				if ( sr.getAttributes().get("memberOf") != null) {
 
-					if (attmember != null) {
-						for (int j = 0; j < attmember.size(); j++) {
-							String member = (String) attmember.get(j);
-							if (member != null) {
-							    String username = member.substring(0, member.indexOf(",")).replace("cn=", "").toLowerCase();
-							    if (username.equalsIgnoreCase(user)) {
-								roles.add(role);								
-							    }
-
-							}
-						}
-					}
-				}
+				    NamingEnumeration<?> answerAtt = sr.getAttributes().get("memberOf").getAll();
+				    while (answerAtt.hasMoreElements()) {
+					String att = (String) answerAtt.next();
+					roles.add(att);
+				    }
+				}	
+				
 			}
 		}
 	}
@@ -368,30 +336,23 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble, GinaA
 		SearchControls searchControls = new SearchControls();
 		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 		searchControls.setTimeLimit(30000);
-		NamingEnumeration<?> answer = ctxtDir.search("ou=" + appli,  "(&(cn=*))" ,searchControls);
-
+		NamingEnumeration<?> answer = ctxtDir.search("ou=Users" ,  "(&(cn=" + user + "))" ,searchControls);
+	
 		if (answer != null) {
 			while (answer.hasMoreElements()) {
 				SearchResult sr = (SearchResult) answer.next();
-				System.out.println("sr : " + sr);
-				role = sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", "");
+
 				Attributes attrs = sr.getAttributes();
-				if (attrs != null) {
-					Attribute attmember = attrs.get("member");
+				if ( sr.getAttributes().get("memberOf") != null) {
 
-					if (attmember != null) {
-						for (int j = 0; j < attmember.size(); j++) {
-							String member = (String) attmember.get(j);
-							if (member != null) {
-							    String username = member.substring(0, member.indexOf(",")).replace("cn=", "").toLowerCase();
-							    if (username.equalsIgnoreCase(user)) {
-								roles.add(role);								
-							    }
-
-							}
-						}
-					}
-				}
+				    NamingEnumeration<?> answerAtt = sr.getAttributes().get("memberOf").getAll();
+				    while (answerAtt.hasMoreElements()) {
+					String att = (String) answerAtt.next();
+					logger.info(att);
+					roles.add(att);
+				    }
+				}	
+				
 			}
 		}
 	}
@@ -435,8 +396,12 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble, GinaA
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
-		    System.out.println("name : " +  sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
-		    roles.add(sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
+		    NamingEnumeration<?> att = sr.getAttributes().get("cn").getAll();
+		    while (att.hasMoreElements()) {
+			String cn = (String) att.next();
+			roles.add(cn);
+		    }
+		    
 		   
 		}
 	    }
@@ -475,10 +440,10 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble, GinaA
 		if (answer != null) {
 			while (answer.hasMoreElements()) {
 				SearchResult sr = (SearchResult) answer.next();
-				System.out.println("name : " +  sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
+				logger.info("name : " +  sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
 				
 				Attributes attrs = sr.getAttributes();
-			        System.out.println("sr : " + sr);
+			        logger.info("sr : " + sr);
 				if (attrs != null) {
 					Attribute attmember = attrs.get("member");
 
@@ -493,19 +458,7 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble, GinaA
 								Map<String, String> map = new HashMap<String, String>();
 								users.add(username);
 								map = this.getUserAttrs(username, paramArrayOfString);
-								  /*  for (int i = 0; i < paramArrayOfString.length; i++) {
-									Attribute attribute = attrs.get(paramArrayOfString[i]);   //Attribute attmember = attrs.get("member");
-									
-									if (attribute != null) {
-									    
-									    for (int k = 0; k < attribute.size(); k++) {
-										String tribute = (String) attribute.get(k);
-										if (tribute != null) {
-										    map.put(paramArrayOfString[i], tribute.toString());
-										}
-									    }
-									}
-								    } */
+
 								    
 								list.add(map);
 							    }							   
@@ -545,10 +498,10 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble, GinaA
 		if (answer != null) {
 			while (answer.hasMoreElements()) {
 				SearchResult sr = (SearchResult) answer.next();
-				System.out.println("name : " +  sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
+				logger.info("name : " +  sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
 				
 				Attributes attrs = sr.getAttributes();
-			        System.out.println("sr : " + sr);
+			        logger.info("sr : " + sr);
 				if (attrs != null) {
 					Attribute attmember = attrs.get("member");
 
@@ -563,20 +516,6 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble, GinaA
 								Map<String, String> map = new HashMap<String, String>();
 								users.add(username);
 								map = this.getUserAttrs(username, paramArrayOfString);
-								  /*  for (int i = 0; i < paramArrayOfString.length; i++) {
-									Attribute attribute = attrs.get(paramArrayOfString[i]);   //Attribute attmember = attrs.get("member");
-									
-									if (attribute != null) {
-									    
-									    for (int k = 0; k < attribute.size(); k++) {
-										String tribute = (String) attribute.get(k);
-										if (tribute != null) {
-										    map.put(paramArrayOfString[i], tribute.toString());
-										}
-									    }
-									}
-								    } */
-								    
 								list.add(map);
 							    }							   
 							}
