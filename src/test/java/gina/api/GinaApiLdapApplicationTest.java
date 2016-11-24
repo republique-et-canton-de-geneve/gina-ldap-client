@@ -29,6 +29,7 @@ public class GinaApiLdapApplicationTest {
 	    ConfigurationTest conf = new ConfigurationTest();
 	    conf.init("application");
 	    ctxtDir = conf.getCtxtDir();
+	    GinaApiLdapBaseFactory.getInstanceConfigApplication().setInitTest(ctxtDir);
 	    if (ctxtDir == null) {
 		throw new GinaException("initialisation impossible");
 	    }

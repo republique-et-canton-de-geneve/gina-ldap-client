@@ -18,11 +18,10 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.apache.log4j.Logger;
-import org.junit.Before;
 
 import gina.api.util.Configuration;
 
-public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble {
+public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, GinaApiLdapConfig {
 
     private DirContext ctxtDir = null;
 
@@ -326,7 +325,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble {
     }
 
     /* (non-Javadoc)
-     * Donne tous les rôles de l'utilisateur passé en paramètre
+     * Donne tous les rôles de l'utilisateur passé en paramètre 
      * @see gina.api.GinaApiLdapBaseAble#getUserRoles(java.lang.String, java.lang.String)
      */
     @Override
@@ -630,18 +629,17 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble {
 
 
 
-    private void setInitTest(DirContext ctxtDir) throws GinaException {
-	if (ctxtDir == null) {
-	    logger.info("initTest()");
-	    ConfigurationTest conf = new ConfigurationTest();
-	    conf.init("application");
-	    ctxtDir = conf.getCtxtDir();
+    @Override
+    public void setInitTest(DirContext ctxtDir) throws GinaException {
+	if (this.ctxtDir == null) {
 	    this.ctxtDir = ctxtDir;
-	    if (ctxtDir == null) {
+	    if (this.ctxtDir == null) {
 		throw new GinaException("initialisation impossible");
 	    }
 	}
     }
+
+
 
 
 }

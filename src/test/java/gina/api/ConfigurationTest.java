@@ -1,38 +1,22 @@
 package gina.api;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-import org.apache.log4j.Logger;
 
 import javax.naming.Context;
-import javax.naming.NameClassPair;
-import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttribute;
-import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
-import javax.naming.directory.SearchControls;
-import javax.naming.directory.SearchResult;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Node;
-import org.dom4j.io.SAXReader;
+import org.apache.log4j.Logger;
 
 
 public class ConfigurationTest
@@ -81,7 +65,7 @@ public class ConfigurationTest
 	    }
 	    else if(type.equalsIgnoreCase("application")) {
 		LDAP_SERVER_URL = "ldap://vldap-dev.ceti.etat-ge.ch:636";  
-		LDAP_BASE_DN = "ou=OAC,o=gina" ; 
+		LDAP_BASE_DN = "ou=OAC,o=gina,ou=CAMAC-GENEVE" ; 
 		LDAP_USER = "cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina"; 
 		LDAP_PASSWORD = "Uddyzfsp4"; 
 		LOG.info("SERVER_URL = " + PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL")); 

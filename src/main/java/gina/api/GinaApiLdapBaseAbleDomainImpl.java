@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 
 import gina.api.util.Configuration;
 
-public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble {
+public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble, GinaApiLdapConfig {
     
     private DirContext ctxtDir = null;
     // LOGGER
@@ -28,7 +28,7 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble {
     
     private void init() throws GinaException {
 	if (ctxtDir == null) {
-	    System.out.println("init()");
+	    logger.info("init()");
 	    Configuration conf = new Configuration();
 	    conf.init();
 	    ctxtDir = conf.getCtxtDir();
@@ -65,6 +65,7 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble {
 		if (answer != null) {
 			while (answer.hasMoreElements()) {
 				SearchResult sr = (SearchResult) answer.next();
+				logger.info("sr" + sr);
 				String name =  sr.getName().replace("cn=", "");  //.substring(0, sr.getName().indexOf(":")).replace("cn=", "");
 				if (user.equalsIgnoreCase(name)){
 				    return true;			    
@@ -595,40 +596,34 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble {
     @Override
     public List<Map<String, String>> getUsersByPhone(String paramString, Boolean paramBoolean,
 	    String[] paramArrayOfString) throws GinaException, RemoteException {
-	
-	return null;
+	throw new  GinaException("Not implemented");
     }
 
     @Override
     public List<Map<String, String>> getUsersBySIRHNumber(String paramString, Boolean paramBoolean,
 	    String[] paramArrayOfString) throws GinaException, RemoteException {
-	
-	return null;
+	throw new  GinaException("Not implemented");
     }
 
     @Override
     public List<Map<String, String>> getUsersByName(String paramString, Boolean paramBoolean,
 	    String[] paramArrayOfString) throws GinaException, RemoteException {
-	
-	return null;
+	throw new  GinaException("Not implemented");
     }
 
     @Override
     public List<String> getInheritingRoles(String paramString1, String paramString2) {
-	
-	return null;
+	throw new  GinaException("Not implemented");
     }
 
     @Override
     public List<String> getPMProprieteMetier(String paramString) {
-	
-	return null;
+	throw new  GinaException("Not implemented");
     }
 
     @Override
     public String getOwnIDUniqueForPPorPseudo() {
-	
-	return null;
+	throw new  GinaException("Not implemented");
     }
 
     @Override
@@ -639,32 +634,52 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble {
 
     @Override
     public List<String> getPPProprieteMetier(String paramString)  {
-	
-	return null;
+	throw new  GinaException("Not implemented");
     }
 
     @Override
     public List<String> getOwnPPProprieteMetier(String paramString) {
-	
-	return null;
+	throw new  GinaException("Not implemented");
     }
 
     @Override 
     public boolean hasRole(String paramString1) throws GinaException, RemoteException {
-	// TODO Auto-generated method stub
 	throw new  GinaException("Not implemented");
     }
 
     @Override
     public boolean hasUserRole(String user, String role) throws GinaException, RemoteException {
+	throw new  GinaException("Not implemented");
+    }
+
+    @Override
+    public List<String> getRoles() throws GinaException, RemoteException {
 	// TODO Auto-generated method stub
-	return false;
+	return null;
+    }
+
+    @Override
+    public List<String> getUserRoles(String user) throws GinaException, RemoteException {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    @Override
+    public List<String> getAppRoles() throws GinaException, RemoteException {
+	// TODO Auto-generated method stub
+	return null;
+    }
+
+    @Override
+    public void setInitTest(DirContext ctxtDir) throws GinaException {
+	if (this.ctxtDir == null) {
+	    this.ctxtDir = ctxtDir;
+	    if (this.ctxtDir == null) {
+		throw new GinaException("initialisation impossible");
+	    }
+	}
     }
 
 
-  /*  @Override
-    public void sendMail(String paramString1, String[] paramArrayOfString1, String[] paramArrayOfString2,
-	    String paramString2, String paramString3, String paramString4) throws GinaException, RemoteException {
-    }*/
 
 }
