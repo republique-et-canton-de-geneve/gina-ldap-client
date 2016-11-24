@@ -21,7 +21,6 @@ public class GinaApiLdapDomainTest {
 	    
 	    
 
-   /* 
     @Test
     public void getIsValidUserTest() {
 	System.out.println("getIsValidUserTest");
@@ -94,8 +93,7 @@ public class GinaApiLdapDomainTest {
 	assertTrue(true);
 	
     }
-    */
-    /*   
+    
     @Test
     public void hasRoleTest() {
 	System.out.println("hasRoleTest");
@@ -220,15 +218,7 @@ public class GinaApiLdapDomainTest {
 	assertTrue(true);
 	
     }
-    
-    */
-    
-    
-    
-   
-    
 
-   
   
     @Test
     public void getAppRolesTest() {

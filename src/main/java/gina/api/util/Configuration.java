@@ -65,30 +65,30 @@ public class Configuration
 
     private static final Properties PROPS = loadProps();
   
-    public void init() {
+    public void init(String type) {
 	LOG.info("Start");
 
 	try {
 	    	
-		/*LDAP_SERVER_URL = "ldap://vldap-dev.ceti.etat-ge.ch:636";  
-		LDAP_BASE_DN = "ou=CSBUGTRACK,o=gina" ; 
-		LDAP_USER = "cn=tcnvldap6470devaag,ou=Users,ou=CSBUGTRACK,o=gina"; 
-		LDAP_PASSWORD = "Xhngmfxp9"; 
-		System.out.println("SERVER_URL = " + PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL")); */
 		
-		LDAP_SERVER_URL = "ldap://vldap-dev.ceti.etat-ge.ch:636";  
-		LDAP_BASE_DN = "ou=OAC,o=gina" ; 
-		LDAP_USER = "cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina"; 
-		LDAP_PASSWORD = "Uddyzfsp4"; 
-		System.out.println("SERVER_URL = " + PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL")); 
-	
-		/*LDAP_SERVER_URL = PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL");  
-		LDAP_BASE_DN = PROPS.getProperty("ct-gina-ldap-client.LDAP_BASE_DN"); 
-		LDAP_USER = PROPS.getProperty("ct-gina-ldap-client.LDAP_USER"); 
-		LDAP_PASSWORD = PROPS.getProperty("ct-gina-ldap-client.LDAP_PASSWORD"); */
-		
-		System.out.println("SERVER_URL = " + LDAP_SERVER_URL); 
-		System.out.println("LDAP_USER = " + LDAP_USER); 
+	        if(type.equalsIgnoreCase("domain")) {
+			LDAP_SERVER_URL = PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL_DOMAIN");  
+			LDAP_BASE_DN = PROPS.getProperty("ct-gina-ldap-client.LDAP_BASE_DN_DOMAIN");  
+			LDAP_USER = PROPS.getProperty("ct-gina-ldap-client.LDAP_USER_DOMAIN"); 
+			LDAP_PASSWORD = PROPS.getProperty("ct-gina-ldap-client.LDAP_PASSWORD_DOMAIN"); 
+			LOG.info("LDAP_SERVER_URL = " + LDAP_SERVER_URL); 
+			
+			
+		}
+	        else if(type.equalsIgnoreCase("application")) {
+			LDAP_SERVER_URL = PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL");  
+			LDAP_BASE_DN = PROPS.getProperty("ct-gina-ldap-client.LDAP_BASE_DN");  
+			LDAP_USER = PROPS.getProperty("ct-gina-ldap-client.LDAP_USER"); 
+			LDAP_PASSWORD = PROPS.getProperty("ct-gina-ldap-client.LDAP_PASSWORD"); 
+			LOG.info("LDAP_SERVER_URL = " + LDAP_SERVER_URL); 
+			
+		}
+ 
 		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, LDAP_CONTEXT_FACTORY);
 		env.put(Context.PROVIDER_URL, LDAP_SERVER_URL + "/" + LDAP_BASE_DN);
@@ -132,7 +132,6 @@ public class Configuration
   }
 
   public static String getString(String name, String def) {
-    //return PROPS.getProperty(name, def);
       return null;
   }
 
@@ -155,48 +154,47 @@ public class Configuration
 
   private static final Properties loadProps()
   {
-    try {
-      Properties props = new Properties();
-      File file = getPropsFile(System.getProperty("distribution.dir"));
-      //System.out.println("dir" + System.getProperties().get("user.dir") );
-      if (file == null)
-      {
-        file = getPropsFile(System.getProperty("jonas.base"));
-        if (file == null)
-        {
-          file = getPropsFile(".");
-          
-          if (file == null) {
-              file = getPropsFile("../");
-              	if (file == null) {
-              
-              		file = getPropsFile("./src/main/resources/");
-              
-              		if (file == null) {
-              		    throw new ExceptionInInitializerError("Distribution.properties not found, invalid or incorrectly defined");
-              		}
-              	}
-              		
-          }
-          
-          
-        }
-      }
-      LOG.info("Loading Distribution.properties from location [" + file.getAbsolutePath() + "]");
-      InputStream in = new FileInputStream(file);
       try {
-        props.load(in);
-      } catch (IOException ioe) {
-        LOG.error("Error while loading properties from file [" + file.getAbsolutePath() + "]", ioe);
-        throw new ExceptionInInitializerError(ioe.getMessage());
-      } finally {
-        in.close();
+	  Properties props = new Properties();
+	  File file = getPropsFile(System.getProperty("distribution.dir"));
+	  //System.out.println("dir" + System.getProperties().get("user.dir") );
+	  if (file == null)
+	  {
+	      file = getPropsFile(System.getProperty("jonas.base"));
+	      if (file == null)
+	      {
+		  file = getPropsFile(".");
+
+		  if (file == null) {
+
+
+		      file = getPropsFile("./src/main/resources/");
+
+		      if (file == null) {
+			  throw new ExceptionInInitializerError("Distribution.properties not found, invalid or incorrectly defined");
+		      }
+
+
+		  }
+
+
+	      }
+	  }
+	  LOG.info("Loading Distribution.properties from location [" + file.getAbsolutePath() + "]");
+	  InputStream in = new FileInputStream(file);
+	  try {
+	      props.load(in);
+	  } catch (IOException ioe) {
+	      LOG.error("Error while loading properties from file [" + file.getAbsolutePath() + "]", ioe);
+	      throw new ExceptionInInitializerError(ioe.getMessage());
+	  } finally {
+	      in.close();
+	  }
+	  return props;
+      } catch (IOException e) {
+	  LOG.error("Error while loading properties");
+	  throw new ExceptionInInitializerError(e.getMessage());
       }
-      return props;
-    } catch (IOException e) {
-      LOG.error("Error while loading properties");
-      throw new ExceptionInInitializerError(e.getMessage());
-    }
   }
 
   private static final File getPropsFile(String location)
