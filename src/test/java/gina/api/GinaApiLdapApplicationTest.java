@@ -1,44 +1,23 @@
 package gina.api;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.naming.directory.DirContext;
 
 import org.apache.log4j.Logger;
-import org.junit.Before;
 import org.junit.Test;
-
-import gina.api.util.Configuration;
 
 public class GinaApiLdapApplicationTest {
     
     private DirContext ctxtDir = null;
     private static final Logger LOG = Logger.getLogger(GinaApiLdapApplicationTest.class);
 
-   /* @Before
-    public void init(){
-	 
-	if (ctxtDir == null) {
-	    LOG.info("init()");
-	    ConfigurationTest conf = new ConfigurationTest();
-	    conf.init("application");
-	    ctxtDir = conf.getCtxtDir();
-	    GinaApiLdapBaseFactory.getInstanceConfigApplication().setInitTest(ctxtDir);
-	    if (ctxtDir == null) {
-		throw new GinaException("initialisation impossible");
-	    }
-	}
-	    
-    }*/
-    
-   
-    
+
     
     @Test
     public void getUserRolesTest(){
