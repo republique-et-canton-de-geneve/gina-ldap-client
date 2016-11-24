@@ -20,22 +20,8 @@ public class GinaApiLdapDomainTest {
     private static final Logger LOG = Logger.getLogger(GinaApiLdapDomainTest.class);
 	    
 	    
-    @Before
-    public void init(){
-	 
-	if (ctxtDir == null) {
-	    LOG.info("init()");
-	    ConfigurationTest conf = new ConfigurationTest();
-	    conf.init("domain");
-	    ctxtDir = conf.getCtxtDir();
-	    GinaApiLdapBaseFactory.getInstanceConfigDomain().setInitTest(ctxtDir);
-	    if (ctxtDir == null) {
-		throw new GinaException("initialisation impossible");
-	    }
-	}
-	    
-    }
-    
+
+   /* 
     @Test
     public void getIsValidUserTest() {
 	System.out.println("getIsValidUserTest");
@@ -57,7 +43,7 @@ public class GinaApiLdapDomainTest {
 	assertTrue(true);
 	
     }
- /*   
+  
     
     @Test
     public void getUserAttrsTest() {
@@ -108,11 +94,110 @@ public class GinaApiLdapDomainTest {
 	assertTrue(true);
 	
     }
+    */
+    /*   
+    @Test
+    public void hasRoleTest() {
+	System.out.println("hasRoleTest");
+	try {
+	    boolean ret = GinaApiLdapBaseFactory.getInstanceDomain().hasRole("ACT-JMS-GDE", "TECH-AUDITEUR-AUTORISATIONS");
+	    if (ret) {
+		assertTrue(false);
+	    } else {
+		assertTrue(true);
+	    }
+	} catch (GinaException e) {
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
+    }
     
     
     @Test
-    public void getUserTestRole() {
-	System.out.println("getUserTest");
+    public void hasRoleUserTest() {
+	System.out.println("hasUserRole");
+	try {
+	    boolean ret = GinaApiLdapBaseFactory.getInstanceDomain().hasUserRole("fortchantrel" , "ACT-JMS", "TECH-AUDITEUR-AUTORISATIONS");
+	    if (ret) {
+		assertTrue(true);
+	    } else {
+		assertTrue(false);
+	    }
+	} catch (GinaException e) {
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
+    }
+    
+    
+   
+    @Test
+    public void getRolesTest() {
+        //Donne tous les rôles de l'utilisateur courant pour l'application passée en paramètre
+	System.out.println("getRolesTest");
+	try {
+	    String userName = System.getProperty("user.name");
+	    List<String> roles = new ArrayList<String>();
+	    roles = GinaApiLdapBaseFactory.getInstanceDomain().getRoles("GEN-ROLES");
+	    System.out.println("nb roles GEN-ROLES : " + roles.size());
+	    for (String role : roles) {
+		
+		if (role.contains(new String("GEN-ROLES-SMIL"))){
+		    System.out.println(role);
+		    assertTrue(true);
+		}
+	    } 
+	    assertEquals(155, roles.size());
+	   
+	    
+	    
+	    
+	} catch (GinaException e) {
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
+
+	
+    }
+
+    
+
+    @Test
+    public void getUserRolesTest() {
+	//Donne tous les rôles de l'utilisateur passé en paramètre pour l'application passée en paramètre.
+	System.out.println("getUserRolesTest");
+	try {
+
+	    List<String> roles = new ArrayList<String>();
+	    roles = GinaApiLdapBaseFactory.getInstanceDomain().getUserRoles("fortchantrel","GEN-ROLES");
+	   // System.out.println("nb users appli GEN-ROLES roles GEN-ROLES-SMIL : " + users.size());
+	    for (String role : roles) {
+		
+		if (role.contains(new String("GEN-ROLES-SMIL"))){
+		    System.out.println(role);
+		    assertTrue(true);
+		}
+	    } 
+	    assertEquals(155, roles.size());
+	   
+	    
+	    
+	} catch (GinaException e) {
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
+	assertTrue(true);
+	
+    }
+   
+    
+    @Test
+    public void getUserRoleTest() {
+	System.out.println("getUserRoleTest");
     //Donne la liste des utilisateurs ayant accès à l'application passée en paramètre,
 	try {
 
@@ -135,8 +220,15 @@ public class GinaApiLdapDomainTest {
 	assertTrue(true);
 	
     }
-
     
+    */
+    
+    
+    
+   
+    
+
+   
   
     @Test
     public void getAppRolesTest() {
@@ -162,54 +254,6 @@ public class GinaApiLdapDomainTest {
 	
     }
 
-    @Test
-    public void getRolesTest() {
-        //Donne tous les rôles de l'utilisateur courant pour l'application passée en paramètre
-	System.out.println("getRolesTest");
-	try {
-	    String userName = System.getProperty("user.name");
-	    List<String> roles = new ArrayList<String>();
-	    roles = GinaApiLdapBaseFactory.getInstanceDomain().getRoles("GEN-ROLES");
-	    System.out.println("nb roles GEN-ROLES : " + roles.size());
-	    for (String role : roles) {
-		System.out.println(role);
-	    }   
-	   
-	    if (!roles.contains(new String("GEN-ROLES-SMIL"))){	
-		  assertTrue(false);
-	    }
-	    
-	    
-	} catch (GinaException e) {
-	    assertTrue(false);
-	} catch (RemoteException e) {
-	    assertTrue(false);
-	}
-	assertTrue(true);
-	
-    }
+  
 
-
-    @Test
-    public void getUserRolesTest() {
-	//Donne tous les rôles de l'utilisateur passé en paramètre pour l'application passée en paramètre.
-	try {
-
-	    List<String> roles = new ArrayList<String>();
-	    roles = GinaApiLdapBaseFactory.getInstanceDomain().getUserRoles("fortchantrel","GEN-ROLES");
-	   // System.out.println("nb users appli GEN-ROLES roles GEN-ROLES-SMIL : " + users.size());
-
-	    if (!roles.contains(new String("GEN-ROLES-SMIL"))){	
-		  assertTrue(false);
-	    }
-	    
-	    
-	} catch (GinaException e) {
-	    assertTrue(false);
-	} catch (RemoteException e) {
-	    assertTrue(false);
-	}
-	assertTrue(true);
-	
-    }*/
 }
