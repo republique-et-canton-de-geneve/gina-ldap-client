@@ -101,7 +101,5 @@ public abstract interface GinaApiLdapBaseAble
   public abstract List<String> getAppRoles() 
     throws GinaException, RemoteException;
 
-  /*@Deprecated
-  public abstract void sendMail(String paramString1, String[] paramArrayOfString1, String[] paramArrayOfString2, String paramString2, String paramString3, String paramString4)
-    throws GinaException, RemoteException;*/
+  
 }// End of source file

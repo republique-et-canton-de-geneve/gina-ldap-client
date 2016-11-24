@@ -27,7 +27,7 @@ public class GinaApiLdapBaseFactory {
         
       }
       catch (RuntimeException e) {
-        e.printStackTrace();
+	LOG.error(e);
         throw e;
       } catch (Exception e) {
         e.printStackTrace();
@@ -43,6 +43,42 @@ public class GinaApiLdapBaseFactory {
 	    ClassLoader cl = Thread.currentThread().getContextClassLoader();
             Class implClass = cl.loadClass("gina.api.GinaApiLdapBaseAbleDomainImpl");
             return (GinaApiLdapBaseAble)implClass.newInstance();
+        
+      }
+      catch (RuntimeException e) {
+	LOG.error(e);
+        throw e;
+      } catch (Exception e) {
+	LOG.error(e);
+        throw new GinaException(e.getMessage());
+      }
+    }
+
+    public static GinaApiLdapConfig getInstanceConfigApplication()
+    {
+	try {
+	    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            Class implClass = cl.loadClass("gina.api.GinaApiLdapBaseAbleApplicationImpl");
+            return (GinaApiLdapConfig)implClass.newInstance();
+        
+      }
+      catch (RuntimeException e) {
+	LOG.error(e);
+        throw e;
+      } catch (Exception e) {
+	LOG.error(e);
+        throw new GinaException(e.getMessage());
+      }
+    }
+    
+    
+
+    public static GinaApiLdapConfig getInstanceConfigDomain()
+    {
+	try {
+	    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            Class implClass = cl.loadClass("gina.api.GinaApiLdapBaseAbleDomainImpl");
+            return (GinaApiLdapConfig)implClass.newInstance();
         
       }
       catch (RuntimeException e) {
