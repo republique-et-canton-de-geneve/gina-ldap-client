@@ -376,7 +376,10 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	return null;
     }
 
-
+    /* (non-Javadoc)
+     * Retoune les roles d'une application
+     * @see gina.api.GinaApiLdapBaseAble#getAppRoles(java.lang.String)
+     */
     @Override
     public List<String> getAppRoles(String appli) throws GinaException, RemoteException {
 
@@ -421,6 +424,10 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	return null;
     }
 
+    /* (non-Javadoc)
+     * Donne la liste des utilisateurs ayant accès à l'application passée en paramètre, avec les attributs demandés 
+     * @see gina.api.GinaApiLdapBaseAble#getUsers(java.lang.String)
+     */
     @Override
     public List<Map<String, String>> getUsers(String appli, String[] paramArrayOfString)
 	    throws GinaException, RemoteException {
