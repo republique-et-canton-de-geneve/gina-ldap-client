@@ -19,7 +19,10 @@ public class Configuration
 {
 
     private static final Logger LOG = Logger.getLogger(Configuration.class);
-
+    
+    static final String Domain = "domain"; 
+    static final String Application = "application";
+    
     // LDAP
     private static String LDAP_CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
     private static String LDAP_AUTHENTICATION_MODE = "simple";
@@ -39,7 +42,7 @@ public class Configuration
 	try {
 	    	
 		
-	        if(type.equalsIgnoreCase("domain")) {
+	        if(type.equalsIgnoreCase(Domain)) {
 			LDAP_SERVER_URL = PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL_DOMAIN");  
 			LDAP_BASE_DN = PROPS.getProperty("ct-gina-ldap-client.LDAP_BASE_DN_DOMAIN");  
 			LDAP_USER = PROPS.getProperty("ct-gina-ldap-client.LDAP_USER_DOMAIN"); 
@@ -48,7 +51,7 @@ public class Configuration
 			
 			
 		}
-	        else if(type.equalsIgnoreCase("application")) {
+	        else if(type.equalsIgnoreCase(Application)) {
 			LDAP_SERVER_URL = PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL");  
 			LDAP_BASE_DN = PROPS.getProperty("ct-gina-ldap-client.LDAP_BASE_DN");  
 			LDAP_USER = PROPS.getProperty("ct-gina-ldap-client.LDAP_USER"); 
@@ -89,33 +92,6 @@ public class Configuration
         this.ctxtDir = ctxtDir;
     }
 
- public static Properties getProps()
-  {
-    Properties props = new Properties();
-    //props.putAll(PROPS);
-    return props;
-  }
-
-  public static String getString(String name, String def) {
-      return null;
-  }
-
-  public static int getInt(String name, int def) {
-    String s = getString(name, null);
-    if (s == null) {
-      return def;
-    }
-    return Integer.parseInt(s);
-  }
-
-  public static long getLong(String name, long def)
-  {
-    String s = getString(name, null);
-    if (s == null) {
-      return def;
-    }
-    return Long.parseLong(s);
-  }
 
   private static final Properties loadProps()
   {
@@ -131,7 +107,6 @@ public class Configuration
 
 		  if (file == null) {
 
-
 		      file = getPropsFile("./src/main/resources/");
 
 		      if (file == null) {
@@ -140,9 +115,8 @@ public class Configuration
 
 
 		  }
-
-
 	      }
+
 	  }
 	  LOG.info("Loading Distribution.properties from location [" + file.getAbsolutePath() + "]");
 	  InputStream in = new FileInputStream(file);
