@@ -204,7 +204,7 @@ public class GinaApiLdapDomainTest {
 	    //LOG.info("nb user  : " + user.size() + user.get(0).get("initials"));
 	    Map<String, String> temp =  user.get(0);
 	    String s = temp.get(new String("initials"));
-	    if (!s.equals("FB")){	
+	    if (!s.equals("AA")){	
 		  assertTrue(false);
 	    }
 	    
