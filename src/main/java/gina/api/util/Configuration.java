@@ -14,6 +14,8 @@ import javax.naming.directory.InitialDirContext;
 
 import org.apache.log4j.Logger;
 
+import ch.ge.cti.ct.act.configuration.DistributionFactory;
+
 
 public class Configuration
 {
@@ -40,7 +42,9 @@ public class Configuration
 	LOG.info("Start");
 
 	try {
-	    	
+	    	DistributionFactory.setDisableJNDI(true);
+	    	//DistributionFactory.reset();
+	    	String url = DistributionFactory.getConfiguration().getString("ct-gina-ldap-client.LDAP_SERVER_URL_DOMAIN");
 		
 	        if(type.equalsIgnoreCase(Domain)) {
 			LDAP_SERVER_URL = PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL_DOMAIN");  

@@ -45,36 +45,31 @@
 		<dependency>
 			<groupId>ch.ge.cti.ct.act</groupId>
 			<artifactId>ct_configuration</artifactId>
-			<version>1.0.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-lang</groupId>
-					<artifactId>commons-lang</artifactId>
-				</exclusion>
-			</exclusions>
+			<version>1.0.1</version>
+<!-- 			<exclusions> -->
+<!-- 				<exclusion> -->
+<!-- 					<groupId>commons-lang</groupId> -->
+<!-- 					<artifactId>commons-lang</artifactId> -->
+<!-- 				</exclusion> -->
+<!-- 			</exclusions> -->
 		</dependency>
 		<dependency>
 	        <groupId>org.slf4j</groupId>
 	        <artifactId>slf4j-log4j12</artifactId>
-	        <version>1.5.2</version>
-	        <scope>provided</scope>
+	        <version>1.6.0</version>
 	    </dependency>
 	    <dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.15</version>
 			<scope>provided</scope>
 		</dependency>	
 		<dependency>
   			<groupId>dom4j</groupId>
  			<artifactId>dom4j</artifactId>
- 			<version>1.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.4</version>
-			<scope>test</scope>
 		</dependency>		
 </dependencies>
 
