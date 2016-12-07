@@ -6,9 +6,6 @@ import java.util.Map;
 
 public abstract interface GinaApiLdapBaseAble
 {
-  
-  public abstract String getUser()
-    throws GinaException, RemoteException;
 
   public abstract boolean isValidUser(String paramString)
     throws GinaException, RemoteException;

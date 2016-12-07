@@ -12,6 +12,8 @@ public class Main {
     public static void main(String[] args) {
 	
 	try {
+	    List<String> ret = GinaApiLdapBaseFactory.getInstanceApplication().getUserRoles("DRIVONOL");
+
 	    String userName = System.getProperty("user.name");
             List<String> roles = new ArrayList<String>();
             roles = gina.api.GinaApiLdapBaseFactory.getInstanceApplication().getRoles("CAMAC-GENEVE");

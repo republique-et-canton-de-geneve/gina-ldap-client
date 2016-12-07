@@ -38,15 +38,6 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble, GinaA
 	 }
     }
 
-    /* (non-Javadoc)
-     * retourne le user name de l'utilisateur courant
-     * @see gina.api.GinaApiLdapBaseAble#getUser()
-     */
-    @Override 
-    public String getUser() throws GinaException, RemoteException {
-	init();
-	return System.getProperty("user.name");
-    }
 
     /* (non-Javadoc)
      * retourne boolean pour savoir si le user est valide
@@ -59,7 +50,7 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble, GinaA
 	try {
 		SearchControls searchControls = new SearchControls();
 		searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-		searchControls.setTimeLimit(30000);
+		searchControls.setTimeLimit(30000); 
 		NamingEnumeration<?> answer = ctxtDir.search("ou=Users",  "(&(cn=*))" ,searchControls);
 
 		if (answer != null) {

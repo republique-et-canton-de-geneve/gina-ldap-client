@@ -41,17 +41,6 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
     }
 
 
-
-    /* (non-Javadoc)
-     * retourne le user name de l'utilisateur courant
-     * @see gina.api.GinaApiLdapBaseAble#getUser()
-     */
-    @Override 
-    public String getUser() throws GinaException, RemoteException {
-	init();
-	return System.getProperty("user.name");
-    }
-
     /* (non-Javadoc)
      * retourne boolean pour savoir si le user est valide
      * @see gina.api.GinaApiLdapBaseAble#isValidUser(java.lang.String)
