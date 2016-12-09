@@ -43,23 +43,26 @@ public class Configuration
 
 	try {
 	    	DistributionFactory.setDisableJNDI(true);
-	    	//DistributionFactory.reset();
 	    	String url = DistributionFactory.getConfiguration().getString("ct-gina-ldap-client.LDAP_SERVER_URL_DOMAIN");
 		
 	        if(type.equalsIgnoreCase(Domain)) {
-			LDAP_SERVER_URL = PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL_DOMAIN");  
-			LDAP_BASE_DN = PROPS.getProperty("ct-gina-ldap-client.LDAP_BASE_DN_DOMAIN");  
-			LDAP_USER = PROPS.getProperty("ct-gina-ldap-client.LDAP_USER_DOMAIN"); 
-			LDAP_PASSWORD = PROPS.getProperty("ct-gina-ldap-client.LDAP_PASSWORD_DOMAIN"); 
+			LDAP_SERVER_URL = DistributionFactory.getConfiguration().getString("ct-gina-ldap-client.LDAP_SERVER_URL_DOMAIN"); 
+			LDAP_BASE_DN =  DistributionFactory.getConfiguration().getString("ct-gina-ldap-client.LDAP_BASE_DN_DOMAIN");  
+			LDAP_USER =  DistributionFactory.getConfiguration().getString("ct-gina-ldap-client.LDAP_USER_DOMAIN"); 
+			LDAP_PASSWORD =  DistributionFactory.getConfiguration().getString("ct-gina-ldap-client.LDAP_PASSWORD_DOMAIN"); 
 			LOG.info("LDAP_SERVER_URL = " + LDAP_SERVER_URL); 
+			//ct-gina-ldap-client.LDAP_SERVER_URL_DOMAIN=ldap://vldap-dev.ceti.etat-ge.ch:636
+			//    ct-gina-ldap-client.LDAP_BASE_DN_DOMAIN=ou=CSBUGTRACK,o=gina
+			//    ct-gina-ldap-client.LDAP_USER_DOMAIN=cn=tcnvldap6470devaag,ou=Users,ou=CSBUGTRACK,o=gina
+			//    ct-gina-ldap-client.LDAP_PASSWORD_DOMAIN=Xhngmfxp9
 			
 			
 		}
 	        else if(type.equalsIgnoreCase(Application)) {
-			LDAP_SERVER_URL = PROPS.getProperty("ct-gina-ldap-client.LDAP_SERVER_URL");  
-			LDAP_BASE_DN = PROPS.getProperty("ct-gina-ldap-client.LDAP_BASE_DN");  
-			LDAP_USER = PROPS.getProperty("ct-gina-ldap-client.LDAP_USER"); 
-			LDAP_PASSWORD = PROPS.getProperty("ct-gina-ldap-client.LDAP_PASSWORD"); 
+			LDAP_SERVER_URL =  DistributionFactory.getConfiguration().getString("ct-gina-ldap-client.LDAP_SERVER_URL");  
+			LDAP_BASE_DN =  DistributionFactory.getConfiguration().getString("ct-gina-ldap-client.LDAP_BASE_DN");  
+			LDAP_USER =  DistributionFactory.getConfiguration().getString("ct-gina-ldap-client.LDAP_USER"); 
+			LDAP_PASSWORD =  DistributionFactory.getConfiguration().getString("ct-gina-ldap-client.LDAP_PASSWORD"); 
 			LOG.info("LDAP_SERVER_URL = " + LDAP_SERVER_URL); 
 			
 		}
