@@ -68,9 +68,7 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble, GinaA
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
 		    logger.info("sr" + sr);
-		    String name = sr.getName().replace("cn=", ""); // .substring(0,
-								   // sr.getName().indexOf(":")).replace("cn=",
-								   // "");
+		    String name = sr.getName().replace("cn=", ""); 
 		    if (user.equalsIgnoreCase(name)) {
 			return true;
 		    }
@@ -88,7 +86,7 @@ public class GinaApiLdapBaseAbleDomainImpl implements GinaApiLdapBaseAble, GinaA
     public List<Map<String, String>> getAllUsers(String paramString, String[] paramArrayOfString)
 	    throws GinaException, RemoteException {
 
-	return null;
+	throw new GinaException("Not implemented");
     }
 
     /*
