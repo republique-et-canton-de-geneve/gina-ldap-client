@@ -1,7 +1,6 @@
 package gina.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -10,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class GinaApiLdapDomainTest {
@@ -26,7 +26,7 @@ public class GinaApiLdapDomainTest {
 	    LOG.info("user valid " + ret);
 
 	    if (!ret) {
-		assertTrue(false);
+		Assert.assertTrue("L'utilisateur  benammoura  est censé être valide !", ret); 
 	    }
 
 	} catch (GinaException e) {
@@ -48,6 +48,9 @@ public class GinaApiLdapDomainTest {
 	    Map<String, String> att = new HashMap<String, String>();
 	    String[] param = { "initials", "givenName", "sn" };
 	    att = GinaApiLdapBaseFactory.getInstanceDomain().getUserAttrs("benammoura", param);
+	    Assert.assertTrue( "le parametre initials pour benammoura est non vide " , att.get("initials") != null );
+	    Assert.assertTrue( "le parametre givenName pour benammoura est non vide " , att.get("givenName") != null );
+	    Assert.assertTrue( "le parametre sn pour benammoura est non vide " , att.get("sn") != null );
 	    LOG.info("nb attribut  : " + att.size());
 
 	} catch (GinaException e) {
@@ -58,6 +61,36 @@ public class GinaApiLdapDomainTest {
 	assertTrue(true);
 
     }
+    
+    @Test
+    public void getUserRolesTest() {
+	//Donne tous les rôles de l'utilisateur passé en paramètre pour l'application passée en paramètre.
+	LOG.info("getUserRolesTest");
+	try {
+
+	    List<String> roles = new ArrayList<String>();
+	    roles = GinaApiLdapBaseFactory.getInstanceDomain().getUserRoles("dtdcours01","GEN-ROLES");
+	   // LOG.info("nb users appli GEN-ROLES roles GEN-ROLES-SMIL : " + users.size());
+	    for (String role : roles) {
+		
+		if (role.contains(new String("GEN-ROLES-SMIL"))){
+		    LOG.info(role);
+		    assertTrue(true);
+		}
+	    } 
+	    assertEquals(8, roles.size());
+	   
+	    
+	    
+	} catch (GinaException e) {
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
+	assertTrue(true);
+	
+    }
+   
 
     @Test
     public void getUserTest() {
@@ -69,8 +102,6 @@ public class GinaApiLdapDomainTest {
 	    List<Map<String, String>> user = new ArrayList<Map<String, String>>();
 	    String[] param = { "initials", "givenName", "sn" };
 	    user = GinaApiLdapBaseFactory.getInstanceDomain().getUsers("GEN-ROLES", param);
-	    // LOG.info("nb user : " + user.size() +
-	    // user.get(0).get("initials"));
 	    Map<String, String> temp = user.get(0);
 	    String s = temp.get(new String("initials"));
 	    if (!s.equals("AB")) {
@@ -90,13 +121,9 @@ public class GinaApiLdapDomainTest {
     public void hasRoleUserTest() {
 	LOG.info("hasUserRole");
 	try {
-	    boolean ret = GinaApiLdapBaseFactory.getInstanceDomain().hasUserRole("fortchantrel", "ACT-JMS",
-		    "TECH-AUDITEUR-AUTORISATIONS");
-	    if (ret) {
-		assertTrue(true);
-	    } else {
-		assertTrue(false);
-	    }
+	    boolean ret = GinaApiLdapBaseFactory.getInstanceDomain().hasUserRole("dtdcours01", "ACCESS-CONTROL",
+		    "UTILISATEUR");
+	    Assert.assertTrue( "dtdcours01 a bien le role UTILISATEUR pour l' appli ACCES-CONTROL" , ret );
 	} catch (GinaException e) {
 	    assertTrue(false);
 	} catch (RemoteException e) {
@@ -105,7 +132,7 @@ public class GinaApiLdapDomainTest {
     }
 
     @Test
-    public void getUserRoleTest() {
+    public void getUsersTest() {
 	LOG.info("getUserRoleTest");
 	// Donne la liste des utilisateurs ayant accès à l'application passée en
 	// paramètre,
