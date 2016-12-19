@@ -94,7 +94,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 
 	    }
 	} catch (NamingException e) {
-	    logger.error(e);
+	    throw new GinaException(e.getMessage());
 	}
 
 	return false;
@@ -105,7 +105,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
     public List<Map<String, String>> getAllUsers(String paramString, String[] paramArrayOfString)
 	    throws GinaException, RemoteException {
 
-	return null;
+	throw new GinaException("Not implemented");
     }
 
     /*
@@ -151,7 +151,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	    }
 
 	} catch (NamingException e) {
-	    logger.error(e);
+	    throw new GinaException(e.getMessage());
 	}
 
 	return myMap;
@@ -198,7 +198,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 		}
 	    }
 	} catch (NamingException e) {
-	    logger.error(e);
+	    throw new GinaException(e.getMessage());
 	}
 
 	return myMap;
@@ -208,13 +208,13 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
     @Override
     @Deprecated
     public String getLanguage() throws GinaException, RemoteException {
-	return null;
+	throw new GinaException("Not implemented");
     }
 
     @Override
     @Deprecated
     public String getEnvironment() throws GinaException, RemoteException {
-	return null;
+	throw new GinaException("Not implemented");
     }
 
     /*
@@ -245,7 +245,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	    }
 
 	} catch (NamingException e) {
-	    logger.error(e);
+	    throw new GinaException(e.getMessage());
 	}
 
 	return false;
@@ -279,7 +279,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	    }
 
 	} catch (NamingException e) {
-	    logger.error(e);
+	    throw new GinaException(e.getMessage());
 	}
 
 	return false;
@@ -319,7 +319,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 		logger.info("value: " + value);
 	    }
 	} catch (NamingException e) {
-	    logger.error(e);
+	    throw new GinaException(e.getMessage());
 	}
 
 	return roles;
@@ -360,7 +360,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	    }
 
 	} catch (NamingException e) {
-	    logger.error(e);
+	    throw new GinaException(e.getMessage());
 	}
 
 	return roles;
@@ -370,14 +370,14 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
     public List<String> getIntegrationUserRoles(String paramString1, String paramString2)
 	    throws GinaException, RemoteException {
 
-	return null;
+	throw new GinaException("Not implemented");
     }
 
     @Override
     public List<String> getIntegrationUserAttributes(String paramString1, String paramString2)
 	    throws GinaException, RemoteException {
 
-	return null;
+	throw new GinaException("Not implemented");
     }
 
     /*
@@ -415,7 +415,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	    }
 
 	} catch (NamingException e) {
-	    logger.error(e);
+	    throw new GinaException(e.getMessage());
 	}
 
 	return roles;
@@ -476,7 +476,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 		}
 	    }
 	} catch (NamingException e) {
-	    logger.error(e);
+	    throw new GinaException(e.getMessage());
 	}
 
 	return list;
@@ -534,7 +534,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 		}
 	    }
 	} catch (NamingException e) {
-	    logger.error(e);
+	    throw new GinaException(e.getMessage());
 	}
 
 	return list;
