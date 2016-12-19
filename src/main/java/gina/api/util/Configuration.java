@@ -13,7 +13,6 @@ import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
-import org.apache.commons.configuration.AbstractConfiguration;
 import org.apache.log4j.Logger;
 
 import ch.ge.cti.ct.act.configuration.DistributionFactory;
