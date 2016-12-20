@@ -10,7 +10,7 @@
 	<groupId>ch.ge.cti.ct</groupId>
 	<artifactId>ct-gina-ldap-client</artifactId>
 	<name>ct - gina - ldap - client - ${project.version}</name>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	
 	
 	<url>https://prod.etat-ge.ch/wikiadm/x/ZQADEg</url>
@@ -31,13 +31,13 @@
 
 	<scm>
 		<connection>
-			scm:svn:http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/trunk/
+			scm:svn:http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/tags/ct-gina-ldap-client-1.0.0
 		</connection>
 		<developerConnection>
-			scm:svn:http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/trunk/
+			scm:svn:http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/tags/ct-gina-ldap-client-1.0.0
 		</developerConnection>
 		<url>
-			http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/trunk/
+			http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/tags/ct-gina-ldap-client-1.0.0
 		</url>
 	</scm>
 
