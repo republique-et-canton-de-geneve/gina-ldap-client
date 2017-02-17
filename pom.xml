@@ -1,27 +1,34 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<parent>
 		<artifactId>melusine_super_parent</artifactId>
 		<groupId>ch.ge.cti.melusine</groupId>
 		<version>4.1.0</version>
 	</parent>
-	
+
 	<groupId>ch.ge.cti.ct</groupId>
 	<artifactId>ct-gina-ldap-client</artifactId>
-	<name>ct - gina - ldap - client - ${project.version}</name>
+	<name>ct-gina-ldap-client - ${project.version}</name>
 	<version>1.0.1-SNAPSHOT</version>
-	
-	
-	<url>https://prod.etat-ge.ch/wikiadm/x/ZQADEg</url>
+
+	<url>https://prod.etat-ge.ch/wikiadm/x/ZABdPg</url>
 
 	<properties>
-	    <jboss.version>5.1.2</jboss.version>
-		<!-- <maven.scm.src.excludes>
-			.project,.classpath,target-eclipse,bin,pom.xml.releaseBackup,release.properties,.settings,org.eclipse.jdt.core.prefs,org.maven.ide.eclipse.prefs,org.eclipse.wst.common.component,org.eclipse.wst.common.project.facet.core.xml,org.eclipse.core.resources.prefs,org.eclipse.m2e.core.prefs,nnnn.prefs
-	</maven.scm.src.excludes> -->
+		<jboss.version>5.1.2</jboss.version>
 	</properties>
-	
+
+	<ciManagement>
+		<system>jenkins</system>
+		<url>http://ic.etat-ge.ch:20200/jenkins/job/ct-gina-ldap-client/</url>
+	</ciManagement>
+
+	<issueManagement>
+		<system>jira</system>
+		<url>https://prod.etat-ge.ch/csbugtrack/projects/GINALDAPCLIENT</url>
+	</issueManagement>
+
 	<distributionManagement>
 		<site>
 			<id>projects_Website</id>
@@ -30,15 +37,9 @@
 	</distributionManagement>
 
 	<scm>
-		<connection>
-			scm:svn:http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/trunk/
-		</connection>
-		<developerConnection>
-			scm:svn:http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/trunk/
-		</developerConnection>
-		<url>
-			http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/trunk/
-		</url>
+		<connection>scm:svn:http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/trunk/</connection>
+		<developerConnection>scm:svn:http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/trunk/</developerConnection>
+		<url>http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/trunk/</url>
 	</scm>
 
 	<dependencies>
@@ -46,31 +47,31 @@
 			<groupId>ch.ge.cti.ct.act</groupId>
 			<artifactId>ct_configuration</artifactId>
 			<version>1.0.1</version>
-<!-- 			<exclusions> -->
-<!-- 				<exclusion> -->
-<!-- 					<groupId>commons-lang</groupId> -->
-<!-- 					<artifactId>commons-lang</artifactId> -->
-<!-- 				</exclusion> -->
-<!-- 			</exclusions> -->
- 		</dependency>
+			<!-- <exclusions> -->
+			<!-- <exclusion> -->
+			<!-- <groupId>commons-lang</groupId> -->
+			<!-- <artifactId>commons-lang</artifactId> -->
+			<!-- </exclusion> -->
+			<!-- </exclusions> -->
+		</dependency>
 		<dependency>
-	        <groupId>org.slf4j</groupId>
-	        <artifactId>slf4j-log4j12</artifactId>
-	        <version>1.6.0</version>
-	    </dependency>
-	    <dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<scope>provided</scope>
-		</dependency>	
+		</dependency>
 		<dependency>
-  			<groupId>dom4j</groupId>
- 			<artifactId>dom4j</artifactId>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>		
-</dependencies>
+		</dependency>
+	</dependencies>
 
 </project>
