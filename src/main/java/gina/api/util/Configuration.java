@@ -1,12 +1,7 @@
 package gina.api.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -15,54 +10,50 @@ import javax.naming.directory.InitialDirContext;
 
 import org.apache.log4j.Logger;
 
-import ch.ge.cti.ct.act.configuration.DistributionFactory;
-
 public class Configuration {
 
+    // Logger
     private static final Logger LOG = Logger.getLogger(Configuration.class);
 
-    static final String Domain = "domain";
-    static final String Application = "application";
+    // Type d'accès au LDAP
+    public static final String DOMAIN = "domain";
+    public static final String APPLICATION = "application";
 
-    // LDAP
-    private static String LDAP_CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
-    private static String LDAP_AUTHENTICATION_MODE = "simple";
-    private static String LDAP_REFERRAL_MODE = "follow";
+    // Nom du fichier de configuration du LDAP
+    public static final String CONFIGURATION_FILE = "ct-gina-ldap-client.properties";
+
+    // Configuration du LDAP
+    private static final String LDAP_CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
+    private static final String LDAP_AUTHENTICATION_MODE = "simple";
+    private static final String LDAP_REFERRAL_MODE = "follow";
     private String LDAP_SERVER_URL = null;
     private String LDAP_BASE_DN = null;
     private String LDAP_USER = null;
     private String LDAP_PASSWORD = null;
+
     //
     private DirContext ctxtDir = null;
 
-    private static final Properties PROPS = loadProps();
 
     public void init(String type) {
 	LOG.info("Start");
 
 	try {
-	    DistributionFactory.setDisableJNDI(true);
-	    if (type.equalsIgnoreCase(Domain)) {
-		LDAP_SERVER_URL = DistributionFactory.getConfiguration()
-			.getString("ct-gina-ldap-client.LDAP_SERVER_URL_DOMAIN");
-		LDAP_BASE_DN = createPropertie( DistributionFactory.getConfiguration()
-			.getList("ct-gina-ldap-client.LDAP_BASE_DN_DOMAIN"));
-		LDAP_USER = createPropertie( DistributionFactory.getConfiguration().getList("ct-gina-ldap-client.LDAP_USER_DOMAIN"));
-		LDAP_PASSWORD = DistributionFactory.getConfiguration()
-			.getString("ct-gina-ldap-client.LDAP_PASSWORD_DOMAIN");
-		LOG.info("LDAP_SERVER_URL = " + LDAP_SERVER_URL);
-
-	    } else if (type.equalsIgnoreCase(Application)) {
-		LDAP_SERVER_URL = DistributionFactory.getConfiguration()
-			.getString("ct-gina-ldap-client.LDAP_SERVER_URL");
-		LDAP_BASE_DN = createPropertie(
-			DistributionFactory.getConfiguration().getList("ct-gina-ldap-client.LDAP_BASE_DN"));
-		LDAP_USER = createPropertie(
-			DistributionFactory.getConfiguration().getList("ct-gina-ldap-client.LDAP_USER"));
-		LDAP_PASSWORD = DistributionFactory.getConfiguration().getString("ct-gina-ldap-client.LDAP_PASSWORD");
-		LOG.info("LDAP_SERVER_URL = " + LDAP_SERVER_URL);
-
+	    ch.ge.cti.configuration.Configuration.addRelativeToStandardConfFolder(CONFIGURATION_FILE);
+	    ch.ge.cti.configuration.Configuration.addClasspath(CONFIGURATION_FILE);
+	    
+	    if (type.equalsIgnoreCase(DOMAIN)) {
+		LDAP_SERVER_URL = ch.ge.cti.configuration.Configuration.getParameter("ct-gina-ldap-client.LDAP_SERVER_URL_DOMAIN");
+		LDAP_BASE_DN = createPropertie( ch.ge.cti.configuration.Configuration.getList("ct-gina-ldap-client.LDAP_BASE_DN_DOMAIN"));
+		LDAP_USER = createPropertie( ch.ge.cti.configuration.Configuration.getList("ct-gina-ldap-client.LDAP_USER_DOMAIN"));
+		LDAP_PASSWORD = ch.ge.cti.configuration.Configuration.getParameter("ct-gina-ldap-client.LDAP_PASSWORD_DOMAIN");
+	    } else if (type.equalsIgnoreCase(APPLICATION)) {
+		LDAP_SERVER_URL = ch.ge.cti.configuration.Configuration.getParameter("ct-gina-ldap-client.LDAP_SERVER_URL");
+		LDAP_BASE_DN = createPropertie(ch.ge.cti.configuration.Configuration.getList("ct-gina-ldap-client.LDAP_BASE_DN"));
+		LDAP_USER = createPropertie(ch.ge.cti.configuration.Configuration.getList("ct-gina-ldap-client.LDAP_USER"));
+		LDAP_PASSWORD = ch.ge.cti.configuration.Configuration.getParameter("ct-gina-ldap-client.LDAP_PASSWORD");
 	    }
+	    LOG.info("LDAP_SERVER_URL = " + LDAP_SERVER_URL);
 
 	    Hashtable<String, String> env = new Hashtable<String, String>();
 	    env.put(Context.INITIAL_CONTEXT_FACTORY, LDAP_CONTEXT_FACTORY);
@@ -76,7 +67,6 @@ public class Configuration {
 
 	    ctxtDir = new InitialDirContext(env);
 	    LOG.debug("InitialDirContext ok");
-
 	} catch (NamingException e) {
 	    LOG.error("InitialDirContext failed", e);
 	} catch (Exception e) {
@@ -107,53 +97,4 @@ public class Configuration {
 	return builder.toString();
     }
 
-    private static final Properties loadProps() {
-	try {
-	    Properties props = new Properties();
-	    File file = getPropsFile(System.getProperty("distribution.dir"));
-	    ;
-	    if (file == null) {
-		file = getPropsFile(System.getProperty("jonas.base"));
-		if (file == null) {
-		    file = getPropsFile(".");
-
-		    if (file == null) {
-
-			file = getPropsFile("./src/main/resources/");
-
-			if (file == null) {
-			    throw new ExceptionInInitializerError(
-				    "Distribution.properties not found, invalid or incorrectly defined");
-			}
-
-		    }
-		}
-
-	    }
-	    LOG.info("Loading Distribution.properties from location [" + file.getAbsolutePath() + "]");
-	    InputStream in = new FileInputStream(file);
-	    try {
-		props.load(in);
-	    } catch (IOException ioe) {
-		LOG.error("Error while loading properties from file [" + file.getAbsolutePath() + "]", ioe);
-		throw new ExceptionInInitializerError(ioe.getMessage());
-	    } finally {
-		in.close();
-	    }
-	    return props;
-	} catch (IOException e) {
-	    LOG.error("Error while loading properties");
-	    throw new ExceptionInInitializerError(e.getMessage());
-	}
-    }
-
-    private static final File getPropsFile(String location) {
-	if ((location != null) && (location.trim().length() > 0)) {
-	    File file = new File(location, "Distribution.properties");
-	    if ((file != null) && (file.exists()) && (file.isFile())) {
-		return file;
-	    }
-	}
-	return null;
-    }
 }
