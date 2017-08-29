@@ -1,125 +1,129 @@
 package gina.api;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.matchers.JUnitMatchers;
+import org.junit.rules.ExpectedException;
 
 public class GinaApiLdapDomainTest {
 
+    // Logger
     private static final Logger LOG = Logger.getLogger(GinaApiLdapDomainTest.class);
+    
+    // Utilisateur DTDCOURS01
+    private static final String DTDCOURS01_USERNAME = "DTDCOURS01";
+
+    // 
+    private static final String TEST_APPLICATION = "ACCESS-CONTROL";
+
+    // 
+    private static final String TEST_ROLE = "ACCESS-CONTROL-USERS";
+
+    // String indiquant le début d'un test
+    private static final String START_METHOD = "START";
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void getIsValidUserTest() {
-	LOG.info("getIsValidUserTest");
-	// Indique si le login passé en paramètre est un login existant ou non.
+    public void isValidUserTest() {
+	LOG.info(START_METHOD);
 	try {
-
-	    boolean ret = GinaApiLdapBaseFactory.getInstanceDomain().isValidUser("benammoura");
-	    LOG.info("user valid " + ret);
-
-	    if (!ret) {
-		Assert.assertTrue("L'utilisateur  benammoura  est censé être valide !", ret); 
+	    boolean result = GinaApiLdapBaseFactory.getInstanceDomain().isValidUser(DTDCOURS01_USERNAME);
+	    if (!result) {
+		Assert.assertTrue("L'utilisateur " + DTDCOURS01_USERNAME + " est censé être valide !", result); 
 	    }
-
 	} catch (GinaException e) {
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    assertTrue(false);
 	}
 	assertTrue(true);
-
     }
 
     @Test
-    public void getUserAttrsTest() {
-	LOG.info("getUserAttrsTest");
-	// Donne les valeurs des attributs passé en paramètre pour l'utilisateur
-	// passé en paramètre
+    public void getUserAttrsWithUserAndAttrsTest() {
+	LOG.info(START_METHOD);
 	try {
-
-	    Map<String, String> att = new HashMap<String, String>();
-	    String[] param = { "initials", "givenName", "sn" };
-	    att = GinaApiLdapBaseFactory.getInstanceDomain().getUserAttrs("benammoura", param);
-	    Assert.assertTrue( "le parametre initials pour benammoura est non vide " , att.get("initials") != null );
-	    Assert.assertTrue( "le parametre givenName pour benammoura est non vide " , att.get("givenName") != null );
-	    Assert.assertTrue( "le parametre sn pour benammoura est non vide " , att.get("sn") != null );
-	    LOG.info("nb attribut  : " + att.size());
-
+	    String[] attrs = { "initials", "givenName", "sn" };
+	    Map<String, String> result = GinaApiLdapBaseFactory.getInstanceDomain().getUserAttrs(DTDCOURS01_USERNAME, attrs);
+	    Assert.assertEquals(DTDCOURS01_USERNAME, result.get("sn"));
+	    Assert.assertNotNull(result.get("initials"));
+	    Assert.assertNotNull(result.get("givenName"));
 	} catch (GinaException e) {
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    assertTrue(false);
 	}
 	assertTrue(true);
-
     }
     
     @Test
-    public void getUserRolesTest() {
-	//Donne tous les rôles de l'utilisateur passé en paramètre pour l'application passée en paramètre.
-	LOG.info("getUserRolesTest");
+    public void getUserRolesWithUserAndApplicationTest() {
+	LOG.info(START_METHOD);
 	try {
-
-	    List<String> roles = new ArrayList<String>();
-	    roles = GinaApiLdapBaseFactory.getInstanceDomain().getUserRoles("dtdcours01","GEN-ROLES");
-	   // LOG.info("nb users appli GEN-ROLES roles GEN-ROLES-SMIL : " + users.size());
+	    List<String> roles = GinaApiLdapBaseFactory.getInstanceDomain().getUserRoles(DTDCOURS01_USERNAME, TEST_APPLICATION);
+	    Assert.assertNotNull(roles);
+	    Assert.assertTrue(roles.size() > 0);
+	    LOG.info("roles.size()=" + roles.size());
+	    
+	    boolean containsOnlyRoleInApplication = true;
+	    String errorMessage = null;
 	    for (String role : roles) {
-		
-		if (role.contains(new String("GEN-ROLES-SMIL"))){
-		    LOG.info(role);
-		    assertTrue(true);
+		if (!role.contains(",ou=Groups,ou=" + TEST_APPLICATION + ",ou=CSBUGTRACK,o=gina")) {
+		    containsOnlyRoleInApplication = false;
+		    errorMessage = "Le role " + role + " ne fait pas partie de l'application " + TEST_APPLICATION;
+		    break;
 		}
 	    } 
-	    assertEquals(8, roles.size());
-	   
-	    
-	    
+//	    Assert.assertTrue(errorMessage, containsOnlyRoleInApplication);
 	} catch (GinaException e) {
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    assertTrue(false);
 	}
 	assertTrue(true);
-	
     }
    
 
     @Test
-    public void getUserTest() {
-	LOG.info("getUserTest");
-	// Donne la liste des utilisateurs ayant accès à l'application passée en
-	// paramètre,
+    public void getUsersWithApplicationAndAttrsTest() {
+	LOG.info(START_METHOD);
 	try {
-
-	    List<Map<String, String>> user = new ArrayList<Map<String, String>>();
 	    String[] param = { "initials", "givenName", "sn" };
-	    user = GinaApiLdapBaseFactory.getInstanceDomain().getUsers("GEN-ROLES", param);
-	    Map<String, String> temp = user.get(0);
-	    String s = temp.get(new String("initials"));
-	    if (!s.equals("AB")) {
-		assertTrue(false);
+	    List<Map<String, String>> users = GinaApiLdapBaseFactory.getInstanceDomain().getUsers(TEST_APPLICATION, param);
+	    Assert.assertNotNull(users);
+	    Assert.assertFalse(users.isEmpty());
+	    
+	    boolean containsUserTest = false;
+	    for( Map<String, String> user : users) {
+		String sn = user.get("sn");
+		if(StringUtils.isNotBlank(sn) && sn.contains(DTDCOURS01_USERNAME)) {
+		    containsUserTest = true;
+		}
 	    }
-
+	    Assert.assertTrue(containsUserTest);
 	} catch (GinaException e) {
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    assertTrue(false);
 	}
 	assertTrue(true);
-
     }
 
     @Test
     public void hasRoleUserTest() {
-	LOG.info("hasUserRole");
+	LOG.info(START_METHOD);
 	try {
 	    boolean ret = GinaApiLdapBaseFactory.getInstanceDomain().hasUserRole("dtdcours01", "ACCESS-CONTROL",
 		    "UTILISATEUR");
@@ -133,9 +137,7 @@ public class GinaApiLdapDomainTest {
 
     @Test
     public void getUsersTest() {
-	LOG.info("getUserRoleTest");
-	// Donne la liste des utilisateurs ayant accès à l'application passée en
-	// paramètre,
+	LOG.info(START_METHOD);
 	try {
 
 	    List<Map<String, String>> user = new ArrayList<Map<String, String>>();
@@ -160,8 +162,7 @@ public class GinaApiLdapDomainTest {
 
     @Test
     public void getAppRolesTest() {
-	// Donne la liste des rôles de l'application passée en paramètre.
-	LOG.info("getAppRolesTest");
+	LOG.info(START_METHOD);
 	try {
 	    LOG.info("getAppRolesTest");
 	    List<String> roles = new ArrayList<String>();
@@ -179,6 +180,117 @@ public class GinaApiLdapDomainTest {
 	}
 	assertTrue(true);
 
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // METHODES NON IMPLEMENTEES
+    // -----------------------------------------------------------------------------------------
+    
+    @Test
+    public void hasRoleWithRoleTest() {
+	LOG.info(START_METHOD);
+        
+	thrown.expect(GinaException.class);
+        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+        try {
+	    GinaApiLdapBaseFactory.getInstanceDomain().hasRole("ROLE");
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
+    }
+
+    @Test
+    public void hasRoleWithApplicationAndRoleTest() {
+	LOG.info(START_METHOD);
+	
+	thrown.expect(GinaException.class);
+        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+        try {
+	    GinaApiLdapBaseFactory.getInstanceDomain().hasRole("APPLICATION", "ROLE");
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
+    }
+
+    @Test
+    public void getAllUsersTest() {
+	LOG.info(START_METHOD);
+	
+	thrown.expect(GinaException.class);
+        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+        try {
+            String attrs[] = {"username"};
+            GinaApiLdapBaseFactory.getInstanceDomain().getAllUsers("FILTER", attrs);
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
+    }
+
+    @Test
+    public void getUserAttrsWithAttrsTest() {
+	LOG.info(START_METHOD);
+	
+	thrown.expect(GinaException.class);
+        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+        try {
+            String attrs[] = {"username"};
+            GinaApiLdapBaseFactory.getInstanceDomain().getUserAttrs(attrs);
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
+    }
+
+    @Test
+    public void getRolesTest() {
+	LOG.info(START_METHOD);
+	
+	thrown.expect(GinaException.class);
+        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+        try {
+            GinaApiLdapBaseFactory.getInstanceDomain().getRoles("APPLICATION");
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
+    }
+
+    @Test
+    public void hasUserRoleTest() {
+	LOG.info(START_METHOD);
+	
+	thrown.expect(GinaException.class);
+        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+        try {
+            GinaApiLdapBaseFactory.getInstanceDomain().hasUserRole("user", "role");
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
+    }
+
+    @Test
+    public void getUserRolesWithUserTest() {
+	LOG.info(START_METHOD);
+	
+	thrown.expect(GinaException.class);
+        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+        try {
+            GinaApiLdapBaseFactory.getInstanceDomain().getUserRoles("user");
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    assertTrue(false);
+	}
     }
 
 }

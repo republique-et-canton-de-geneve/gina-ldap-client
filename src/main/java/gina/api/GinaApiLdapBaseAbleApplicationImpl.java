@@ -1,6 +1,5 @@
 package gina.api;
 
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,29 +19,22 @@ import javax.naming.directory.SearchResult;
 
 import org.apache.log4j.Logger;
 
-import ch.ge.cti.ct.act.configuration.DistributionFactory;
 import gina.api.util.Configuration;
 
-public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, GinaApiLdapConfig {
+public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommon {
 
-    private DirContext ctxtDir = null;
-
+    // Logger
     private static Logger logger = Logger.getLogger(GinaApiLdapBaseAbleApplicationImpl.class);
 
-    int maxTimeLimit;
+    private DirContext ctxtDir = null;
 
     private void init() throws GinaException {
 	if (ctxtDir == null) {
 	    logger.info("init()");
-	    DistributionFactory.setDisableJNDI(true);
-	    try {
-		maxTimeLimit = DistributionFactory.getConfiguration().getInt("timeout-search-ldap");
-	    } catch (IOException e) {
-		logger.warn("Impossible de setter maxTimeLimit dafult(3000)");
-		maxTimeLimit = 3000;
-	    }
+
 	    Configuration conf = new Configuration();
-	    conf.init("application");
+	    conf.init(Configuration.APPLICATION);
+
 	    ctxtDir = conf.getCtxtDir();
 	    if (ctxtDir == null) {
 		throw new GinaException("initialisation impossible");
@@ -60,9 +52,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	// new version
 	init();
 	try {
-	    SearchControls searchControls = new SearchControls();
-	    searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-	    searchControls.setTimeLimit(maxTimeLimit);
+	    SearchControls searchControls = getSearchControls();
 	    Attributes matchAttrs = new BasicAttributes(true);
 	    matchAttrs.put(new BasicAttribute("cn", user));
 	    String searchFilter = "(&(objectClass=user)(cn=" + user + "))";
@@ -101,13 +91,6 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 
     }
 
-    @Override
-    public List<Map<String, String>> getAllUsers(String paramString, String[] paramArrayOfString)
-	    throws GinaException, RemoteException {
-
-	throw new GinaException("Not implemented");
-    }
-
     /*
      * (non-Javadoc) Donne les valeurs des attributs passé en paramètre pour
      * l'utilisateur passé en paramètre
@@ -124,9 +107,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 
 	init();
 	try {
-	    SearchControls searchControls = new SearchControls();
-	    searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-	    searchControls.setTimeLimit(maxTimeLimit);
+	    SearchControls searchControls = getSearchControls();
 	    String searchFilter = "(&(objectClass=user)(cn=" + user + "))";
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
@@ -205,17 +186,6 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 
     }
 
-    @Override
-    @Deprecated
-    public String getLanguage() throws GinaException, RemoteException {
-	throw new GinaException("Not implemented");
-    }
-
-    @Override
-    @Deprecated
-    public String getEnvironment() throws GinaException, RemoteException {
-	throw new GinaException("Not implemented");
-    }
 
     /*
      * (non-Javadoc) Retourne vrai si l'utilisateur courant à le role donné pour
@@ -231,10 +201,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 
 	String user = System.getProperty("user.name");
 	try {
-	    SearchControls searchControls = new SearchControls();
-	    searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-	    searchControls.setTimeLimit(maxTimeLimit);
-
+	    SearchControls searchControls = getSearchControls();
 	    String searchFilter = "(&(objectClass=groups)(cn=" + role + ")(cn=" + user + "))";
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
@@ -262,13 +229,9 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
     public boolean hasUserRole(String user, String role) throws GinaException, RemoteException {
 	// new version
 	init();
-	List<String> users = new ArrayList<String>();
 
 	try {
-	    SearchControls searchControls = new SearchControls();
-	    searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-	    searchControls.setTimeLimit(maxTimeLimit);
-
+	    SearchControls searchControls = getSearchControls();
 	    String searchFilter = "(&(objectClass=users)(cn=" + user + ")&(objectClass=memberOf)(cn=" + role + "))";
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
@@ -296,13 +259,11 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	init();
 	List<String> roles = new ArrayList<String>();
 	String user = System.getProperty("user.name");
+	logger.info("user: " + user);
 	String role = "";
 	try {
 
-	    SearchControls searchControls = new SearchControls();
-	    searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-	    searchControls.setTimeLimit(maxTimeLimit);
-
+	    SearchControls searchControls = getSearchControls();
 	    String searchFilter = "(&(objectClass=users)(cn=" + user + "))";
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
@@ -339,9 +300,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	String role = "";
 	try {
 
-	    SearchControls searchControls = new SearchControls();
-	    searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-	    searchControls.setTimeLimit(maxTimeLimit);
+	    SearchControls searchControls = getSearchControls();
 	    String searchFilter = "(&(objectClass=users)(cn=" + user + "))";
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
@@ -366,20 +325,6 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	return roles;
     }
 
-    @Override
-    public List<String> getIntegrationUserRoles(String paramString1, String paramString2)
-	    throws GinaException, RemoteException {
-
-	throw new GinaException("Not implemented");
-    }
-
-    @Override
-    public List<String> getIntegrationUserAttributes(String paramString1, String paramString2)
-	    throws GinaException, RemoteException {
-
-	throw new GinaException("Not implemented");
-    }
-
     /*
      * (non-Javadoc) Retoune les roles d'une application
      * 
@@ -393,9 +338,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	List<String> roles = new ArrayList<String>();
 
 	try {
-	    SearchControls searchControls = new SearchControls();
-	    searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-	    searchControls.setTimeLimit(maxTimeLimit);
+	    SearchControls searchControls = getSearchControls();
 
 	    String searchFilter = "cn=*";
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=Groups,ou=" + appli + "", "(&(cn=*))", searchControls);
@@ -421,12 +364,6 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	return roles;
     }
 
-    @Override
-    public List<String> getBusinessRoles(String paramString) throws GinaException, RemoteException {
-
-	return null;
-    }
-
     /*
      * (non-Javadoc) Donne la liste des utilisateurs ayant accès à l'application
      * passée en paramètre, avec les attributs demandés
@@ -442,9 +379,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 	try {
 
-	    SearchControls searchControls = new SearchControls();
-	    searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-	    searchControls.setTimeLimit(maxTimeLimit);
+	    SearchControls searchControls = getSearchControls();
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + appli, "(&(cn=*))", searchControls);
 
 	    if (answer != null) {
@@ -497,10 +432,7 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
 	List<String> users = new ArrayList<String>();
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 	try {
-
-	    SearchControls searchControls = new SearchControls();
-	    searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-	    searchControls.setTimeLimit(maxTimeLimit);
+	    SearchControls searchControls = getSearchControls();
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + appli, "(&(cn=" + role + "))", searchControls);
 
 	    if (answer != null) {
@@ -541,77 +473,30 @@ public class GinaApiLdapBaseAbleApplicationImpl implements GinaApiLdapBaseAble, 
     }
 
     @Override
-    public List<Map<String, String>> getUsersByPhone(String paramString, Boolean paramBoolean,
-	    String[] paramArrayOfString) throws GinaException, RemoteException {
-	throw new GinaException("Not implemented");
+    public boolean hasRole(String application, String role) throws GinaException, RemoteException {
+	throw new GinaException(NOT_IMPLEMENTED);
     }
 
     @Override
-    public List<Map<String, String>> getUsersBySIRHNumber(String paramString, Boolean paramBoolean,
-	    String[] paramArrayOfString) throws GinaException, RemoteException {
-	throw new GinaException("Not implemented");
-    }
-
-    @Override
-    public List<Map<String, String>> getUsersByName(String paramString, Boolean paramBoolean,
-	    String[] paramArrayOfString) throws GinaException, RemoteException {
-	throw new GinaException("Not implemented");
-    }
-
-    @Override
-    public List<String> getInheritingRoles(String paramString1, String paramString2) {
-	throw new GinaException("Not implemented");
-    }
-
-    @Override
-    public List<String> getPMProprieteMetier(String paramString) {
-	throw new GinaException("Not implemented");
-    }
-
-    @Override
-    public String getOwnIDUniqueForPPorPseudo() {
-	throw new GinaException("Not implemented");
-    }
-
-    @Override
-    public List<String> getOwnPMProprieteMetier(String paramString) {
-	throw new GinaException("Not implemented");
-    }
-
-    @Override
-    public List<String> getPPProprieteMetier(String paramString) {
-	throw new GinaException("Not implemented");
-    }
-
-    @Override
-    public List<String> getOwnPPProprieteMetier(String paramString) {
-	throw new GinaException("Not implemented");
-    }
-
-    @Override
-    public boolean hasRole(String paramString1, String paramString2) throws GinaException, RemoteException {
-	throw new GinaException("Not implemented");
-    }
-
-    @Override
-    public boolean hasUserRole(String paramString1, String paramString2, String paramString3)
+    public boolean hasUserRole(String user, String application, String role)
 	    throws GinaException, RemoteException {
-	throw new GinaException("Not implemented");
+	throw new GinaException(NOT_IMPLEMENTED);
     }
 
     @Override
-    public List<String> getRoles(String paramString) throws GinaException, RemoteException {
-	throw new GinaException("Not implemented");
+    public List<String> getRoles(String application) throws GinaException, RemoteException {
+	throw new GinaException(NOT_IMPLEMENTED);
     }
 
     @Override
-    public List<String> getUserRoles(String paramString1, String paramString2) throws GinaException, RemoteException {
-	throw new GinaException("Not implemented");
+    public List<String> getUserRoles(String user, String application) throws GinaException, RemoteException {
+	throw new GinaException(NOT_IMPLEMENTED);
     }
 
     @Override
-    public List<String> getAppRoles() throws GinaException, RemoteException {
-	throw new GinaException("Not implemented");
+    public List<Map<String, String>> getAllUsers(String filter, String attrs[])
+	    throws GinaException, RemoteException {
+	throw new GinaException(NOT_IMPLEMENTED);
     }
 
     @Override

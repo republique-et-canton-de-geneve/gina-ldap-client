@@ -21,7 +21,6 @@ public class GinaApiLdapApplicationTest {
 	try {
 	    List<String> ret = GinaApiLdapBaseFactory.getInstanceApplication().getUserRoles("DRIVONOL");
 	    assertSame(13, ret.size());
-
 	} catch (GinaException e) {
 	    assertTrue(false);
 	} catch (RemoteException e) {
