@@ -15,6 +15,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import gina.api.util.Configuration;
@@ -172,36 +173,50 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
      * java.lang.String)
      */
     @Override
-    public List<String> getUserRoles(String user, String appli) throws GinaException, RemoteException {
+    public List<String> getUserRoles(String user, String application) throws GinaException, RemoteException {
 
 	init();
 	List<String> roles = new ArrayList<String>();
-	String role = "";
 	try {
+	    if (StringUtils.isNotBlank(application) && application.contains(".")) {
+		final String[] splitApplication = StringUtils.split(application, ".", 2);
+		String ginaDomain = splitApplication[0];
+		String ginaApplication = splitApplication[1];
+		logger.debug("ginaDomain=" + ginaDomain);
+		logger.debug("ginaApplication=" + ginaApplication);
 
-	    SearchControls searchControls = getSearchControls();
-	    NamingEnumeration<?> answer = ctxtDir.search("ou=Users", "(&(cn=" + user + "))", searchControls);
+		SearchControls searchControls = getSearchControls();
+		NamingEnumeration<?> answer = ctxtDir.search("ou=Users", "(&(cn=" + user + "))", searchControls);
 
-	    if (answer != null) {
-		while (answer.hasMoreElements()) {
-		    SearchResult sr = (SearchResult) answer.next();
-
-		    Attributes attrs = sr.getAttributes();
-		    if (sr.getAttributes().get("memberOf") != null) {
-
-			NamingEnumeration<?> answerAtt = sr.getAttributes().get("memberOf").getAll();
-			while (answerAtt.hasMoreElements()) {
-			    String att = (String) answerAtt.next();
-			    logger.debug(att);
-			    roles.add(att);
+		if (answer != null) {
+		    while (answer.hasMoreElements()) {
+			SearchResult sr = (SearchResult) answer.next();
+			if (sr != null) {
+			    final Attributes attrs = sr.getAttributes();
+			    logger.debug(attrs);
+			    if (attrs != null && attrs.get("memberOf") != null) {
+				NamingEnumeration<?> answerAtt = sr.getAttributes().get("memberOf").getAll();
+				while (answerAtt.hasMoreElements()) {
+				    String att = (String) answerAtt.next();
+				    logger.debug(att);
+				    String pattern = ",ou=Groups,ou=" + ginaApplication + ",ou=" + ginaDomain
+					    + ",o=gina";
+				    if (StringUtils.isNotBlank(att) && att.contains(pattern)) {
+					String roleClean = StringUtils.replaceOnce(att, "cn=", "");
+					roleClean = StringUtils.replaceOnce(roleClean, pattern, "");
+					roles.add(roleClean);
+				    }
+				}
+			    }
 			}
 		    }
-
 		}
 	    }
 	} catch (NamingException e) {
 	    throw new GinaException(e.getMessage());
 	}
+
+	logger.debug("roles=" + roles);
 
 	return roles;
     }
