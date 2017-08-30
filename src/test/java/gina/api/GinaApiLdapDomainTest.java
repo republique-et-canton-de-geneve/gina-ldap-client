@@ -27,6 +27,9 @@ public class GinaApiLdapDomainTest {
     private static final String TEST_APPLICATION = "ACCESS-CONTROL";
 
     // 
+    private static final String TEST_DOMAIN = "CSBUGTRACK";
+
+    // 
     private static final String TEST_ROLE = "ACCESS-CONTROL-USERS";
 
     // String indiquant le début d'un test
@@ -72,21 +75,10 @@ public class GinaApiLdapDomainTest {
     public void getUserRolesWithUserAndApplicationTest() {
 	LOG.info(START_METHOD);
 	try {
-	    List<String> roles = GinaApiLdapBaseFactory.getInstanceDomain().getUserRoles(DTDCOURS01_USERNAME, TEST_APPLICATION);
+	    List<String> roles = GinaApiLdapBaseFactory.getInstanceDomain().getUserRoles(DTDCOURS01_USERNAME, TEST_DOMAIN + "." + TEST_APPLICATION);
 	    Assert.assertNotNull(roles);
 	    Assert.assertTrue(roles.size() > 0);
 	    LOG.info("roles.size()=" + roles.size());
-	    
-	    boolean containsOnlyRoleInApplication = true;
-	    String errorMessage = null;
-	    for (String role : roles) {
-		if (!role.contains(",ou=Groups,ou=" + TEST_APPLICATION + ",ou=CSBUGTRACK,o=gina")) {
-		    containsOnlyRoleInApplication = false;
-		    errorMessage = "Le role " + role + " ne fait pas partie de l'application " + TEST_APPLICATION;
-		    break;
-		}
-	    } 
-//	    Assert.assertTrue(errorMessage, containsOnlyRoleInApplication);
 	} catch (GinaException e) {
 	    assertTrue(false);
 	} catch (RemoteException e) {
@@ -168,6 +160,7 @@ public class GinaApiLdapDomainTest {
 	    List<String> roles = new ArrayList<String>();
 	    roles = GinaApiLdapBaseFactory.getInstanceDomain().getAppRoles("GEN-ROLES");
 	    LOG.info("nb roles GEN-ROLES : " + roles.size());
+	    LOG.info("roles=" + roles);
 
 	    if (!roles.contains(new String("GEN-ROLES-SMIL"))) {
 		assertTrue(false);
