@@ -45,8 +45,7 @@ public class GinaApiLdapApplicationTest {
         thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
         try {
-            String attrs[] = {"username"};
-            GinaApiLdapBaseFactory.getInstanceApplication().getAllUsers("FILTER", attrs);
+            GinaApiLdapBaseFactory.getInstanceApplication().getAllUsers("FILTER", GinaApiLdapContantsTest.TEST_ATTRS);
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
@@ -415,10 +414,8 @@ public class GinaApiLdapApplicationTest {
 	thrown.expect(GinaException.class);
         thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        String[] attrs = { "initials", "givenName", "sn" };
-
         try {
-            GinaApiLdapBaseFactory.getInstanceApplication().getUsersByPhone("ABC", true, attrs);
+            GinaApiLdapBaseFactory.getInstanceApplication().getUsersByPhone("ABC", true, GinaApiLdapContantsTest.TEST_ATTRS);
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
@@ -433,10 +430,8 @@ public class GinaApiLdapApplicationTest {
 	thrown.expect(GinaException.class);
         thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        String[] attrs = { "initials", "givenName", "sn" };
-
         try {
-            GinaApiLdapBaseFactory.getInstanceApplication().getUsersBySIRHNumber("ABC", true, attrs);
+            GinaApiLdapBaseFactory.getInstanceApplication().getUsersBySIRHNumber("ABC", true, GinaApiLdapContantsTest.TEST_ATTRS);
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
@@ -451,10 +446,8 @@ public class GinaApiLdapApplicationTest {
 	thrown.expect(GinaException.class);
         thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        String[] attrs = { "initials", "givenName", "sn" };
-
         try {
-            GinaApiLdapBaseFactory.getInstanceApplication().getUsersByName("ABC", true, attrs);
+            GinaApiLdapBaseFactory.getInstanceApplication().getUsersByName("ABC", true, GinaApiLdapContantsTest.TEST_ATTRS);
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
