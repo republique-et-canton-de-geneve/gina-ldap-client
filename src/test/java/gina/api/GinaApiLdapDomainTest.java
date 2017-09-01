@@ -81,6 +81,7 @@ public class GinaApiLdapDomainTest {
 	    Assert.assertNotNull(roles);
 	    Assert.assertTrue(roles.size() > 0);
 	    LOG.info("roles.size()=" + roles.size());
+	    Assert.assertTrue(roles.contains(LDAP_DOMAIN_TEST_ROLE));
 	} catch (GinaException e) {
 	    LOG.error(e);
 	    assertTrue(false);
@@ -99,7 +100,8 @@ public class GinaApiLdapDomainTest {
 	    List<Map<String, String>> users = GinaApiLdapBaseFactory.getInstanceDomain().getUsers(LDAP_DOMAIN_TEST_DOMAINE_APPLICATION, GinaApiLdapContantsTest.TEST_ATTRS);
 	    Assert.assertNotNull(users);
 	    Assert.assertFalse(users.isEmpty());
-	    
+	    LOG.info("users=" + users);
+
 	    boolean containsUserTest = false;
 	    for( Map<String, String> user : users) {
 		String sn = user.get("sn");
