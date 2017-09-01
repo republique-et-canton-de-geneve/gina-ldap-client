@@ -356,6 +356,10 @@ public class GinaApiLdapApplicationTest {
 	assertTrue(true);
     }
 
+    // -----------------------------------------------------------------------------------------
+    // METHODES NON IMPLEMENTEES
+    // -----------------------------------------------------------------------------------------
+
     @Test
     public void getIntegrationUserRolesTest() {
 	LOG.info(GinaApiLdapContantsTest.START_METHOD);
