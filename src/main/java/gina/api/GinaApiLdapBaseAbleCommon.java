@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.NamingException;
 import javax.naming.directory.SearchControls;
 
 public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble, GinaApiLdapConfig {
@@ -73,22 +74,22 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble, 
     }
 
     @Override
-    public String getOwnIDUniqueForPPorPseudo() {
+    public String getOwnIDUniqueForPPorPseudo() throws GinaException, RemoteException, NamingException {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
 
     @Override
-    public List<String> getOwnPMProprieteMetier(String paramString) {
+    public List<String> getOwnPMProprieteMetier(String paramString) throws GinaException, RemoteException {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
 
     @Override
-    public List<String> getPPProprieteMetier(String paramString) {
+    public List<String> getPPProprieteMetier(String paramString) throws GinaException, RemoteException {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
 
     @Override
-    public List<String> getOwnPPProprieteMetier(String paramString) {
+    public List<String> getOwnPPProprieteMetier(String paramString) throws GinaException, RemoteException {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
 

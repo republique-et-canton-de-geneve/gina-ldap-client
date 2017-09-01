@@ -25,6 +25,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     // Logger
     private static Logger logger = Logger.getLogger(GinaApiLdapBaseAbleDomainImpl.class);
 
+    // 
     private DirContext ctxtDir = null;
 
     private void init() throws GinaException {
@@ -56,7 +57,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
-		    logger.info("sr" + sr);
+		    logger.debug("sr=" + sr);
 		    String name = sr.getName().replace("cn=", ""); 
 		    if (user.equalsIgnoreCase(name)) {
 			return true;
@@ -68,7 +69,6 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	}
 
 	return false;
-
     }
 
     /*
@@ -96,23 +96,22 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 		    SearchResult sr = (SearchResult) answer.next();
 
 		    Attributes attrs = sr.getAttributes();
-		    logger.debug("sr : " + sr);
+		    logger.debug("sr=" + sr);
 		    if (attrs != null) {
 			for (int i = 0; i < paramArrayOfString.length; i++) {
-
 			    Attribute attribute = sr.getAttributes().get(paramArrayOfString[i]);
-			    if(attribute != null) {
-			    NamingEnumeration<?> nameEnum = attribute.getAll();
-			    String value = "";
-			    while (nameEnum.hasMoreElements()) {
-				if (value.isEmpty()) {
-				    value = (String) nameEnum.next();
-				} else {
-				    value = value + ":" + (String) nameEnum.next();
+			    if (attribute != null) {
+				NamingEnumeration<?> nameEnum = attribute.getAll();
+				String value = "";
+				while (nameEnum.hasMoreElements()) {
+				    if (value.isEmpty()) {
+					value = (String) nameEnum.next();
+				    } else {
+					value = value + ":" + (String) nameEnum.next();
+				    }
 				}
-			    }
-			    logger.debug("value: " + value);
-			    myMap.put(paramArrayOfString[i], value);
+				logger.debug("value=" + value);
+				myMap.put(paramArrayOfString[i], value);
 			    }
 			}
 		    }
@@ -123,7 +122,6 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	}
 
 	return myMap;
-
     }
 
     /*
@@ -134,26 +132,28 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
      * java.lang.String, java.lang.String)
      */
     @Override
-    public boolean hasUserRole(String user, String appli, String role) throws GinaException, RemoteException {
-
+    public boolean hasUserRole(String user, String application, String role) throws GinaException, RemoteException {
 	init();
-	List<String> users = new ArrayList<String>();
 
 	try {
+	    String ginaApplication = extractApplication(application);
+
 	    SearchControls searchControls = getSearchControls();
-	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + appli, "(&(cn=" + role + "))", searchControls);
+	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=" + role + "))", searchControls);
 
 	    while (answer.hasMoreElements()) {
 		SearchResult sr = (SearchResult) answer.next();
+		if (sr != null) {
+		    logger.debug("sr=" + sr);
+		    Attributes attrs = sr.getAttributes();
+		    if (attrs != null && attrs.get("member") != null) {
 
-		Attributes attrs = sr.getAttributes();
-		if (sr.getAttributes().get("member") != null) {
-
-		    NamingEnumeration<?> answerAtt = sr.getAttributes().get("member").getAll();
-		    while (answerAtt.hasMoreElements()) {
-			String att = (String) answerAtt.next();
-			if (att.toUpperCase().contains(user.toUpperCase())) {
-			    return true;
+			NamingEnumeration<?> answerAtt = sr.getAttributes().get("member").getAll();
+			while (answerAtt.hasMoreElements()) {
+			    String att = (String) answerAtt.next();
+			    if (att.toUpperCase().contains(user.toUpperCase())) {
+				return true;
+			    }
 			}
 		    }
 		}
@@ -174,38 +174,31 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
      */
     @Override
     public List<String> getUserRoles(String user, String application) throws GinaException, RemoteException {
-
 	init();
 	List<String> roles = new ArrayList<String>();
 	try {
-	    if (StringUtils.isNotBlank(application) && application.contains(".")) {
-		final String[] splitApplication = StringUtils.split(application, ".", 2);
-		String ginaDomain = splitApplication[0];
-		String ginaApplication = splitApplication[1];
-		logger.debug("ginaDomain=" + ginaDomain);
-		logger.debug("ginaApplication=" + ginaApplication);
+	    String ginaDomain = extractDomain(application);
+	    String ginaApplication = extractApplication(application);
 
-		SearchControls searchControls = getSearchControls();
-		NamingEnumeration<?> answer = ctxtDir.search("ou=Users", "(&(cn=" + user + "))", searchControls);
+	    SearchControls searchControls = getSearchControls();
+	    NamingEnumeration<?> answer = ctxtDir.search("ou=Users", "(&(cn=" + user + "))", searchControls);
 
-		if (answer != null) {
-		    while (answer.hasMoreElements()) {
-			SearchResult sr = (SearchResult) answer.next();
-			if (sr != null) {
-			    final Attributes attrs = sr.getAttributes();
-			    logger.debug(attrs);
-			    if (attrs != null && attrs.get("memberOf") != null) {
-				NamingEnumeration<?> answerAtt = sr.getAttributes().get("memberOf").getAll();
-				while (answerAtt.hasMoreElements()) {
-				    String att = (String) answerAtt.next();
-				    logger.debug(att);
-				    String pattern = ",ou=Groups,ou=" + ginaApplication + ",ou=" + ginaDomain
-					    + ",o=gina";
-				    if (StringUtils.isNotBlank(att) && att.contains(pattern)) {
-					String roleClean = StringUtils.replaceOnce(att, "cn=", "");
-					roleClean = StringUtils.replaceOnce(roleClean, pattern, "");
-					roles.add(roleClean);
-				    }
+	    if (answer != null) {
+		while (answer.hasMoreElements()) {
+		    SearchResult sr = (SearchResult) answer.next();
+		    if (sr != null) {
+			final Attributes attrs = sr.getAttributes();
+			logger.debug(attrs);
+			if (attrs != null && attrs.get("memberOf") != null) {
+			    NamingEnumeration<?> answerAtt = sr.getAttributes().get("memberOf").getAll();
+			    while (answerAtt.hasMoreElements()) {
+				String att = (String) answerAtt.next();
+				logger.debug(att);
+				String pattern = ",ou=Groups,ou=" + ginaApplication + ",ou=" + ginaDomain + ",o=gina";
+				if (StringUtils.isNotBlank(att) && att.contains(pattern)) {
+				    String roleClean = StringUtils.replaceOnce(att, "cn=", "");
+				    roleClean = StringUtils.replaceOnce(roleClean, pattern, "");
+				    roles.add(roleClean);
 				}
 			    }
 			}
@@ -227,14 +220,15 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
      * @see gina.api.GinaApiLdapBaseAble#getAppRoles(java.lang.String)
      */
     @Override
-    public List<String> getAppRoles(String appli) throws GinaException, RemoteException {
+    public List<String> getAppRoles(String application) throws GinaException, RemoteException {
 
 	init();
 	List<String> roles = new ArrayList<String>();
 	try {
+	    String ginaApplication = extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls();
-	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + appli, "(&(cn=*))", searchControls);
+	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=*))", searchControls);
 
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
@@ -242,6 +236,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 		    NamingEnumeration<?> att = sr.getAttributes().get("cn").getAll();
 		    while (att.hasMoreElements()) {
 			String cn = (String) att.next();
+			logger.debug("cn=" + cn);
 			roles.add(cn);
 		    }
 
@@ -263,14 +258,14 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     @Override
     public List<Map<String, String>> getUsers(String application, String attrs[])
 	    throws GinaException, RemoteException {
-
 	init();
 	List<String> users = new ArrayList<String>();
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 	try {
+	    String ginaApplication = extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls();
-	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + application, "(&(cn=*))", searchControls);
+	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=*))", searchControls);
 
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
@@ -278,7 +273,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 		    logger.info("name : " + sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
 
 		    Attributes attrsResult = sr.getAttributes();
-		    logger.info("sr : " + sr);
+		    logger.debug("sr=" + sr);
 		    if (attrsResult != null) {
 			Attribute attmember = attrsResult.get("member");
 
@@ -287,7 +282,6 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 				String member = (String) attmember.get(j);
 
 				if (member != null) {
-
 				    String username = member.substring(0, member.indexOf(",")).replace("cn=", "")
 					    .toLowerCase();
 				    if (!users.contains(username)) {
@@ -320,22 +314,23 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     @Override
     public List<Map<String, String>> getUsers(String application, String role, String attrs[])
 	    throws GinaException, RemoteException {
-
 	init();
-	List<String> users = new ArrayList<String>();
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 	try {
+	    String ginaApplication = extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls();
-	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + application, "(&(cn=" + role + "))", searchControls);
+	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=" + role + "))",
+		    searchControls);
 
 	    if (answer != null) {
+		List<String> users = new ArrayList<String>();
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
 		    logger.info("name : " + sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
 
 		    Attributes attrsResult = sr.getAttributes();
-		    logger.info("sr : " + sr);
+		    logger.debug("sr=" + sr);
 		    if (attrsResult != null) {
 			Attribute attmember = attrsResult.get("member");
 
@@ -344,7 +339,6 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 				String member = (String) attmember.get(j);
 
 				if (member != null) {
-
 				    String username = member.substring(0, member.indexOf(",")).replace("cn=", "")
 					    .toLowerCase();
 				    if (!users.contains(username)) {
@@ -430,6 +424,10 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
 
+    // -----------------------------------------------------------------------------------------
+    // METHODES UTILITAIRES
+    // -----------------------------------------------------------------------------------------
+
     @Override
     public void setInitTest(DirContext ctxtDir) throws GinaException {
 	if (this.ctxtDir == null) {
@@ -440,4 +438,22 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	}
     }
 
+    private String extractDomain(String domaineapplication) {
+	String result = null;
+	if (StringUtils.isNotBlank(domaineapplication) && domaineapplication.contains(".")) {
+	    final String[] splitApplication = StringUtils.split(domaineapplication, ".", 2);
+	    result = splitApplication[0];
+	}
+	return result;
+    }
+    
+    private String extractApplication(String domaineapplication) {
+	String result = null;
+	if (StringUtils.isNotBlank(domaineapplication) && domaineapplication.contains(".")) {
+	    final String[] splitApplication = StringUtils.split(domaineapplication, ".", 2);
+	    result = splitApplication[1];
+	}
+	return result;
+    }
+    
 }
