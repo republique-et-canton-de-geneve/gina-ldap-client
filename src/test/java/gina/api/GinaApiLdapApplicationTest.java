@@ -328,6 +328,35 @@ public class GinaApiLdapApplicationTest {
     }
 
     @Test
+    public void getUsersTest() {
+	LOG.info(GinaApiLdapContantsTest.START_METHOD);
+	try {
+	    List<Map<String, String>> users = GinaApiLdapBaseFactory.getInstanceApplication().getUsers(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, LDAP_APPLICATION_TEST_ROLE, GinaApiLdapContantsTest.TEST_ATTRS);
+	    Assert.assertNotNull(users);
+	    Assert.assertTrue(users.size() > 0);
+	    LOG.debug("users.size()=" + users.size());
+	    LOG.debug("users=" + users);
+	    
+	    boolean found = false;
+	    for(Map<String, String> user : users) {
+		    String uid = user.get("uid");
+		    if(GinaApiLdapContantsTest.DRIVONOL_USERNAME.equals(uid)) {
+			found = true;
+			break;
+		    }
+	    }
+	    assertTrue("Le user " + GinaApiLdapContantsTest.DRIVONOL_USERNAME + " devrait faire partie de la liste", found);
+	} catch (GinaException e) {
+	    LOG.error(e);
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    LOG.error(e);
+	    assertTrue(false);
+	}
+	assertTrue(true);
+    }
+
+    @Test
     public void getIntegrationUserRolesTest() {
 	LOG.info(GinaApiLdapContantsTest.START_METHOD);
 	
