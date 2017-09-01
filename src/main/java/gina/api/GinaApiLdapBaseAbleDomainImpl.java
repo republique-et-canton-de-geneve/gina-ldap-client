@@ -136,7 +136,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	init();
 
 	try {
-	    String ginaApplication = extractApplication(application);
+	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls();
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=" + role + "))", searchControls);
@@ -177,8 +177,8 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	init();
 	List<String> roles = new ArrayList<String>();
 	try {
-	    String ginaDomain = extractDomain(application);
-	    String ginaApplication = extractApplication(application);
+	    String ginaDomain = GinaApiLdapUtils.extractDomain(application);
+	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls();
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=Users", "(&(cn=" + user + "))", searchControls);
@@ -225,7 +225,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	init();
 	List<String> roles = new ArrayList<String>();
 	try {
-	    String ginaApplication = extractApplication(application);
+	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls();
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=*))", searchControls);
@@ -262,7 +262,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	List<String> users = new ArrayList<String>();
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 	try {
-	    String ginaApplication = extractApplication(application);
+	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls();
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=*))", searchControls);
@@ -317,7 +317,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	init();
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 	try {
-	    String ginaApplication = extractApplication(application);
+	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls();
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=" + role + "))",
@@ -438,22 +438,4 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	}
     }
 
-    private String extractDomain(String domaineapplication) {
-	String result = null;
-	if (StringUtils.isNotBlank(domaineapplication) && domaineapplication.contains(".")) {
-	    final String[] splitApplication = StringUtils.split(domaineapplication, ".", 2);
-	    result = splitApplication[0];
-	}
-	return result;
-    }
-    
-    private String extractApplication(String domaineapplication) {
-	String result = null;
-	if (StringUtils.isNotBlank(domaineapplication) && domaineapplication.contains(".")) {
-	    final String[] splitApplication = StringUtils.split(domaineapplication, ".", 2);
-	    result = splitApplication[1];
-	}
-	return result;
-    }
-    
 }
