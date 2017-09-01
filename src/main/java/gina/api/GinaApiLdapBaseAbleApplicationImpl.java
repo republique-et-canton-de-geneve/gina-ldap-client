@@ -425,15 +425,17 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      * java.lang.String, java.lang.String[])
      */
     @Override
-    public List<Map<String, String>> getUsers(String appli, String role, String[] paramArrayOfString)
+    public List<Map<String, String>> getUsers(String application, String role, String[] paramArrayOfString)
 	    throws GinaException, RemoteException {
-
 	init();
 	List<String> users = new ArrayList<String>();
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 	try {
+	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
+
 	    SearchControls searchControls = getSearchControls();
-	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + appli, "(&(cn=" + role + "))", searchControls);
+	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=" + role + "))",
+		    searchControls);
 
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
@@ -441,16 +443,16 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 		    logger.info("name : " + sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
 
 		    Attributes attrs = sr.getAttributes();
-		    logger.info("sr : " + sr);
+		    logger.debug("sr=" + sr);
 		    if (attrs != null) {
 			Attribute attmember = attrs.get("member");
+			logger.debug("attmember=" + attmember);
 
 			if (attmember != null) {
 			    for (int j = 0; j < attmember.size(); j++) {
 				String member = (String) attmember.get(j);
 
 				if (member != null) {
-
 				    String username = member.substring(0, member.indexOf(",")).replace("cn=", "")
 					    .toLowerCase();
 				    if (!users.contains(username)) {
