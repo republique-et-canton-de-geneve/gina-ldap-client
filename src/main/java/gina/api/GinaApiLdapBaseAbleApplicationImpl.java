@@ -17,6 +17,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import gina.api.util.Configuration;
@@ -114,21 +115,26 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    while (answer.hasMoreElements()) {
 		SearchResult sr = (SearchResult) answer.next();
 		Attributes attrs = sr.getAttributes();
-		for (int i = 0; i < paramArrayOfString.length; i++) {
-		    NamingEnumeration<?> nameEnum = sr.getAttributes().get(paramArrayOfString[i]).getAll();
-		    String value = "";
-		    while (nameEnum.hasMoreElements()) {
-			if (value.isEmpty()) {
-			    value = (String) nameEnum.next();
-			} else {
-			    value = value + ":" + (String) nameEnum.next();
+		if (attrs != null) {
+		    for (int i = 0; i < paramArrayOfString.length; i++) {
+			String attr = paramArrayOfString[i];
+			logger.debug("attr=" + attr);
+			Attribute attribute = attrs.get(attr);
+			if (attribute != null) {
+			    NamingEnumeration<?> nameEnum = attribute.getAll();
+			    String value = "";
+			    while (nameEnum.hasMoreElements()) {
+				if (value.isEmpty()) {
+				    value = (String) nameEnum.next();
+				} else {
+				    value = value + ":" + (String) nameEnum.next();
+				}
+			    }
+				logger.info("value: " + value);
+				myMap.put(paramArrayOfString[i], value);
 			}
 		    }
-		    logger.info("value: " + value);
-		    myMap.put(paramArrayOfString[i], value);
-
 		}
-
 	    }
 
 	} catch (NamingException e) {
@@ -136,7 +142,6 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	}
 
 	return myMap;
-
     }
 
     /*
@@ -255,29 +260,27 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      */
     @Override
     public List<String> getRoles() throws GinaException, RemoteException {
-	// new version
 	init();
 	List<String> roles = new ArrayList<String>();
 	String user = System.getProperty("user.name");
-	logger.info("user: " + user);
-	String role = "";
+	logger.info("user=" + user);
 	try {
-
 	    SearchControls searchControls = getSearchControls();
 	    String searchFilter = "(&(objectClass=users)(cn=" + user + "))";
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    while (answer.hasMoreElements()) {
 		SearchResult sr = (SearchResult) answer.next();
-		Attributes a = sr.getAttributes();
-		NamingEnumeration<?> nameEnum = sr.getAttributes().get("memberOf").getAll();
-		String value = "";
-		while (nameEnum.hasMoreElements()) {
-		    role = (String) nameEnum.next();
-		    roles.add(role);
-
+		Attributes attributes = sr.getAttributes();
+		if (attributes != null) {
+		    NamingEnumeration<?> nameEnum = attributes.get("memberOf").getAll();
+		    String value = "";
+		    while (nameEnum.hasMoreElements()) {
+			String role = (String) nameEnum.next();
+			roles.add(role);
+		    }
+		    logger.info("value=" + value);
 		}
-		logger.info("value: " + value);
 	    }
 	} catch (NamingException e) {
 	    throw new GinaException(e.getMessage());
@@ -294,10 +297,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      */
     @Override
     public List<String> getUserRoles(String user) throws GinaException, RemoteException {
-	// new version
 	init();
 	List<String> roles = new ArrayList<String>();
-	String role = "";
 	try {
 
 	    SearchControls searchControls = getSearchControls();
@@ -306,18 +307,18 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 
 	    while (answer.hasMoreElements()) {
 		SearchResult sr = (SearchResult) answer.next();
-		logger.info("sr : " + sr);
-		Attributes a = sr.getAttributes();
-		NamingEnumeration<?> nameEnum = sr.getAttributes().get("memberOf").getAll();
-		String value = "";
+		logger.debug("sr=" + sr);
+		Attributes attributes = sr.getAttributes();
+		NamingEnumeration<?> nameEnum = attributes.get("memberOf").getAll();
 		while (nameEnum.hasMoreElements()) {
-		    role = (String) nameEnum.next();
-		    roles.add(role);
-
+		    String role = (String) nameEnum.next();
+		    if (StringUtils.isNotBlank(role)) {
+			String roleClean = StringUtils.replaceOnce(role, "cn=", "");
+			String[] roleCleanString = StringUtils.split(roleClean, ",", 2);
+			roles.add(roleCleanString[0]);
+		    }
 		}
-		logger.info("value: " + value);
 	    }
-
 	} catch (NamingException e) {
 	    throw new GinaException(e.getMessage());
 	}
