@@ -44,9 +44,6 @@ public class GinaApiLdapDomainTest {
 	    if (!result) {
 		Assert.assertTrue("L'utilisateur " + GinaApiLdapContantsTest.DTDCOURS01_USERNAME + " est censé être valide !", result); 
 	    }
-	    
-            GinaApiBaseAble api = GinaApiBaseFactory.getInstance();
-
 	} catch (GinaException e) {
 	    LOG.error(e);
 	    assertTrue(false);
