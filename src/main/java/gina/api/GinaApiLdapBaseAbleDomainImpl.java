@@ -270,7 +270,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
-		    logger.info("name : " + sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
+		    logger.debug("name : " + sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
 
 		    Attributes attrsResult = sr.getAttributes();
 		    logger.debug("sr=" + sr);
@@ -327,7 +327,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 		List<String> users = new ArrayList<String>();
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
-		    logger.info("name : " + sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
+		    logger.debug("name : " + sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
 
 		    Attributes attrsResult = sr.getAttributes();
 		    logger.debug("sr=" + sr);
