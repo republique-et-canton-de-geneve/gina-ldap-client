@@ -84,7 +84,7 @@ public class GinaApiLdapApplicationTest {
 	    Assert.assertTrue(roles.size() > 0);
 	    LOG.info("roles.size()=" + roles.size());
 	    LOG.info("roles=" + roles);
-	    Assert.assertTrue(GinaApiLdapUtilsTest.checkRolesAreCleaned(roles));
+	    Assert.assertTrue(GinaApiLdapTools.checkRolesAreCleaned(roles));
 	    Assert.assertTrue(roles.contains("UTILISATEUR"));
 	    Assert.assertTrue(roles.contains("CONTEXTE-APA"));
 	} catch (GinaException e) {
@@ -196,7 +196,7 @@ public class GinaApiLdapApplicationTest {
 	    Assert.assertTrue(roles.size() > 0);
 	    LOG.info("roles.size()=" + roles.size());
 	    LOG.info("roles=" + roles);
-	    Assert.assertTrue(GinaApiLdapUtilsTest.checkRolesAreCleaned(roles));
+	    Assert.assertTrue(GinaApiLdapTools.checkRolesAreCleaned(roles));
 	    Assert.assertTrue(roles.contains("ADMIN"));
 	} catch (GinaException e) {
 	    assertTrue(false);
@@ -311,7 +311,7 @@ public class GinaApiLdapApplicationTest {
 	    Assert.assertNotNull(roles);
 	    Assert.assertTrue(roles.size() > 0);
 	    LOG.info("roles.size()=" + roles.size());
-	    Assert.assertTrue(GinaApiLdapUtilsTest.checkRolesAreCleaned(roles));
+	    Assert.assertTrue(GinaApiLdapTools.checkRolesAreCleaned(roles));
 	    Assert.assertTrue(roles.contains(LDAP_APPLICATION_TEST_ROLE));
 	} catch (GinaException e) {
 	    LOG.error(e);
