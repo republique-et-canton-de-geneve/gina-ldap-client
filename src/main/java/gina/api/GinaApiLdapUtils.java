@@ -1,5 +1,7 @@
 package gina.api;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 
 public class GinaApiLdapUtils {
@@ -22,5 +24,17 @@ public class GinaApiLdapUtils {
 	return result;
     }
     
+    public static String createPropertie(final List<String> list) {
+	StringBuilder builder = new StringBuilder();
+	int size = 0;
+	for (String s : list) {
+	    size++;
+	    builder.append(s);
+	    if (size < list.size()) {
+		builder.append(',');
+	    }
+	}
+	return builder.toString();
+    }
 
 }

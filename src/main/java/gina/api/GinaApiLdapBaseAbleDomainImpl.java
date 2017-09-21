@@ -18,7 +18,7 @@ import javax.naming.directory.SearchResult;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import gina.api.util.Configuration;
+import gina.api.util.GinaApiLdapDirContext;
 
 public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 
@@ -28,14 +28,19 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     // 
     private DirContext ctxtDir = null;
 
+    // Constructeur
+    public GinaApiLdapBaseAbleDomainImpl(DirContext ctxtDir) {
+	this.ctxtDir = ctxtDir;
+    }
+
     private void init() throws GinaException {
 	if (ctxtDir == null) {
 	    logger.info("init()");
 
-	    Configuration conf = new Configuration();
-	    conf.init(Configuration.DOMAIN);
-	    
-	    ctxtDir = conf.getCtxtDir();
+	    GinaApiLdapDirContext galdc = new GinaApiLdapDirContext();
+	    galdc.init();
+
+	    ctxtDir = galdc.getCtxtDir();
 	    if (ctxtDir == null) {
 		throw new GinaException("initialisation impossible");
 	    }

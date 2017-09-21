@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.naming.NamingException;
 
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -16,6 +17,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 import org.junit.rules.ExpectedException;
+
+import gina.api.util.GinaApiLdapDirContext;
 
 public class GinaApiLdapDomainTest {
 
@@ -40,8 +43,19 @@ public class GinaApiLdapDomainTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @BeforeClass
-    public static void initApi() {
-	api = GinaApiLdapBaseFactory.getInstanceDomain();
+    public static void initApi() throws ConfigurationException {
+	    ch.ge.cti.configuration.Configuration.addRelativeToStandardConfFolder("ct-gina-ldap-client.properties");
+	    ch.ge.cti.configuration.Configuration.addClasspath("ct-gina-ldap-client.properties");
+
+	    String base = GinaApiLdapUtils.createPropertie(ch.ge.cti.configuration.Configuration.getList("ct-gina-ldap-client.LDAP_BASE_DN_DOMAIN"));
+	    String user = GinaApiLdapUtils.createPropertie(ch.ge.cti.configuration.Configuration.getList("ct-gina-ldap-client.LDAP_USER_DOMAIN"));
+	    String password = ch.ge.cti.configuration.Configuration.getParameter("ct-gina-ldap-client.LDAP_PASSWORD_DOMAIN");
+
+
+	    GinaApiLdapDirContext galdc = new GinaApiLdapDirContext();
+	    galdc.init(base, user, password);
+
+	    api = GinaApiLdapBaseFactory.getInstance(galdc);
     }
     
     @Test

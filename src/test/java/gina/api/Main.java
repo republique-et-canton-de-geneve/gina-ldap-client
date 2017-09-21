@@ -15,7 +15,7 @@ public class Main {
 
     public static void main(String[] args) {
 	try {
-	    GinaApiLdapBaseAble ldapApplication = GinaApiLdapBaseFactory.getInstanceApplication();
+	    GinaApiLdapBaseAble ldapApplication = GinaApiLdapBaseFactory.getInstance();
 
 	    LOG.debug("LDAP APPLICATION");
 	    

@@ -1,1 +1,0 @@
-java -jar ct-sitg-lucene-indexer-1.1.0-RC5-SNAPSHOT-jar-with-dependencies.jar -v -d oracle.jdbc.driver.OracleDriver -c jdbc:oracle:thin:@evian30.ceti.etat-ge.ch:15002:PRDH -u report -p report -l D:/TEMP/TEMP/Lucene

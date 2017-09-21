@@ -5,8 +5,6 @@ import java.util.List;
 
 public interface GinaApiLdapBaseAble extends GinaApiBaseAble {
 
-    public boolean hasUserRole(String user, String role) throws GinaException, RemoteException;
-
     /**
      * Donne tous les rôles de l'utilisateur courant pour l'application courante
      * 
@@ -23,5 +21,7 @@ public interface GinaApiLdapBaseAble extends GinaApiBaseAble {
     public List<String> getUserRoles(String user) throws GinaException, RemoteException;
 
     public boolean hasRole(String role) throws GinaException, RemoteException;
+
+    public boolean hasUserRole(String user, String role) throws GinaException, RemoteException;
 
 }
