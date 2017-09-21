@@ -67,8 +67,8 @@ public class GinaApiLdapDirContext {
 	LOG.info("Start");
 
 	try {
-	    ch.ge.cti.configuration.Configuration.addRelativeToStandardConfFolder("ct-gina-ldap-client.properties");
-	    ch.ge.cti.configuration.Configuration.addClasspath("ct-gina-ldap-client.properties");
+	    ch.ge.cti.configuration.Configuration.addRelativeToStandardConfFolder(CONFIGURATION_FILE);
+	    ch.ge.cti.configuration.Configuration.addClasspath(CONFIGURATION_FILE);
 
 	    LDAP_SERVER_URL = ch.ge.cti.configuration.Configuration.getParameter("ct-gina-ldap-client.LDAP_SERVER_URL");
 	    LDAP_BASE_DN = base;
