@@ -105,7 +105,7 @@ public class GinaApiLdapDomainTest {
 	    LOG.info("roles.size()=" + roles.size());
 	    LOG.info("roles=" + roles);
 	    Assert.assertTrue(roles.contains(LDAP_DOMAIN_TEST_ROLE));
-	    Assert.assertTrue(GinaApiLdapUtilsTest.checkRolesAreCleaned(roles));
+	    Assert.assertTrue(GinaApiLdapTools.checkRolesAreCleaned(roles));
 	} catch (GinaException e) {
 	    LOG.error(e);
 	    assertTrue(false);
@@ -200,7 +200,7 @@ public class GinaApiLdapDomainTest {
 	    Assert.assertTrue(roles.size() > 0);
 	    LOG.debug("roles.size()=" + roles.size());
 	    LOG.debug("roles=" + roles);
-	    Assert.assertTrue(GinaApiLdapUtilsTest.checkRolesAreCleaned(roles));
+	    Assert.assertTrue(GinaApiLdapTools.checkRolesAreCleaned(roles));
 	    Assert.assertTrue(roles.contains(LDAP_DOMAIN_TEST_ROLE));
 	} catch (GinaException e) {
 	    assertTrue(false);

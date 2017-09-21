@@ -2,7 +2,7 @@ package gina.api;
 
 import java.util.List;
 
-public class GinaApiLdapUtilsTest {
+public class GinaApiLdapTools {
 
     protected static boolean checkRolesAreCleaned(final List<String> roles) {
 	boolean result = true;    
