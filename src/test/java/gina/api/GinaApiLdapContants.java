@@ -1,6 +1,6 @@
 package gina.api;
 
-public class GinaApiLdapContantsTest {
+public class GinaApiLdapContants {
 
     // Utilisateur PINAUDJ
     protected static final String PINAUDJ_USERNAME = "PINAUDJ";
