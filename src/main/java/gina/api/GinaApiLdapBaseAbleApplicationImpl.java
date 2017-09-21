@@ -20,7 +20,7 @@ import javax.naming.directory.SearchResult;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import gina.api.util.Configuration;
+import gina.api.util.GinaApiLdapDirContext;
 
 public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommon {
 
@@ -29,14 +29,18 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 
     private DirContext ctxtDir = null;
 
+    public GinaApiLdapBaseAbleApplicationImpl(DirContext ctxtDir) {
+	this.ctxtDir = ctxtDir;
+    }
+    
     private void init() throws GinaException {
 	if (ctxtDir == null) {
 	    logger.info("init()");
 
-	    Configuration conf = new Configuration();
-	    conf.init(Configuration.APPLICATION);
+	    GinaApiLdapDirContext galdc = new GinaApiLdapDirContext();
+	    galdc.init();
 
-	    ctxtDir = conf.getCtxtDir();
+	    ctxtDir = galdc.getCtxtDir();
 	    if (ctxtDir == null) {
 		throw new GinaException("initialisation impossible");
 	    }
@@ -50,7 +54,6 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      */
     @Override
     public boolean isValidUser(String user) throws GinaException, RemoteException {
-	// new version
 	init();
 	try {
 	    SearchControls searchControls = getSearchControls();
@@ -59,7 +62,6 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    String searchFilter = "(&(objectClass=user)(cn=" + user + "))";
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
-	    logger.info("answer : ");
 	    while (answer.hasMoreElements()) {
 		SearchResult sr = (SearchResult) answer.next();
 		logger.info("sr : " + sr);
