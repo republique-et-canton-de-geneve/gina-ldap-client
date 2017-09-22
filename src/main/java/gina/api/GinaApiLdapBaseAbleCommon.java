@@ -26,7 +26,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble, 
     // Logger
     private static Logger logger = Logger.getLogger(GinaApiLdapBaseAbleCommon.class);
 
-    // 
+    // Message d'erreur pour les méthodes non implémentées
     protected static final String NOT_IMPLEMENTED = "Not implemented";
     
     // 

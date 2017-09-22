@@ -22,6 +22,9 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 
     // Logger
     private static Logger logger = Logger.getLogger(GinaApiLdapBaseAbleApplicationImpl.class);
+    
+    // Variable system user name
+    private static final String USER_NAME = "user.name";
 
     // Constructeur
     public GinaApiLdapBaseAbleApplicationImpl(DirContext ctxtDir) {
@@ -38,7 +41,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     public Map<String, String> getUserAttrs(String[] attrs) throws GinaException, RemoteException {
 	Arrays.asList(attrs).contains("param");
 	Map<String, String> myMap = new HashMap<String, String>();
-	String user = System.getProperty("user.name");
+	String user = System.getProperty(USER_NAME);
 
 	init();
 	try {
@@ -83,7 +86,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     public boolean hasRole(String role) throws GinaException, RemoteException {
 	init();
 
-	String user = System.getProperty("user.name");
+	String user = System.getProperty(USER_NAME);
 	try {
 	    SearchControls searchControls = getSearchControls();
 	    String searchFilter = "(&(objectClass=groups)(cn=" + role + ")(cn=" + user + "))";
@@ -141,7 +144,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     public List<String> getRoles() throws GinaException, RemoteException {
 	init();
 	List<String> roles = new ArrayList<String>();
-	String user = System.getProperty("user.name");
+	String user = System.getProperty(USER_NAME);
 	logger.debug("user=" + user);
 	try {
 	    SearchControls searchControls = getSearchControls();
