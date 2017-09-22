@@ -19,6 +19,13 @@ public class GinaApiLdapBaseFactory {
 	return getInstance(galdc);
     }
 
+    /**
+     * Il n'est pas recommandé d'utiliser cette méthode en direct.
+     * L'instanciation est censé se faire via le fichier de properties du serveur via getInstance()
+     * @param galdc
+     * @return
+     */
+    @Deprecated
     public static GinaApiLdapBaseAble getInstance(GinaApiLdapDirContext galdc) {
 	try {
 	    GinaApiLdapBaseAble result;
