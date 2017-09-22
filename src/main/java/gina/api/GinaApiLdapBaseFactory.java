@@ -20,8 +20,7 @@ public class GinaApiLdapBaseFactory {
     }
 
     /**
-     * Il n'est pas recommandé d'utiliser cette méthode en direct.
-     * L'instanciation est censé se faire via le fichier de properties du serveur via getInstance()
+     * @deprecated(Il n'est pas recommandé d'utiliser cette méthode en direct. L'instanciation est censé se faire via le fichier de properties du serveur via getInstance)
      * @param galdc
      * @return
      */
