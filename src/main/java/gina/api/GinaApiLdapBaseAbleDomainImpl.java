@@ -14,7 +14,6 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import gina.api.util.GinaApiLdapUtils;
@@ -68,56 +67,6 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	}
 
 	return false;
-    }
-
-    /*
-     * (non-Javadoc) Donne tous les rôles de l'utilisateur passé en paramètre
-     * pour l'application passée en paramètre.
-     * 
-     * @see gina.api.GinaApiLdapBaseAble#getUserRoles(java.lang.String,
-     * java.lang.String)
-     */
-    @Override
-    public List<String> getUserRoles(String user, String application) throws GinaException, RemoteException {
-	init();
-	List<String> roles = new ArrayList<String>();
-	try {
-	    String ginaDomain = GinaApiLdapUtils.extractDomain(application);
-	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
-
-	    SearchControls searchControls = getSearchControls();
-	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
-	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
-
-	    if (answer != null) {
-		while (answer.hasMoreElements()) {
-		    SearchResult sr = (SearchResult) answer.next();
-		    if (sr != null) {
-			final Attributes attrs = sr.getAttributes();
-			logger.debug(attrs);
-			if (attrs != null && attrs.get("memberOf") != null) {
-			    NamingEnumeration<?> answerAtt = sr.getAttributes().get("memberOf").getAll();
-			    while (answerAtt.hasMoreElements()) {
-				String att = (String) answerAtt.next();
-				logger.debug(att);
-				String pattern = ",ou=Groups,ou=" + ginaApplication + ",ou=" + ginaDomain + ",o=gina";
-				if (StringUtils.isNotBlank(att) && att.contains(pattern)) {
-				    String roleClean = StringUtils.replaceOnce(att, "cn=", "");
-				    roleClean = StringUtils.replaceOnce(roleClean, pattern, "");
-				    roles.add(roleClean);
-				}
-			    }
-			}
-		    }
-		}
-	    }
-	} catch (NamingException e) {
-	    throw new GinaException(e.getMessage());
-	}
-
-	logger.debug("roles=" + roles);
-
-	return roles;
     }
 
     /*
