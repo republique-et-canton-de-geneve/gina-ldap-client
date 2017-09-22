@@ -312,6 +312,7 @@ public class GinaApiLdapApplicationTest {
 	    Assert.assertNotNull(roles);
 	    Assert.assertTrue(roles.size() > 0);
 	    LOG.info("roles.size()=" + roles.size());
+	    LOG.info("roles=" + roles);
 	    Assert.assertTrue(GinaApiLdapTools.checkRolesAreCleaned(roles));
 	    Assert.assertTrue(roles.contains(LDAP_APPLICATION_TEST_ROLE));
 	} catch (GinaException e) {
