@@ -11,8 +11,6 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttribute;
-import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
@@ -30,43 +28,6 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	this.ctxtDir = ctxtDir;
     }
     
-    /*
-     * (non-Javadoc) retourne boolean pour savoir si le user est valide
-     * 
-     * @see gina.api.GinaApiLdapBaseAble#isValidUser(java.lang.String)
-     */
-    @Override
-    public boolean isValidUser(String user) throws GinaException, RemoteException {
-	init();
-	try {
-	    SearchControls searchControls = getSearchControls();
-	    Attributes matchAttrs = new BasicAttributes(true);
-	    matchAttrs.put(new BasicAttribute("cn", user));
-	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
-	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
-
-	    while (answer.hasMoreElements()) {
-		SearchResult sr = (SearchResult) answer.next();
-		logger.debug("sr=" + sr);
-		Attributes attrs = sr.getAttributes();
-		if(attrs != null) {
-			Attribute cn = attrs.get("cn");
-			if(cn != null) {
-				String name = (String) cn.get();
-				logger.debug("name=" + name);
-				if (user.equalsIgnoreCase(name)) {
-				    return true;
-				}
-			}
-		}
-	    }
-	} catch (NamingException e) {
-	    throw new GinaException(e.getMessage());
-	}
-
-	return false;
-    }
-
     /*
      * (non-Javadoc) Donne les valeurs des attributs passé en paramètre pour
      * l'utilisateur passé en paramètre
