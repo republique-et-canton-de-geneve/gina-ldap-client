@@ -107,19 +107,11 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    SearchControls searchControls = getSearchControls();
 	    String searchFilter = "(&(objectClass=users)(cn=" + user + ")&(objectClass=memberOf)(cn=" + role + "))";
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
-
-	    while (answer.hasMoreElements()) {
-		SearchResult sr = (SearchResult) answer.next();
-		logger.debug("sr=" + sr);
-		return true;
-	    }
-
+	    return (answer != null && answer.hasMoreElements());
 	} catch (NamingException e) {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
-
-	return false;
     }
 
     /*
