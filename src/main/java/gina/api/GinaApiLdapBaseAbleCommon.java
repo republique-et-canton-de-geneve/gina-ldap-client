@@ -88,6 +88,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble, 
 		}
 	    }
 	} catch (NamingException e) {
+	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
 
@@ -141,6 +142,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble, 
 		}
 	    }
 	} catch (NamingException e) {
+	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
 
