@@ -29,35 +29,6 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     }
 
     /*
-     * (non-Javadoc) retourne boolean pour savoir si le user est valide
-     * 
-     * @see gina.api.GinaApiLdapBaseAble#isValidUser(java.lang.String)
-     */
-    @Override
-    public boolean isValidUser(String user) throws GinaException, RemoteException {
-	init();
-	try {
-	    SearchControls searchControls = getSearchControls();
-	    NamingEnumeration<?> answer = ctxtDir.search("ou=Users", "(&(cn=*))", searchControls);
-
-	    if (answer != null) {
-		while (answer.hasMoreElements()) {
-		    SearchResult sr = (SearchResult) answer.next();
-		    logger.debug("sr=" + sr);
-		    String name = sr.getName().replace("cn=", ""); 
-		    if (user.equalsIgnoreCase(name)) {
-			return true;
-		    }
-		}
-	    }
-	} catch (NamingException e) {
-	    throw new GinaException(e.getMessage());
-	}
-
-	return false;
-    }
-
-    /*
      * (non-Javadoc) Donne les valeurs des attributs passé en paramètre pour
      * l'utilisateur passé en paramètre
      * 
