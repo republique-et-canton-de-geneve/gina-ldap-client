@@ -88,25 +88,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 
     public boolean hasRole(String role) throws GinaException, RemoteException {
 	init();
-
 	String user = System.getProperty(USER_NAME);
-	try {
-	    SearchControls searchControls = getSearchControls();
-	    String searchFilter = "(&(objectClass=groups)(cn=" + role + ")(cn=" + user + "))";
-	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
-
-	    while (answer.hasMoreElements()) {
-		SearchResult sr = (SearchResult) answer.next();
-		logger.debug("sr=" + sr);
-		return true;
-	    }
-
-	} catch (NamingException e) {
-	    logger.error(e); 
-	    throw new GinaException(e.getMessage());
-	}
-
-	return false;
+	return hasUserRole(user, role);
     }
 
     /*
@@ -118,7 +101,6 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      */
     @Override
     public boolean hasUserRole(String user, String role) throws GinaException, RemoteException {
-	// new version
 	init();
 
 	try {
