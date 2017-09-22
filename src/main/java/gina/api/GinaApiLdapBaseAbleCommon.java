@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import gina.api.util.GinaApiLdapDirContext;
+import gina.api.util.GinaApiLdapUtils;
 
 public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 

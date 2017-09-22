@@ -18,6 +18,8 @@ import javax.naming.directory.SearchResult;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import gina.api.util.GinaApiLdapUtils;
+
 public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommon {
 
     // Logger

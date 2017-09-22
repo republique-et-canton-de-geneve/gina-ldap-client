@@ -10,8 +10,6 @@ import javax.naming.directory.InitialDirContext;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import gina.api.GinaApiLdapUtils;
-
 public class GinaApiLdapDirContext {
 
     // Logger

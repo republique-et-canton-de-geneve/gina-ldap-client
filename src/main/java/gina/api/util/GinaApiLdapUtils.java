@@ -1,4 +1,4 @@
-package gina.api;
+package gina.api.util;
 
 import java.util.List;
 
@@ -6,7 +6,10 @@ import org.apache.commons.lang.StringUtils;
 
 public class GinaApiLdapUtils {
 
-    protected static String extractDomain(final String domaineapplication) {
+    private GinaApiLdapUtils() {
+    }
+    
+    public static String extractDomain(final String domaineapplication) {
 	String result = null;
 	if (StringUtils.isNotBlank(domaineapplication) && domaineapplication.contains(".")) {
 	    final String[] splitApplication = StringUtils.split(domaineapplication, ".", 2);
@@ -15,7 +18,7 @@ public class GinaApiLdapUtils {
 	return result;
     }
     
-    protected static String extractApplication(final String domaineapplication) {
+    public static String extractApplication(final String domaineapplication) {
 	String result = null;
 	if (StringUtils.isNotBlank(domaineapplication) && domaineapplication.contains(".")) {
 	    final String[] splitApplication = StringUtils.split(domaineapplication, ".", 2);
