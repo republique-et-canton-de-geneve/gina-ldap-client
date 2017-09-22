@@ -177,7 +177,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 			final Attributes attrs = sr.getAttributes();
 			logger.debug(attrs);
 			if (attrs != null && attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF) != null) {
-			    NamingEnumeration<?> answerAtt = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
+			    NamingEnumeration<?> answerAtt = attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
 			    while (answerAtt.hasMoreElements()) {
 				String att = (String) answerAtt.next();
 				logger.debug(att);
