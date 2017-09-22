@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -11,7 +10,7 @@
 	<groupId>ch.ge.cti.ct</groupId>
 	<artifactId>ct-gina-ldap-client</artifactId>
 	<name>ct-gina-ldap-client - ${project.version}</name>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.1</version>
 
 	<url>https://prod.etat-ge.ch/wikiadm/x/ZABdPg</url>
 
@@ -37,9 +36,9 @@
 	</distributionManagement>
 
 	<scm>
-		<connection>scm:svn:http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/trunk/</connection>
-		<developerConnection>scm:svn:http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/trunk/</developerConnection>
-		<url>http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/trunk/</url>
+		<connection>scm:svn:http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/tags/ct-gina-ldap-client-1.0.1</connection>
+		<developerConnection>scm:svn:http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/tags/ct-gina-ldap-client-1.0.1</developerConnection>
+		<url>http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/tags/ct-gina-ldap-client-1.0.1</url>
 	</scm>
 
 	<dependencies>
