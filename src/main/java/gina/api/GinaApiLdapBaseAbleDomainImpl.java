@@ -2,7 +2,6 @@ package gina.api;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -237,7 +236,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	    List<String> users = new ArrayList<String>();
 	    while (answer.hasMoreElements()) {
 		SearchResult sr = (SearchResult) answer.next();
-		logger.debug("name : " + sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
+		logger.debug("name : " + sr.getName().substring(0, sr.getName().indexOf(',')).replace("cn=", ""));
 
 		Attributes attrsResult = sr.getAttributes();
 		logger.debug("sr=" + sr);
@@ -249,12 +248,11 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 			    String member = (String) attmember.get(j);
 
 			    if (member != null) {
-				String username = member.substring(0, member.indexOf(",")).replace("cn=", "")
+				String username = member.substring(0, member.indexOf(',')).replace("cn=", "")
 					.toLowerCase();
 				if (!users.contains(username)) {
-				    Map<String, String> map = new HashMap<String, String>();
 				    users.add(username);
-				    map = this.getUserAttrs(username, attrs);
+				    Map<String, String> map = this.getUserAttrs(username, attrs);
 				    list.add(map);
 				}
 			    }
