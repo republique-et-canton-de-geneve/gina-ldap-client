@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
 
 import gina.api.util.GinaApiLdapDirContext;
 
-public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble, GinaApiLdapConfig {
+public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
     // Logger
     private static Logger logger = Logger.getLogger(GinaApiLdapBaseAbleCommon.class);

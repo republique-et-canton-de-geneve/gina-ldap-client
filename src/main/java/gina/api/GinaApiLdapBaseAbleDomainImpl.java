@@ -274,7 +274,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     // METHODES UTILITAIRES
     // -----------------------------------------------------------------------------------------
 
-    private List<Map<String, String>> parseAnswer(final NamingEnumeration<?> answer, String attrs[])
+    private List<Map<String, String>> parseAnswer(final NamingEnumeration<?> answer, final String[] attrs)
 	    throws NamingException, GinaException, RemoteException {
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
@@ -310,16 +310,6 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	}
 	
 	return list;
-    }
-
-    @Override
-    public void setInitTest(DirContext ctxtDir) throws GinaException {
-	if (this.ctxtDir == null) {
-	    this.ctxtDir = ctxtDir;
-	    if (this.ctxtDir == null) {
-		throw new GinaException("initialisation impossible");
-	    }
-	}
     }
 
 }
