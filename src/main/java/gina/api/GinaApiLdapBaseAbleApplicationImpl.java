@@ -30,64 +30,13 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     
     /*
      * (non-Javadoc) Donne les valeurs des attributs passé en paramètre pour
-     * l'utilisateur passé en paramètre
-     * 
-     * @see gina.api.GinaApiLdapBaseAble#getUserAttrs(java.lang.String,
-     * java.lang.String[])
-     */
-    @Override
-    public Map<String, String> getUserAttrs(String user, String[] paramArrayOfString)
-	    throws GinaException, RemoteException {
-	Arrays.asList(paramArrayOfString).contains("param");
-	Map<String, String> myMap = new HashMap<String, String>();
-
-	init();
-	try {
-	    SearchControls searchControls = getSearchControls();
-	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
-	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
-
-	    while (answer.hasMoreElements()) {
-		SearchResult sr = (SearchResult) answer.next();
-		Attributes attrs = sr.getAttributes();
-		if (attrs != null) {
-		    for (int i = 0; i < paramArrayOfString.length; i++) {
-			String attr = paramArrayOfString[i];
-			logger.debug("attr=" + attr);
-			Attribute attribute = attrs.get(attr);
-			if (attribute != null) {
-			    NamingEnumeration<?> nameEnum = attribute.getAll();
-			    String value = "";
-			    while (nameEnum.hasMoreElements()) {
-				if (value.isEmpty()) {
-				    value = (String) nameEnum.next();
-				} else {
-				    value = value + ":" + (String) nameEnum.next();
-				}
-			    }
-				logger.info("value: " + value);
-				myMap.put(paramArrayOfString[i], value);
-			}
-		    }
-		}
-	    }
-
-	} catch (NamingException e) {
-	    throw new GinaException(e.getMessage());
-	}
-
-	return myMap;
-    }
-
-    /*
-     * (non-Javadoc) Donne les valeurs des attributs passé en paramètre pour
      * l'utilisateur courant
      * 
      * @see gina.api.GinaApiLdapBaseAble#getUserAttrs(java.lang.String[])
      */
     @Override
-    public Map<String, String> getUserAttrs(String[] paramArrayOfString) throws GinaException, RemoteException {
-	Arrays.asList(paramArrayOfString).contains("param");
+    public Map<String, String> getUserAttrs(String[] attrs) throws GinaException, RemoteException {
+	Arrays.asList(attrs).contains("param");
 	Map<String, String> myMap = new HashMap<String, String>();
 	String user = System.getProperty("user.name");
 
@@ -100,9 +49,9 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 
 	    while (answer.hasMoreElements()) {
 		SearchResult sr = (SearchResult) answer.next();
-		Attributes attrs = sr.getAttributes();
-		for (int i = 0; i < paramArrayOfString.length; i++) {
-		    NamingEnumeration<?> nameEnum = sr.getAttributes().get(paramArrayOfString[i]).getAll();
+		Attributes attributes = sr.getAttributes();
+		for (int i = 0; i < attrs.length; i++) {
+		    NamingEnumeration<?> nameEnum = attributes.get(attrs[i]).getAll();
 		    String value = "";
 		    while (nameEnum.hasMoreElements()) {
 			if (value.isEmpty()) {
@@ -111,8 +60,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 			    value = value + ":" + (String) nameEnum.next();
 			}
 		    }
-		    logger.info("value: " + value);
-		    myMap.put(paramArrayOfString[i], value);
+		    logger.debug("value=" + value);
+		    myMap.put(attrs[i], value);
 		}
 	    }
 	} catch (NamingException e) {
@@ -142,7 +91,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 
 	    while (answer.hasMoreElements()) {
 		SearchResult sr = (SearchResult) answer.next();
-		logger.info("sr : " + sr);
+		logger.debug("sr=" + sr);
 		return true;
 	    }
 
@@ -172,7 +121,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 
 	    while (answer.hasMoreElements()) {
 		SearchResult sr = (SearchResult) answer.next();
-		logger.info("sr : " + sr);
+		logger.debug("sr=" + sr);
 		return true;
 	    }
 
@@ -193,7 +142,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	init();
 	List<String> roles = new ArrayList<String>();
 	String user = System.getProperty("user.name");
-	logger.info("user=" + user);
+	logger.debug("user=" + user);
 	try {
 	    SearchControls searchControls = getSearchControls();
 	    String searchFilter = "(&(objectClass=users)(cn=" + user + "))";
@@ -209,7 +158,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 			String role = (String) nameEnum.next();
 			roles.add(role);
 		    }
-		    logger.info("value=" + value);
+		    logger.debug("value=" + value);
 		}
 	    }
 	} catch (NamingException e) {
@@ -275,12 +224,12 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=Groups,ou=" + appli + "", "(&(cn=*))", searchControls);
 	    while (answer.hasMoreElements()) {
 		SearchResult sr = (SearchResult) answer.next();
-		logger.info("sr: " + sr);
+		logger.debug("sr=" + sr);
 		NamingEnumeration<?> nameEnum = sr.getAttributes().get("cn").getAll();
 		if (nameEnum != null) {
 		    while (nameEnum.hasMoreElements()) {
 			String role = (String) nameEnum.next();
-			logger.info("role: " + role);
+			logger.debug("role=" + role);
 			roles.add(role);
 		    }
 
@@ -370,7 +319,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
-		    logger.info("name : " + sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
+		    logger.debug("name : " + sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
 
 		    Attributes attrs = sr.getAttributes();
 		    logger.debug("sr=" + sr);

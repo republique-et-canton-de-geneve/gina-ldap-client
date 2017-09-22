@@ -2,7 +2,6 @@ package gina.api;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,59 +25,6 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     // Constructeur
     public GinaApiLdapBaseAbleDomainImpl(DirContext ctxtDir) {
 	this.ctxtDir = ctxtDir;
-    }
-
-    /*
-     * (non-Javadoc) Donne les valeurs des attributs passé en paramètre pour
-     * l'utilisateur passé en paramètre
-     * 
-     * @see gina.api.GinaApiLdapBaseAble#getUserAttrs(java.lang.String,
-     * java.lang.String[])
-     */
-    @Override
-    public Map<String, String> getUserAttrs(String user, String[] paramArrayOfString)
-	    throws GinaException, RemoteException {
-
-	Arrays.asList(paramArrayOfString).contains("param");
-	Map<String, String> myMap = new HashMap<String, String>();
-
-	init();
-	try {
-	    SearchControls searchControls = getSearchControls();
-	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
-	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
-
-	    if (answer != null) {
-		while (answer.hasMoreElements()) {
-		    SearchResult sr = (SearchResult) answer.next();
-
-		    Attributes attrs = sr.getAttributes();
-		    logger.debug("sr=" + sr);
-		    if (attrs != null) {
-			for (int i = 0; i < paramArrayOfString.length; i++) {
-			    Attribute attribute = sr.getAttributes().get(paramArrayOfString[i]);
-			    if (attribute != null) {
-				NamingEnumeration<?> nameEnum = attribute.getAll();
-				String value = "";
-				while (nameEnum.hasMoreElements()) {
-				    if (value.isEmpty()) {
-					value = (String) nameEnum.next();
-				    } else {
-					value = value + ":" + (String) nameEnum.next();
-				    }
-				}
-				logger.debug("value=" + value);
-				myMap.put(paramArrayOfString[i], value);
-			    }
-			}
-		    }
-		}
-	    }
-	} catch (NamingException e) {
-	    throw new GinaException(e.getMessage());
-	}
-
-	return myMap;
     }
 
     /*
