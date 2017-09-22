@@ -125,7 +125,7 @@ public class GinaApiLdapDomainTest {
 	    Assert.assertNotNull(users);
 	    Assert.assertFalse(users.isEmpty());
 	    LOG.info("users.size()=" + users.size());
-	    LOG.info("users=" + users);
+	    LOG.debug("users=" + users);
 
 	    boolean containsUserTest = false;
 	    for( Map<String, String> user : users) {
