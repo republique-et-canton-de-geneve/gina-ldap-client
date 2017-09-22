@@ -63,6 +63,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 		}
 	    }
 	} catch (NamingException e) {
+	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
 
@@ -98,6 +99,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 		}
 	    }
 	} catch (NamingException e) {
+	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
 
@@ -123,6 +125,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 
 	    list = parseAnswer(answer, attrs);
 	} catch (NamingException e) {
+	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
 
@@ -150,6 +153,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 
 	    list = parseAnswer(answer, attrs);
 	} catch (NamingException e) {
+	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
 

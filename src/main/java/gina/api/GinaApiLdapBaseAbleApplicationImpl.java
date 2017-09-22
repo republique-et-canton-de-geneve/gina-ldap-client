@@ -70,6 +70,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 		}
 	    }
 	} catch (NamingException e) {
+	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
 
@@ -101,6 +102,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    }
 
 	} catch (NamingException e) {
+	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
 
@@ -131,6 +133,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    }
 
 	} catch (NamingException e) {
+	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
 
@@ -167,6 +170,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 		}
 	    }
 	} catch (NamingException e) {
+	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
 
@@ -204,6 +208,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 		}
 	    }
 	} catch (NamingException e) {
+	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
 
@@ -243,6 +248,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    }
 
 	} catch (NamingException e) {
+	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
 
@@ -295,6 +301,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 		}
 	    }
 	} catch (NamingException e) {
+	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
 
@@ -352,6 +359,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 		}
 	    }
 	} catch (NamingException e) {
+	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
 
