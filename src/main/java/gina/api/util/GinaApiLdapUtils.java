@@ -43,8 +43,7 @@ public class GinaApiLdapUtils {
     }
 
     public static String getLdapFilterUser(String user) {
-	String searchFilter = "(&(objectClass=user)(cn=" + user + "))";
-	return searchFilter;
+	return "(&(objectClass=user)(cn=" + user + "))";
     }
 
 }
