@@ -5,12 +5,24 @@ import java.util.List;
 import java.util.Map;
 
 import javax.naming.NamingException;
+import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
+
+import org.apache.log4j.Logger;
+
+import gina.api.util.GinaApiLdapDirContext;
 
 public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble, GinaApiLdapConfig {
 
+    // Logger
+    private static Logger logger = Logger.getLogger(GinaApiLdapBaseAbleCommon.class);
+
+    // 
     protected static final String NOT_IMPLEMENTED = "Not implemented";
     
+    // 
+    protected DirContext ctxtDir = null;
+
     protected SearchControls getSearchControls() {
 	int maxTimeLimit = ch.ge.cti.configuration.Configuration.getParameterAsInt("ct-gina-ldap-client.LDAP_TIMEOUT_SEARCH", 3000);
 
@@ -19,6 +31,20 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble, 
 	searchControls.setTimeLimit(maxTimeLimit);
 
 	return searchControls;
+    }
+
+    protected void init() throws GinaException {
+	if (ctxtDir == null) {
+	    logger.info("init()");
+
+	    GinaApiLdapDirContext galdc = new GinaApiLdapDirContext();
+	    galdc.init();
+
+	    ctxtDir = galdc.getCtxtDir();
+	    if (ctxtDir == null) {
+		throw new GinaException("initialisation impossible");
+	    }
+	}
     }
 
     @Override

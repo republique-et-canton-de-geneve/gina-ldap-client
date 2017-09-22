@@ -18,33 +18,14 @@ import javax.naming.directory.SearchResult;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import gina.api.util.GinaApiLdapDirContext;
-
 public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 
     // Logger
     private static Logger logger = Logger.getLogger(GinaApiLdapBaseAbleDomainImpl.class);
 
-    // 
-    private DirContext ctxtDir = null;
-
     // Constructeur
     public GinaApiLdapBaseAbleDomainImpl(DirContext ctxtDir) {
 	this.ctxtDir = ctxtDir;
-    }
-
-    private void init() throws GinaException {
-	if (ctxtDir == null) {
-	    logger.info("init()");
-
-	    GinaApiLdapDirContext galdc = new GinaApiLdapDirContext();
-	    galdc.init();
-
-	    ctxtDir = galdc.getCtxtDir();
-	    if (ctxtDir == null) {
-		throw new GinaException("initialisation impossible");
-	    }
-	}
     }
 
     /*
@@ -264,44 +245,14 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     public List<Map<String, String>> getUsers(String application, String attrs[])
 	    throws GinaException, RemoteException {
 	init();
-	List<String> users = new ArrayList<String>();
-	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+	List<Map<String, String>> list;
 	try {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls();
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=*))", searchControls);
 
-	    if (answer != null) {
-		while (answer.hasMoreElements()) {
-		    SearchResult sr = (SearchResult) answer.next();
-		    logger.debug("name : " + sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
-
-		    Attributes attrsResult = sr.getAttributes();
-		    logger.debug("sr=" + sr);
-		    if (attrsResult != null) {
-			Attribute attmember = attrsResult.get("member");
-
-			if (attmember != null) {
-			    for (int j = 0; j < attmember.size(); j++) {
-				String member = (String) attmember.get(j);
-
-				if (member != null) {
-				    String username = member.substring(0, member.indexOf(",")).replace("cn=", "")
-					    .toLowerCase();
-				    if (!users.contains(username)) {
-					Map<String, String> map = new HashMap<String, String>();
-					users.add(username);
-					map = this.getUserAttrs(username, attrs);
-
-					list.add(map);
-				    }
-				}
-			    }
-			}
-		    }
-		}
-	    }
+	    list = parseAnswer(answer, attrs);
 	} catch (NamingException e) {
 	    throw new GinaException(e.getMessage());
 	}
@@ -320,7 +271,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     public List<Map<String, String>> getUsers(String application, String role, String attrs[])
 	    throws GinaException, RemoteException {
 	init();
-	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+	List<Map<String, String>> list;
 	try {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
@@ -328,43 +279,15 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=" + role + "))",
 		    searchControls);
 
-	    if (answer != null) {
-		List<String> users = new ArrayList<String>();
-		while (answer.hasMoreElements()) {
-		    SearchResult sr = (SearchResult) answer.next();
-		    logger.debug("name : " + sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
-
-		    Attributes attrsResult = sr.getAttributes();
-		    logger.debug("sr=" + sr);
-		    if (attrsResult != null) {
-			Attribute attmember = attrsResult.get("member");
-
-			if (attmember != null) {
-			    for (int j = 0; j < attmember.size(); j++) {
-				String member = (String) attmember.get(j);
-
-				if (member != null) {
-				    String username = member.substring(0, member.indexOf(",")).replace("cn=", "")
-					    .toLowerCase();
-				    if (!users.contains(username)) {
-					Map<String, String> map = new HashMap<String, String>();
-					users.add(username);
-					map = this.getUserAttrs(username, attrs);
-					list.add(map);
-				    }
-				}
-			    }
-			}
-		    }
-		}
-	    }
+	    list = parseAnswer(answer, attrs);
 	} catch (NamingException e) {
 	    throw new GinaException(e.getMessage());
 	}
 
 	return list;
     }
-
+    
+    
     // -----------------------------------------------------------------------------------------
     // METHODES NON IMPLEMENTEES
     // -----------------------------------------------------------------------------------------
@@ -432,6 +355,44 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     // -----------------------------------------------------------------------------------------
     // METHODES UTILITAIRES
     // -----------------------------------------------------------------------------------------
+
+    private List<Map<String, String>> parseAnswer(final NamingEnumeration<?> answer, String attrs[])
+	    throws NamingException, GinaException, RemoteException {
+	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+
+	if (answer != null) {
+	    List<String> users = new ArrayList<String>();
+	    while (answer.hasMoreElements()) {
+		SearchResult sr = (SearchResult) answer.next();
+		logger.debug("name : " + sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
+
+		Attributes attrsResult = sr.getAttributes();
+		logger.debug("sr=" + sr);
+		if (attrsResult != null) {
+		    Attribute attmember = attrsResult.get("member");
+
+		    if (attmember != null) {
+			for (int j = 0; j < attmember.size(); j++) {
+			    String member = (String) attmember.get(j);
+
+			    if (member != null) {
+				String username = member.substring(0, member.indexOf(",")).replace("cn=", "")
+					.toLowerCase();
+				if (!users.contains(username)) {
+				    Map<String, String> map = new HashMap<String, String>();
+				    users.add(username);
+				    map = this.getUserAttrs(username, attrs);
+				    list.add(map);
+				}
+			    }
+			}
+		    }
+		}
+	    }
+	}
+	
+	return list;
+    }
 
     @Override
     public void setInitTest(DirContext ctxtDir) throws GinaException {

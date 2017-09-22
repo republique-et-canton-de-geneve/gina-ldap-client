@@ -20,33 +20,16 @@ import javax.naming.directory.SearchResult;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import gina.api.util.GinaApiLdapDirContext;
-
 public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommon {
 
     // Logger
     private static Logger logger = Logger.getLogger(GinaApiLdapBaseAbleApplicationImpl.class);
 
-    private DirContext ctxtDir = null;
-
+    // Constructeur
     public GinaApiLdapBaseAbleApplicationImpl(DirContext ctxtDir) {
 	this.ctxtDir = ctxtDir;
     }
     
-    private void init() throws GinaException {
-	if (ctxtDir == null) {
-	    logger.info("init()");
-
-	    GinaApiLdapDirContext galdc = new GinaApiLdapDirContext();
-	    galdc.init();
-
-	    ctxtDir = galdc.getCtxtDir();
-	    if (ctxtDir == null) {
-		throw new GinaException("initialisation impossible");
-	    }
-	}
-    }
-
     /*
      * (non-Javadoc) retourne boolean pour savoir si le user est valide
      * 
@@ -59,39 +42,29 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    SearchControls searchControls = getSearchControls();
 	    Attributes matchAttrs = new BasicAttributes(true);
 	    matchAttrs.put(new BasicAttribute("cn", user));
-	    String searchFilter = "(&(objectClass=user)(cn=" + user + "))";
+	    String searchFilter = getLdapFilterUser(user);
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    while (answer.hasMoreElements()) {
 		SearchResult sr = (SearchResult) answer.next();
-		logger.info("sr : " + sr);
+		logger.debug("sr=" + sr);
 		Attributes attrs = sr.getAttributes();
-		NamingEnumeration<? extends Attribute> attributEnum = attrs.getAll();
-		while (attributEnum.hasMoreElements()) {
-		    Attribute at = attributEnum.next();
-		    NamingEnumeration<?> nameEnum = sr.getAttributes().get(at.getID()).getAll();
-		    while (nameEnum.hasMoreElements()) {
-			String s = (String) nameEnum.next();
-			logger.info("value: " + s);
-		    }
+		if(attrs != null) {
+			Attribute cn = attrs.get("cn");
+			if(cn != null) {
+				String name = (String) cn.get();
+				logger.debug("name=" + name);
+				if (user.equalsIgnoreCase(name)) {
+				    return true;
+				}
+			}
 		}
-		if (attrs != null) {
-		    Attribute attmember = attrs.get("cn");
-		    logger.info(attmember.getID());
-		}
-		String name = (String) sr.getAttributes().get("cn").get();
-		logger.info("name:" + name);
-		if (user.equalsIgnoreCase(name)) {
-		    return true;
-		}
-
 	    }
 	} catch (NamingException e) {
 	    throw new GinaException(e.getMessage());
 	}
 
 	return false;
-
     }
 
     /*
@@ -104,14 +77,13 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     @Override
     public Map<String, String> getUserAttrs(String user, String[] paramArrayOfString)
 	    throws GinaException, RemoteException {
-	// new version
 	Arrays.asList(paramArrayOfString).contains("param");
 	Map<String, String> myMap = new HashMap<String, String>();
 
 	init();
 	try {
 	    SearchControls searchControls = getSearchControls();
-	    String searchFilter = "(&(objectClass=user)(cn=" + user + "))";
+	    String searchFilter = getLdapFilterUser(user);
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    while (answer.hasMoreElements()) {
@@ -164,7 +136,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	try {
 	    SearchControls searchControls = new SearchControls();
 	    searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-	    String searchFilter = "(&(objectClass=user)(cn=" + user + "))";
+	    String searchFilter = getLdapFilterUser(user);
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    while (answer.hasMoreElements()) {
@@ -556,4 +528,9 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	}
     }
 
+    private String getLdapFilterUser(String user) {
+	String searchFilter = "(&(objectClass=user)(cn=" + user + "))";
+	return searchFilter;
+    }
+    
 }
