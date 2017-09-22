@@ -204,8 +204,6 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      */
     @Override
     public List<String> getAppRoles(String appli) throws GinaException, RemoteException {
-
-	// new version
 	init();
 	List<String> roles = new ArrayList<String>();
 
