@@ -42,7 +42,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    SearchControls searchControls = getSearchControls();
 	    Attributes matchAttrs = new BasicAttributes(true);
 	    matchAttrs.put(new BasicAttribute("cn", user));
-	    String searchFilter = getLdapFilterUser(user);
+	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    while (answer.hasMoreElements()) {
@@ -83,7 +83,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	init();
 	try {
 	    SearchControls searchControls = getSearchControls();
-	    String searchFilter = getLdapFilterUser(user);
+	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    while (answer.hasMoreElements()) {
@@ -126,8 +126,6 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      */
     @Override
     public Map<String, String> getUserAttrs(String[] paramArrayOfString) throws GinaException, RemoteException {
-	// new version
-	List<Map<String, String>> data = new ArrayList<Map<String, String>>();
 	Arrays.asList(paramArrayOfString).contains("param");
 	Map<String, String> myMap = new HashMap<String, String>();
 	String user = System.getProperty("user.name");
@@ -136,7 +134,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	try {
 	    SearchControls searchControls = new SearchControls();
 	    searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-	    String searchFilter = getLdapFilterUser(user);
+	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    while (answer.hasMoreElements()) {
@@ -154,7 +152,6 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 		    }
 		    logger.info("value: " + value);
 		    myMap.put(paramArrayOfString[i], value);
-
 		}
 	    }
 	} catch (NamingException e) {
@@ -162,7 +159,6 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	}
 
 	return myMap;
-
     }
 
 
@@ -175,7 +171,6 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      */
 
     public boolean hasRole(String role) throws GinaException, RemoteException {
-	// new version
 	init();
 
 	String user = System.getProperty("user.name");
@@ -528,9 +523,4 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	}
     }
 
-    private String getLdapFilterUser(String user) {
-	String searchFilter = "(&(objectClass=user)(cn=" + user + "))";
-	return searchFilter;
-    }
-    
 }

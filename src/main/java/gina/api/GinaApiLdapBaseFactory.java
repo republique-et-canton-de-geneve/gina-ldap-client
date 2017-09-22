@@ -9,6 +9,7 @@ public class GinaApiLdapBaseFactory {
     // Logger
     private static final Logger LOG = Logger.getLogger(GinaApiLdapBaseFactory.class);
 
+    // Constructeur
     private GinaApiLdapBaseFactory() {
     }
 

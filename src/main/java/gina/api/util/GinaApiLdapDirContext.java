@@ -1,7 +1,6 @@
 package gina.api.util;
 
 import java.util.Hashtable;
-import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
