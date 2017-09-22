@@ -426,14 +426,4 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override
-    public void setInitTest(DirContext ctxtDir) throws GinaException {
-	if (this.ctxtDir == null) {
-	    this.ctxtDir = ctxtDir;
-	    if (this.ctxtDir == null) {
-		throw new GinaException("initialisation impossible");
-	    }
-	}
-    }
-
 }
