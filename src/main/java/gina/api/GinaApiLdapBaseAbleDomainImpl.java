@@ -68,14 +68,14 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     public Map<String, String> getUserAttrs(String user, String[] paramArrayOfString)
 	    throws GinaException, RemoteException {
 
-	List<Map<String, String>> data = new ArrayList<Map<String, String>>();
 	Arrays.asList(paramArrayOfString).contains("param");
 	Map<String, String> myMap = new HashMap<String, String>();
 
 	init();
 	try {
 	    SearchControls searchControls = getSearchControls();
-	    NamingEnumeration<?> answer = ctxtDir.search("ou=Users", "(&(cn=" + user + "))", searchControls);
+	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
+	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
@@ -167,7 +167,8 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls();
-	    NamingEnumeration<?> answer = ctxtDir.search("ou=Users", "(&(cn=" + user + "))", searchControls);
+	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
+	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
