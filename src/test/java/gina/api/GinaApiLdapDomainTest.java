@@ -19,6 +19,7 @@ import org.junit.matchers.JUnitMatchers;
 import org.junit.rules.ExpectedException;
 
 import gina.api.util.GinaApiLdapDirContext;
+import gina.api.util.GinaApiLdapUtils;
 
 public class GinaApiLdapDomainTest {
 
