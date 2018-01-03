@@ -5,9 +5,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import gina.api.GinaApiLdapBaseFactory;
-import gina.api.GinaException;
-
 public class Main {
 
     private static final Logger LOG = Logger.getLogger(Main.class);
