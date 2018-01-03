@@ -49,9 +49,9 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 		if (sr != null) {
 		    logger.debug("sr=" + sr);
 		    Attributes attrs = sr.getAttributes();
-		    if (attrs != null && attrs.get("member") != null) {
+		    if (attrs != null && attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBER) != null) {
 
-			NamingEnumeration<?> answerAtt = sr.getAttributes().get("member").getAll();
+			NamingEnumeration<?> answerAtt = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_MEMBER).getAll();
 			while (answerAtt.hasMoreElements()) {
 			    String att = (String) answerAtt.next();
 			    if (att.toUpperCase().contains(user.toUpperCase())) {
@@ -241,7 +241,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 		Attributes attrsResult = sr.getAttributes();
 		logger.debug("sr=" + sr);
 		if (attrsResult != null) {
-		    Attribute attmember = attrsResult.get("member");
+		    Attribute attmember = attrsResult.get(GinaApiLdapUtils.ATTRIBUTE_MEMBER);
 
 		    if (attmember != null) {
 			for (int j = 0; j < attmember.size(); j++) {

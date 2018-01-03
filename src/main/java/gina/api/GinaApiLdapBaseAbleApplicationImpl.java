@@ -48,6 +48,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	init();
 	try {
 	    SearchControls searchControls = new SearchControls();
+	    searchControls.setReturningAttributes(attrs);
 	    searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
@@ -126,7 +127,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	String user = System.getProperty(USER_NAME);
 	logger.debug("user=" + user);
 	try {
-	    SearchControls searchControls = getSearchControls();
+	    SearchControls searchControls = getSearchControls(new String[] {GinaApiLdapUtils.ATTRIBUTE_MEMBEROF});
 	    String searchFilter = "(&(objectClass=users)(cn=" + user + "))";
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
@@ -163,7 +164,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	List<String> roles = new ArrayList<String>();
 	try {
 
-	    SearchControls searchControls = getSearchControls();
+	    SearchControls searchControls = getSearchControls(new String[] {GinaApiLdapUtils.ATTRIBUTE_MEMBEROF});
 	    String searchFilter = "(&(objectClass=users)(cn=" + user + "))";
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
@@ -236,7 +237,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	try {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
-	    SearchControls searchControls = getSearchControls();
+	    SearchControls searchControls = getSearchControls(new String[] {GinaApiLdapUtils.ATTRIBUTE_MEMBER});
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=Groups,ou=" + ginaApplication, "(&(cn=*))", searchControls);
 
 	    if (answer != null) {
@@ -247,7 +248,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 		    Attributes attrs = sr.getAttributes();
 
 		    if (attrs != null) {
-			Attribute attmember = attrs.get("member");
+			Attribute attmember = attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBER);
 			    logger.debug("attmember=" + attmember);
 
 			if (attmember != null) {
@@ -296,7 +297,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	try {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
-	    SearchControls searchControls = getSearchControls();
+	    SearchControls searchControls = getSearchControls(new String[] {GinaApiLdapUtils.ATTRIBUTE_MEMBER});
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=" + role + "))",
 		    searchControls);
 
@@ -308,7 +309,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 		    Attributes attrs = sr.getAttributes();
 		    logger.debug("sr=" + sr);
 		    if (attrs != null) {
-			Attribute attmember = attrs.get("member");
+			Attribute attmember = attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBER);
 			logger.debug("attmember=" + attmember);
 
 			if (attmember != null) {

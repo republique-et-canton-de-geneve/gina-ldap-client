@@ -44,6 +44,16 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	return searchControls;
     }
 
+    protected SearchControls getSearchControls(final String[] attributes) {
+	final SearchControls searchControls = getSearchControls();
+
+	if(attributes != null && attributes.length > 0) {
+	    searchControls.setReturningAttributes(attributes);
+	}
+
+	return searchControls;
+    }
+
     protected void init() throws GinaException {
 	if (ctxtDir == null) {
 	    logger.info("init()");
@@ -112,7 +122,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
 	init();
 	try {
-	    SearchControls searchControls = getSearchControls();
+	    SearchControls searchControls = getSearchControls(paramArrayOfString);
 	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
