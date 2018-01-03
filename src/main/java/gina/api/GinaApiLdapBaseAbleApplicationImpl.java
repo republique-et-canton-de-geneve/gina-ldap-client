@@ -201,25 +201,22 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	List<String> roles = new ArrayList<String>();
 
 	try {
-	    SearchControls searchControls = getSearchControls();
+	    SearchControls searchControls = getSearchControls(new String[] {GinaApiLdapUtils.ATTRIBUTE_CN});
 
 	    String searchFilter = "cn=*";
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=Groups,ou=" + appli + "", "(&(cn=*))", searchControls);
 	    while (answer.hasMoreElements()) {
 		SearchResult sr = (SearchResult) answer.next();
 		logger.debug("sr=" + sr);
-		NamingEnumeration<?> nameEnum = sr.getAttributes().get("cn").getAll();
+		NamingEnumeration<?> nameEnum = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_CN).getAll();
 		if (nameEnum != null) {
 		    while (nameEnum.hasMoreElements()) {
 			String role = (String) nameEnum.next();
 			logger.debug("role=" + role);
 			roles.add(role);
 		    }
-
 		}
-
 	    }
-
 	} catch (NamingException e) {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());

@@ -176,7 +176,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	    String ginaDomain = GinaApiLdapUtils.extractDomain(application);
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
-	    SearchControls searchControls = getSearchControls();
+	    SearchControls searchControls = getSearchControls(new String[] {GinaApiLdapUtils.ATTRIBUTE_MEMBEROF});
 	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 

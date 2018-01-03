@@ -8,6 +8,7 @@ public class GinaApiLdapUtils {
     
     public static final String ATTRIBUTE_MEMBEROF = "memberOf";
     public static final String ATTRIBUTE_MEMBER = "member";
+    public static final String ATTRIBUTE_CN = "cn";
 
     private GinaApiLdapUtils() {
     }
