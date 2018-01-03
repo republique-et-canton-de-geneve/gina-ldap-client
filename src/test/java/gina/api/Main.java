@@ -1,9 +1,13 @@
 package gina.api;
 
 import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
+import gina.api.util.GinaApiLdapConfiguration;
+import gina.api.util.GinaApiLdapUtils;
 
 public class Main {
 
@@ -11,8 +15,17 @@ public class Main {
     private static final String TEST_SEPARATOR = "************************ ";
 
     public static void main(String[] args) {
+	System.setProperty("com.sun.jndi.ldap.connect.pool.debug", "fine");
+	
 	try {
-	    GinaApiLdapBaseAble ldapApplication = GinaApiLdapBaseFactory.getInstance();
+	    String server = "ldaps://vldap-dev.ceti.etat-ge.ch:636";
+	    String base = GinaApiLdapUtils.createPropertie(Arrays.asList("ou=OAC,o=gina"));
+	    String user = GinaApiLdapUtils.createPropertie(Arrays.asList("cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina"));
+	    String password = "Uddyzfsp4";
+	    int timeout = GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT;
+
+	    GinaApiLdapConfiguration ldapConf = new GinaApiLdapConfiguration(server, base, user, password, timeout);
+	    GinaApiLdapBaseAble ldapApplication = GinaApiLdapBaseFactory.getInstance(ldapConf);
 
 	    LOG.debug("LDAP APPLICATION");
 	    

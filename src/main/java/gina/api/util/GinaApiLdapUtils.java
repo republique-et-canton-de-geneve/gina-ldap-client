@@ -10,6 +10,8 @@ public class GinaApiLdapUtils {
     public static final String ATTRIBUTE_MEMBER = "member";
     public static final String ATTRIBUTE_CN = "cn";
 
+    public static final int LDAP_DEFAULT_TIMEOUT = 3000;
+
     private GinaApiLdapUtils() {
     }
     

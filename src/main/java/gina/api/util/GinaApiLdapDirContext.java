@@ -6,6 +6,7 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
+import javax.naming.ldap.InitialLdapContext;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -115,7 +116,9 @@ public class GinaApiLdapDirContext {
 	    env.put("com.sun.jndi.ldap.read.timeout", String.valueOf(timeout));
 	    env.put("com.sun.jndi.ldap.connect.pool", "true");
 
-	    ctxtDir = new InitialDirContext(env);
+//	    ctxtDir = new InitialDirContext(env);
+//	    InitialLdapContext ctx = new InitialLdapContext(env, null); 
+	    ctxtDir = new InitialLdapContext(env, null); 
 }
 
     public DirContext getCtxtDir() {

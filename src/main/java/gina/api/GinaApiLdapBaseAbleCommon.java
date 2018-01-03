@@ -4,23 +4,25 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
-import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+import javax.naming.ldap.InitialLdapContext;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import gina.api.util.GinaApiLdapDirContext;
+import gina.api.util.GinaApiLdapConfiguration;
 import gina.api.util.GinaApiLdapUtils;
 
 public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
@@ -32,7 +34,58 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     protected static final String NOT_IMPLEMENTED = "Not implemented";
     
     // 
-    protected DirContext ctxtDir = null;
+    protected InitialLdapContext ctxtDir = null;
+
+    protected GinaApiLdapConfiguration ldapConf = null;
+    
+    protected void closeDirContext(boolean closeConnection) {
+	if(closeConnection) {
+	    closeDirContext();
+	}
+    }
+    protected void closeDirContext() {
+	if (ctxtDir != null) {
+	    logger.info("closeDirContext");
+	    try {
+		ctxtDir.close();
+	    } catch (NamingException e) {
+		logger.error(e);
+	    }
+	    ctxtDir = null;
+	}
+
+    }
+    
+    protected InitialLdapContext createDirContext() throws GinaException {
+	logger.info("createDirContext");
+
+	InitialLdapContext result = null;
+
+	Hashtable<String, String> env = new Hashtable<String, String>(12);
+	
+	env.put(Context.INITIAL_CONTEXT_FACTORY, GinaApiLdapConfiguration.LDAP_CONTEXT_FACTORY);
+	env.put(Context.SECURITY_AUTHENTICATION, GinaApiLdapConfiguration.LDAP_AUTHENTICATION_MODE);
+	env.put(Context.SECURITY_PROTOCOL, "ssl");
+	env.put(Context.REFERRAL, GinaApiLdapConfiguration.LDAP_REFERRAL_MODE);
+	env.put("java.naming.ldap.version", "3");
+	env.put("com.sun.jndi.ldap.connect.pool", "true");
+	env.put("com.sun.jndi.ldap.connect.pool.maxsize", "20");
+	env.put("com.sun.jndi.ldap.connect.pool.prefsize", "10");
+
+	env.put(Context.PROVIDER_URL, ldapConf.getLdapServerUrl() + "/" + ldapConf.getLdapBaseDn());
+	env.put(Context.SECURITY_PRINCIPAL, ldapConf.getLdapUser());
+	env.put(Context.SECURITY_CREDENTIALS, ldapConf.getLdapPassword());
+	env.put("com.sun.jndi.ldap.read.timeout", String.valueOf(ldapConf.getLdapTimeLimit()));
+
+	try {
+	    result = new InitialLdapContext(env, null); 
+	} catch (NamingException e) {
+	    logger.error(e);
+	    throw new GinaException(e.getMessage());
+	}
+
+	return result;
+    }
 
     protected SearchControls getSearchControls() {
 	SearchControls searchControls = new SearchControls();
@@ -53,12 +106,8 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
     protected void init() throws GinaException {
 	if (ctxtDir == null) {
-	    logger.info("init()");
-
-	    GinaApiLdapDirContext galdc = new GinaApiLdapDirContext();
-	    galdc.init();
-
-	    ctxtDir = galdc.getCtxtDir();
+	    this.ctxtDir = createDirContext();
+	    logger.info(this.ctxtDir);
 	    if (ctxtDir == null) {
 		throw new GinaException("initialisation impossible");
 	    }
@@ -100,6 +149,9 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
+	finally {
+	    closeDirContext();
+	}
 
 	return false;
     }
@@ -113,6 +165,11 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
      */
     @Override
     public Map<String, String> getUserAttrs(String user, String[] paramArrayOfString)
+	    throws GinaException, RemoteException {
+	return this.getUserAttrs(user, paramArrayOfString, true);
+    }
+
+    public Map<String, String> getUserAttrs(String user, String[] paramArrayOfString, boolean closeConnection)
 	    throws GinaException, RemoteException {
 	Arrays.asList(paramArrayOfString).contains("param");
 	Map<String, String> myMap = new HashMap<String, String>();
@@ -153,6 +210,9 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	} catch (NamingException e) {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
+	}
+	finally {
+	    closeDirContext(closeConnection);
 	}
 
 	return myMap;
@@ -203,6 +263,9 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	} catch (NamingException e) {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
+	}
+	finally {
+	    closeDirContext();
 	}
 
 	logger.debug("roles=" + roles);

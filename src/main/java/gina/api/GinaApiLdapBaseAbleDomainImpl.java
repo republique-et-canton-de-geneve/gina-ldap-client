@@ -16,6 +16,7 @@ import javax.naming.directory.SearchResult;
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
 
+import gina.api.util.GinaApiLdapConfiguration;
 import gina.api.util.GinaApiLdapUtils;
 
 public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
@@ -24,11 +25,17 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     private static Logger logger = Logger.getLogger(GinaApiLdapBaseAbleDomainImpl.class);
 
     // Constructeur
-    public GinaApiLdapBaseAbleDomainImpl(DirContext ctxtDir) {
-	Validate.notNull(ctxtDir, "ctxtDir can't be null");
-	this.ctxtDir = ctxtDir;
-    }
+//    public GinaApiLdapBaseAbleDomainImpl(InitialLdapContext ctxtDir) {
+//	Validate.notNull(ctxtDir, "ctxtDir can't be null");
+//	this.ctxtDir = ctxtDir;
+//    }
 
+    public GinaApiLdapBaseAbleDomainImpl(GinaApiLdapConfiguration ldapConf) {
+	Validate.notNull(ldapConf);
+	this.ldapConf = ldapConf;
+//	this.ctxtDir = createDirContext();
+    }
+    
     /*
      * (non-Javadoc) Retourne vrai si l'utilisateur donné à le role donné pour
      * l'application donnée
@@ -66,6 +73,9 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
+	finally {
+	    closeDirContext();
+	}
 
 	return false;
     }
@@ -102,6 +112,9 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
+	finally {
+	    closeDirContext();
+	}
 
 	return roles;
     }
@@ -127,6 +140,9 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	} catch (NamingException e) {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
+	}
+	finally {
+	    closeDirContext();
 	}
 
 	return list;
@@ -155,6 +171,9 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	} catch (NamingException e) {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
+	}
+	finally {
+	    closeDirContext();
 	}
 
 	return list;
@@ -253,7 +272,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 					.toLowerCase();
 				if (!users.contains(username)) {
 				    users.add(username);
-				    Map<String, String> map = this.getUserAttrs(username, attrs);
+				    Map<String, String> map = this.getUserAttrs(username, attrs, false);
 				    list.add(map);
 				}
 			    }
