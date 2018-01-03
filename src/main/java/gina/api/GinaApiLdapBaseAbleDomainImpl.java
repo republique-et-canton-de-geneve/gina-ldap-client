@@ -41,7 +41,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	try {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
-	    SearchControls searchControls = getSearchControls();
+	    SearchControls searchControls = getSearchControls(new String[] {GinaApiLdapUtils.ATTRIBUTE_MEMBER});
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=" + role + "))", searchControls);
 
 	    while (answer.hasMoreElements()) {
@@ -50,7 +50,6 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 		    logger.debug("sr=" + sr);
 		    Attributes attrs = sr.getAttributes();
 		    if (attrs != null && attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBER) != null) {
-
 			NamingEnumeration<?> answerAtt = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_MEMBER).getAll();
 			while (answerAtt.hasMoreElements()) {
 			    String att = (String) answerAtt.next();
@@ -82,13 +81,13 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	try {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
-	    SearchControls searchControls = getSearchControls();
+	    SearchControls searchControls = getSearchControls(new String[] {GinaApiLdapUtils.ATTRIBUTE_CN});
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=*))", searchControls);
 
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
-		    NamingEnumeration<?> att = sr.getAttributes().get("cn").getAll();
+		    NamingEnumeration<?> att = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_CN).getAll();
 		    while (att.hasMoreElements()) {
 			String cn = (String) att.next();
 			logger.debug("cn=" + cn);
