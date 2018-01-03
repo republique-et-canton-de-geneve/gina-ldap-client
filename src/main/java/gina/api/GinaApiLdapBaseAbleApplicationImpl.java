@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
 
+import gina.api.util.GinaApiLdapConfiguration;
 import gina.api.util.GinaApiLdapUtils;
 
 public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommon {
@@ -30,9 +31,15 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     private static final String USER_NAME = "user.name";
 
     // Constructeur
-    public GinaApiLdapBaseAbleApplicationImpl(DirContext ctxtDir) {
-	Validate.notNull(ctxtDir, "ctxtDir can't be null");
-	this.ctxtDir = ctxtDir;
+//    public GinaApiLdapBaseAbleApplicationImpl(InitialLdapContext ctxtDir) {
+//	Validate.notNull(ctxtDir, "ctxtDir can't be null");
+//	this.ctxtDir = ctxtDir;
+//    }
+    
+    public GinaApiLdapBaseAbleApplicationImpl(GinaApiLdapConfiguration ldapConf) {
+	Validate.notNull(ldapConf);
+	this.ldapConf = ldapConf;
+//	init();
     }
     
     /*
@@ -76,6 +83,9 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
+	finally {
+	    closeDirContext();
+	}
 
 	return myMap;
     }
@@ -115,6 +125,9 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
+	finally {
+	    closeDirContext();
+	}
     }
 
     /*
@@ -149,6 +162,9 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	} catch (NamingException e) {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
+	}
+	finally {
+	    closeDirContext();
 	}
 
 	return roles;
@@ -188,6 +204,9 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
 	}
+	finally {
+	    closeDirContext();
+	}
 
 	return roles;
     }
@@ -222,6 +241,9 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	} catch (NamingException e) {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
+	}
+	finally {
+	    closeDirContext();
 	}
 
 	return roles;
@@ -263,7 +285,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 				    if (StringUtils.isNotBlank(username) && !users.contains(username)) {
 					Map<String, String> map = new HashMap<String, String>();
 					users.add(username);
-					map = this.getUserAttrs(username, paramArrayOfString);
+					map = this.getUserAttrs(username, paramArrayOfString, false);
 					list.add(map);
 				    }
 				}
@@ -275,6 +297,9 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	} catch (NamingException e) {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
+	}
+	finally {
+	    closeDirContext();
 	}
 
 	return list;
@@ -321,7 +346,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 				    if (!users.contains(username)) {
 					Map<String, String> map = new HashMap<String, String>();
 					users.add(username);
-					map = this.getUserAttrs(username, paramArrayOfString);
+					map = this.getUserAttrs(username, paramArrayOfString, false);
 					list.add(map);
 				    }
 				}
@@ -333,6 +358,9 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	} catch (NamingException e) {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
+	}
+	finally {
+	    closeDirContext();
 	}
 
 	return list;

@@ -2,6 +2,7 @@ package gina.api;
 
 import org.apache.log4j.Logger;
 
+import gina.api.util.GinaApiLdapConfiguration;
 import gina.api.util.GinaApiLdapDirContext;
 
 public class GinaApiLdapBaseFactory {
@@ -13,26 +14,14 @@ public class GinaApiLdapBaseFactory {
     private GinaApiLdapBaseFactory() {
     }
 
-    public static GinaApiLdapBaseAble getInstance() {
-	GinaApiLdapDirContext galdc = new GinaApiLdapDirContext();
-	galdc.init();
-	return getInstance(galdc);
-    }
-
-    /**
-     * @deprecated(Il n'est pas recommandé d'utiliser cette méthode en direct. L'instanciation est censé se faire via le fichier de properties du serveur via getInstance)
-     * @param galdc
-     * @return
-     */
-    @Deprecated
-    public static GinaApiLdapBaseAble getInstance(GinaApiLdapDirContext galdc) {
+    public static GinaApiLdapBaseAble getInstance(GinaApiLdapConfiguration ldapConf) {
 	try {
 	    GinaApiLdapBaseAble result;
 
-	    if (GinaApiLdapDirContext.APPLICATION.equals(galdc.getType())) {
-		result = new GinaApiLdapBaseAbleApplicationImpl(galdc.getCtxtDir());
+	    if (GinaApiLdapDirContext.APPLICATION.equals(ldapConf.getLdapType())) {
+		result = new GinaApiLdapBaseAbleApplicationImpl(ldapConf);
 	    } else {
-		result = new GinaApiLdapBaseAbleDomainImpl(galdc.getCtxtDir());
+		result = new GinaApiLdapBaseAbleDomainImpl(ldapConf);
 	    }
 
 	    return result;

@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 import org.junit.rules.ExpectedException;
 
-import gina.api.util.GinaApiLdapDirContext;
+import gina.api.util.GinaApiLdapConfiguration;
 import gina.api.util.GinaApiLdapUtils;
 
 public class GinaApiLdapApplicationTest {
@@ -39,7 +39,7 @@ public class GinaApiLdapApplicationTest {
 
     // LDAP au niveau du domaine - Rôle de test
     private static final String LDAP_APPLICATION_TEST_ROLE = "UTILISATEUR";
-    
+
     private static GinaApiLdapBaseAble api;
 
     @Rule
@@ -51,14 +51,12 @@ public class GinaApiLdapApplicationTest {
 	    String base = GinaApiLdapUtils.createPropertie(Arrays.asList("ou=OAC,o=gina"));
 	    String user = GinaApiLdapUtils.createPropertie(Arrays.asList("cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina"));
 	    String password = "Uddyzfsp4";
-	    int timeout = 3000;
+	    int timeout = GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT;
 
-	    GinaApiLdapDirContext galdc = new GinaApiLdapDirContext();
-	    galdc.init(server, base, user, password, timeout);
-
-	    api = GinaApiLdapBaseFactory.getInstance(galdc);
+	    GinaApiLdapConfiguration ldapConf = new GinaApiLdapConfiguration(server, base, user, password, timeout);
+	    api = GinaApiLdapBaseFactory.getInstance(ldapConf);
     }
-    
+
     @Test
     public void getAllUsersTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);

@@ -19,7 +19,7 @@ import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 import org.junit.rules.ExpectedException;
 
-import gina.api.util.GinaApiLdapDirContext;
+import gina.api.util.GinaApiLdapConfiguration;
 import gina.api.util.GinaApiLdapUtils;
 
 public class GinaApiLdapDomainTest {
@@ -50,12 +50,10 @@ public class GinaApiLdapDomainTest {
 	    String base = GinaApiLdapUtils.createPropertie(Arrays.asList("ou=CSBUGTRACK,o=gina"));
 	    String user = GinaApiLdapUtils.createPropertie(Arrays.asList("cn=tcnvldap6470devaag,ou=Users,ou=CSBUGTRACK,o=gina"));
 	    String password = "Xhngmfxp9";
-	    int timeout = 3000;
+	    int timeout = GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT;
 
-	    GinaApiLdapDirContext galdc = new GinaApiLdapDirContext();
-	    galdc.init(server, base, user, password, timeout);
-
-	    api = GinaApiLdapBaseFactory.getInstance(galdc);
+	    GinaApiLdapConfiguration ldapConf = new GinaApiLdapConfiguration(server, base, user, password, timeout);
+	    api = GinaApiLdapBaseFactory.getInstance(ldapConf);
     }
     
     @Test
