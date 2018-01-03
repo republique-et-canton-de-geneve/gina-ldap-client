@@ -30,6 +30,7 @@ public class GinaApiLdapDirContext {
     private String ldapBaseDn = null;
     private String ldapUser = null;
     private String ldapPassword = null;
+    private int ldapTimeout = 3000;
 
     //
     private DirContext ctxtDir = null;
@@ -44,13 +45,15 @@ public class GinaApiLdapDirContext {
 	    ch.ge.cti.configuration.Configuration.addRelativeToStandardConfFolder(CONFIGURATION_FILE);
 	    ch.ge.cti.configuration.Configuration.addClasspath(CONFIGURATION_FILE);
 
+	    ldapServerUrl = ch.ge.cti.configuration.Configuration.getParameter("ct-gina-ldap-client.LDAP_SERVER_URL");
 	    ldapBaseDn = GinaApiLdapUtils
 		    .createPropertie(ch.ge.cti.configuration.Configuration.getList("ct-gina-ldap-client.LDAP_BASE_DN"));
 	    ldapUser = GinaApiLdapUtils
 		    .createPropertie(ch.ge.cti.configuration.Configuration.getList("ct-gina-ldap-client.LDAP_USER"));
 	    ldapPassword = ch.ge.cti.configuration.Configuration.getParameter("ct-gina-ldap-client.LDAP_PASSWORD");
-	    
-	    init(ldapBaseDn, ldapUser, ldapPassword);
+	    ldapTimeout = ch.ge.cti.configuration.Configuration.getParameterAsInt("ct-gina-ldap-client.LDAP_TIMEOUT_SEARCH", 3000);
+
+	    init(ldapServerUrl, ldapBaseDn, ldapUser, ldapPassword, ldapTimeout);
 	    
 	    LOG.debug("init ok");
 	} catch (Exception e) {
@@ -60,17 +63,15 @@ public class GinaApiLdapDirContext {
 	LOG.info("End");
     }
 
-    public void init(final String base, final String user, final String password) {
+    public void init(final String server, final String base, final String user, final String password, final int timeout) {
 	LOG.info("Start");
 
 	try {
-	    ch.ge.cti.configuration.Configuration.addRelativeToStandardConfFolder(CONFIGURATION_FILE);
-	    ch.ge.cti.configuration.Configuration.addClasspath(CONFIGURATION_FILE);
-
-	    ldapServerUrl = ch.ge.cti.configuration.Configuration.getParameter("ct-gina-ldap-client.LDAP_SERVER_URL");
+	    ldapServerUrl = server;
 	    ldapBaseDn = base;
 	    ldapUser = user;
 	    ldapPassword = password;
+	    ldapTimeout = timeout;
 
 	    LOG.info("LDAP_SERVER_URL = " + ldapServerUrl);
 	    LOG.info("LDAP_BASE_DN = " + ldapBaseDn);
@@ -85,7 +86,7 @@ public class GinaApiLdapDirContext {
 		type = DOMAIN;
 	    }
 
-	    createCtxDir(base, user, password);
+	    createCtxDir(server, base, user, password, timeout);
 
 	    LOG.debug("init ok");
 	} catch (NamingException e) {
@@ -98,10 +99,10 @@ public class GinaApiLdapDirContext {
     }
 
     public void createCtxDir() throws NamingException {
-	    createCtxDir(ldapBaseDn, ldapUser, ldapPassword);
+	    createCtxDir(ldapServerUrl, ldapBaseDn, ldapUser, ldapPassword, ldapTimeout);
     }
 
-    public void createCtxDir(String base, String user, String password) throws NamingException {
+    public void createCtxDir(String server, String base, String user, String password, int timeout) throws NamingException {
 	    Hashtable<String, String> env = new Hashtable<String, String>();
 	    env.put(Context.INITIAL_CONTEXT_FACTORY, LDAP_CONTEXT_FACTORY);
 	    env.put(Context.PROVIDER_URL, ldapServerUrl + "/" + base);
@@ -111,6 +112,8 @@ public class GinaApiLdapDirContext {
 	    env.put(Context.SECURITY_CREDENTIALS, password);
 	    env.put(Context.REFERRAL, LDAP_REFERRAL_MODE);
 	    env.put("java.naming.ldap.version", "3");
+	    env.put("com.sun.jndi.ldap.read.timeout", String.valueOf(timeout));
+	    env.put("com.sun.jndi.ldap.connect.pool", "true");
 
 	    ctxtDir = new InitialDirContext(env);
 }

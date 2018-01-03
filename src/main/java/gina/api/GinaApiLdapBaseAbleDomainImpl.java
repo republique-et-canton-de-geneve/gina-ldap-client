@@ -13,6 +13,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
 
 import gina.api.util.GinaApiLdapUtils;
@@ -24,6 +25,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 
     // Constructeur
     public GinaApiLdapBaseAbleDomainImpl(DirContext ctxtDir) {
+	Validate.notNull(ctxtDir, "ctxtDir can't be null");
 	this.ctxtDir = ctxtDir;
     }
 

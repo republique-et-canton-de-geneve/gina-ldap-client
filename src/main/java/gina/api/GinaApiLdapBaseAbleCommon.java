@@ -35,11 +35,8 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     protected DirContext ctxtDir = null;
 
     protected SearchControls getSearchControls() {
-	int maxTimeLimit = ch.ge.cti.configuration.Configuration.getParameterAsInt("ct-gina-ldap-client.LDAP_TIMEOUT_SEARCH", 3000);
-
 	SearchControls searchControls = new SearchControls();
 	searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-	searchControls.setTimeLimit(maxTimeLimit);
 
 	return searchControls;
     }

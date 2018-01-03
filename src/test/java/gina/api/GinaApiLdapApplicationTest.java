@@ -4,6 +4,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -46,15 +47,14 @@ public class GinaApiLdapApplicationTest {
 
     @BeforeClass
     public static void initApi() throws ConfigurationException {
-	    ch.ge.cti.configuration.Configuration.addRelativeToStandardConfFolder("ct-gina-ldap-client.properties");
-	    ch.ge.cti.configuration.Configuration.addClasspath("ct-gina-ldap-client.properties");
-
-	    String base = GinaApiLdapUtils.createPropertie(ch.ge.cti.configuration.Configuration.getList("ct-gina-ldap-client.LDAP_BASE_DN_APPLICATION"));
-	    String user = GinaApiLdapUtils.createPropertie(ch.ge.cti.configuration.Configuration.getList("ct-gina-ldap-client.LDAP_USER_APPLICATION"));
-	    String password = ch.ge.cti.configuration.Configuration.getParameter("ct-gina-ldap-client.LDAP_PASSWORD_APPLICATION");
+	    String server = "ldaps://vldap-dev.ceti.etat-ge.ch:636";
+	    String base = GinaApiLdapUtils.createPropertie(Arrays.asList("ou=OAC,o=gina"));
+	    String user = GinaApiLdapUtils.createPropertie(Arrays.asList("cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina"));
+	    String password = "Uddyzfsp4";
+	    int timeout = 3000;
 
 	    GinaApiLdapDirContext galdc = new GinaApiLdapDirContext();
-	    galdc.init(base, user, password);
+	    galdc.init(server, base, user, password, timeout);
 
 	    api = GinaApiLdapBaseFactory.getInstance(galdc);
     }
