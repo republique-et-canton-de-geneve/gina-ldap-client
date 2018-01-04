@@ -61,12 +61,11 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 				return true;
 			    }
 			}
-			answerAtt.close();
+			GinaApiLdapUtils.closeQuietly(answerAtt);
 		    }
 		}
 	    }
-
-	    answer.close();
+	    GinaApiLdapUtils.closeQuietly(answer);
 	} catch (NamingException e) {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
