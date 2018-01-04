@@ -233,7 +233,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     }
 
     @Override
-    public List<String> getRoles() throws GinaException, RemoteException {
+    public List<String> getRoles() throws RemoteException {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
 
@@ -277,8 +277,6 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 			}
 		    }
 		}
-
-		sr = null;
 	    }
 	}
 
