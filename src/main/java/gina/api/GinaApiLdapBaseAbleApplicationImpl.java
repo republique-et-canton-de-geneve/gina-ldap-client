@@ -68,13 +68,13 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 				value = value + ":" + (String) nameEnum.next();
 			    }
 			}
-			nameEnum.close();
+			GinaApiLdapUtils.closeQuietly(nameEnum);
 			logger.debug("value=" + value);
 			myMap.put(attrs[i], value);
 		    }
 		}
 
-		answer.close();
+		GinaApiLdapUtils.closeQuietly(answer);
 	    }
 	} catch (NamingException e) {
 	    logger.error(e);
@@ -291,7 +291,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 				    logger.debug("username=" + username);
 				    if (StringUtils.isNotBlank(username) && !users.contains(username)) {
 					users.add(username);
-					Map<String, String> map = this.getUserAttrs(username, paramArrayOfString, false);
+					Map<String, String> map = this.getUserAttrs(username, paramArrayOfString,
+						false);
 					list.add(map);
 				    }
 				}
