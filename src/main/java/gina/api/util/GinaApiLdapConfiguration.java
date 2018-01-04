@@ -36,18 +36,18 @@ public class GinaApiLdapConfiguration {
 	Validate.notNull(user);
 	Validate.notNull(password);
 
-	ldapServerUrl = server;
-	ldapBaseDn = base;
-	ldapUser = user;
-	ldapPassword = password;
-	ldapTimeLimit = timeLimit;
+	this.ldapServerUrl = server;
+	this.ldapBaseDn = base;
+	this.ldapUser = user;
+	this.ldapPassword = password;
+	this.ldapTimeLimit = timeLimit;
 
-	int count = StringUtils.countMatches(ldapUser, ",ou=");
+	int count = StringUtils.countMatches(user, ",ou=");
 	LOG.debug("count=" + count);
 	if (count > 2) {
-	    ldapType = APPLICATION;
+	    this.ldapType = APPLICATION;
 	} else {
-	    ldapType = DOMAIN;
+	    this.ldapType = DOMAIN;
 	}
     }
 
