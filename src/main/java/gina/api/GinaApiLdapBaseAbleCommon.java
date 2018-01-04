@@ -113,7 +113,6 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     protected void init() throws GinaException {
 	if (ctxtDir == null) {
 	    this.ctxtDir = createDirContext();
-	    logger.info(this.ctxtDir);
 	    if (ctxtDir == null) {
 		throw new GinaException("initialisation impossible");
 	    }
