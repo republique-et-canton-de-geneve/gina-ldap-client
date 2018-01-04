@@ -46,6 +46,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	Arrays.asList(attrs).contains("param");
 	Map<String, String> myMap = new HashMap<String, String>();
 	String user = System.getProperty(USER_NAME);
+	NamingEnumeration<?> answer = null;
+	NamingEnumeration<?> nameEnum = null;
 
 	init();
 	try {
@@ -53,13 +55,13 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    searchControls.setReturningAttributes(attrs);
 	    searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
-	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
+	    answer = ctxtDir.search("", searchFilter, searchControls);
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
 		    Attributes attributes = sr.getAttributes();
 		    for (int i = 0; i < attrs.length; i++) {
-			NamingEnumeration<?> nameEnum = attributes.get(attrs[i]).getAll();
+			nameEnum = attributes.get(attrs[i]).getAll();
 			String value = "";
 			while (nameEnum.hasMoreElements()) {
 			    if (value.isEmpty()) {
@@ -73,13 +75,13 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 			myMap.put(attrs[i], value);
 		    }
 		}
-
-		GinaApiLdapUtils.closeQuietly(answer);
 	    }
 	} catch (NamingException e) {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
 	} finally {
+	    GinaApiLdapUtils.closeQuietly(nameEnum);
+	    GinaApiLdapUtils.closeQuietly(answer);
 	    closeDirContext();
 	}
 
@@ -110,20 +112,20 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     @Override
     public boolean hasUserRole(String user, String role) throws GinaException, RemoteException {
 	init();
+	NamingEnumeration<?> answer = null;
 
 	try {
 	    SearchControls searchControls = getSearchControls();
 	    String searchFilter = "(&(objectClass=users)(cn=" + user + ")&(objectClass=memberOf)(cn=" + role + "))";
-	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
+	    answer = ctxtDir.search("", searchFilter, searchControls);
 	    boolean result = (answer != null && answer.hasMoreElements());
-
-	    GinaApiLdapUtils.closeQuietly(answer);
 
 	    return result;
 	} catch (NamingException e) {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
 	} finally {
+	    GinaApiLdapUtils.closeQuietly(answer);
 	    closeDirContext();
 	}
     }
@@ -139,32 +141,34 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	List<String> roles = new ArrayList<String>();
 	String user = System.getProperty(USER_NAME);
 	logger.debug("user=" + user);
+	NamingEnumeration<?> answer = null;
+	NamingEnumeration<?> nameEnum = null;
 	try {
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBEROF });
 	    String searchFilter = "(&(objectClass=users)(cn=" + user + "))";
-	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
+	    answer = ctxtDir.search("", searchFilter, searchControls);
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
 		    Attributes attributes = sr.getAttributes();
 		    if (attributes != null) {
-			NamingEnumeration<?> nameEnum = attributes.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
+			nameEnum = attributes.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
 			String value = "";
 			while (nameEnum.hasMoreElements()) {
 			    String role = (String) nameEnum.next();
 			    roles.add(role);
 			}
 			logger.debug("value=" + value);
-
 			GinaApiLdapUtils.closeQuietly(nameEnum);
 		    }
 		}
 	    }
-	    GinaApiLdapUtils.closeQuietly(answer);
 	} catch (NamingException e) {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
 	} finally {
+	    GinaApiLdapUtils.closeQuietly(nameEnum);
+	    GinaApiLdapUtils.closeQuietly(answer);
 	    closeDirContext();
 	}
 
@@ -181,17 +185,19 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     public List<String> getUserRoles(String user) throws GinaException, RemoteException {
 	init();
 	List<String> roles = new ArrayList<String>();
+	NamingEnumeration<?> answer = null;
+	NamingEnumeration<?> nameEnum = null;
 	try {
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBEROF });
 	    String searchFilter = "(&(objectClass=users)(cn=" + user + "))";
-	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
+	    answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    while (answer.hasMoreElements()) {
 		SearchResult sr = (SearchResult) answer.next();
 		logger.debug("sr=" + sr);
 		Attributes attributes = sr.getAttributes();
-		NamingEnumeration<?> nameEnum = attributes.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
+		nameEnum = attributes.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
 		while (nameEnum.hasMoreElements()) {
 		    String role = (String) nameEnum.next();
 		    if (StringUtils.isNotBlank(role)) {
@@ -200,14 +206,14 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 			roles.add(roleCleanString[0]);
 		    }
 		}
-		nameEnum.close();
+		GinaApiLdapUtils.closeQuietly(nameEnum);
 	    }
-
-	    GinaApiLdapUtils.closeQuietly(answer);
 	} catch (NamingException e) {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
 	} finally {
+	    GinaApiLdapUtils.closeQuietly(nameEnum);
+	    GinaApiLdapUtils.closeQuietly(answer);
 	    closeDirContext();
 	}
 
@@ -223,16 +229,18 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     public List<String> getAppRoles(String appli) throws GinaException, RemoteException {
 	init();
 	List<String> roles = new ArrayList<String>();
+	NamingEnumeration<?> answer = null;
+	NamingEnumeration<?> nameEnum = null;
 
 	try {
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_CN });
 
-	    NamingEnumeration<?> answer = ctxtDir.search("ou=Groups,ou=" + appli + "", "(&(cn=*))", searchControls);
+	    answer = ctxtDir.search("ou=Groups,ou=" + appli + "", "(&(cn=*))", searchControls);
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
 		    logger.debug("sr=" + sr);
-		    NamingEnumeration<?> nameEnum = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_CN).getAll();
+		    nameEnum = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_CN).getAll();
 		    if (nameEnum != null) {
 			while (nameEnum.hasMoreElements()) {
 			    String role = (String) nameEnum.next();
@@ -242,13 +250,13 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 			GinaApiLdapUtils.closeQuietly(nameEnum);
 		    }
 		}
-
-		GinaApiLdapUtils.closeQuietly(answer);
 	    }
 	} catch (NamingException e) {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
 	} finally {
+	    GinaApiLdapUtils.closeQuietly(nameEnum);
+	    GinaApiLdapUtils.closeQuietly(answer);
 	    closeDirContext();
 	}
 
@@ -261,12 +269,12 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	init();
 	List<String> users = new ArrayList<String>();
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+	NamingEnumeration<?> answer = null;
 	try {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBER });
-	    NamingEnumeration<?> answer = ctxtDir.search("ou=Groups,ou=" + ginaApplication, "(&(cn=*))",
-		    searchControls);
+	    answer = ctxtDir.search("ou=Groups,ou=" + ginaApplication, "(&(cn=*))", searchControls);
 
 	    if (answer != null) {
 		logger.debug("answer=" + answer);
@@ -300,12 +308,12 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 			}
 		    }
 		}
-		GinaApiLdapUtils.closeQuietly(answer);
 	    }
 	} catch (NamingException e) {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
 	} finally {
+	    GinaApiLdapUtils.closeQuietly(answer);
 	    closeDirContext();
 	}
 
@@ -325,12 +333,12 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	init();
 	List<String> users = new ArrayList<String>();
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+	NamingEnumeration<?> answer = null;
 	try {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBER });
-	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=" + role + "))",
-		    searchControls);
+	    answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=" + role + "))", searchControls);
 
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
@@ -352,7 +360,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 					    .toLowerCase();
 				    if (!users.contains(username)) {
 					users.add(username);
-					Map<String, String> map = this.getUserAttrs(username, paramArrayOfString, false);
+					Map<String, String> map = this.getUserAttrs(username, paramArrayOfString,
+						false);
 					list.add(map);
 				    }
 				}
@@ -360,13 +369,12 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 			}
 		    }
 		}
-
-		GinaApiLdapUtils.closeQuietly(answer);
 	    }
 	} catch (NamingException e) {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
 	} finally {
+	    GinaApiLdapUtils.closeQuietly(answer);
 	    closeDirContext();
 	}
 

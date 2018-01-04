@@ -130,12 +130,13 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     @Override
     public boolean isValidUser(String user) throws GinaException, RemoteException {
 	init();
+	NamingEnumeration<?> answer = null;
 	try {
 	    SearchControls searchControls = getSearchControls();
 	    Attributes matchAttrs = new BasicAttributes(true);
 	    matchAttrs.put(new BasicAttribute("cn", user));
 	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
-	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
+	    answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    while (answer.hasMoreElements()) {
 		SearchResult sr = (SearchResult) answer.next();
@@ -153,12 +154,11 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 		    }
 		}
 	    }
-
-	    GinaApiLdapUtils.closeQuietly(answer);
 	} catch (NamingException e) {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
 	} finally {
+	    GinaApiLdapUtils.closeQuietly(answer);
 	    closeDirContext();
 	}
 
@@ -182,12 +182,14 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	    throws GinaException, RemoteException {
 	Arrays.asList(paramArrayOfString).contains("param");
 	Map<String, String> myMap = new HashMap<String, String>();
+	NamingEnumeration<?> answer = null;
+	NamingEnumeration<?> nameEnum = null;
 
 	init();
 	try {
 	    SearchControls searchControls = getSearchControls(paramArrayOfString);
 	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
-	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
+	    answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
@@ -200,7 +202,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 			    logger.debug("attr=" + attr);
 			    Attribute attribute = attrs.get(attr);
 			    if (attribute != null) {
-				NamingEnumeration<?> nameEnum = attribute.getAll();
+				nameEnum = attribute.getAll();
 				if (nameEnum != null) {
 				    String value = "";
 				    while (nameEnum.hasMoreElements()) {
@@ -212,19 +214,19 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 				    }
 				    logger.debug("value=" + value);
 				    myMap.put(paramArrayOfString[i], value);
+				    GinaApiLdapUtils.closeQuietly(nameEnum);
 				}
-				GinaApiLdapUtils.closeQuietly(nameEnum);
 			    }
 			}
 		    }
 		}
-
-		GinaApiLdapUtils.closeQuietly(answer);
 	    }
 	} catch (NamingException e) {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
 	} finally {
+	    GinaApiLdapUtils.closeQuietly(nameEnum);
+	    GinaApiLdapUtils.closeQuietly(answer);
 	    closeDirContext(closeConnection);
 	}
 
@@ -242,13 +244,16 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     public List<String> getUserRoles(String user, String application) throws GinaException, RemoteException {
 	init();
 	List<String> roles = new ArrayList<String>();
+	NamingEnumeration<?> answer = null;
+	NamingEnumeration<?> answerAtt = null;
+
 	try {
 	    String ginaDomain = GinaApiLdapUtils.extractDomain(application);
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBEROF });
 	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
-	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
+	    answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
@@ -258,7 +263,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 			final Attributes attrs = sr.getAttributes();
 			logger.debug("attrs=" + attrs);
 			if (attrs != null && attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF) != null) {
-			    NamingEnumeration<?> answerAtt = attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
+			    answerAtt = attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
 			    while (answerAtt.hasMoreElements()) {
 				String att = (String) answerAtt.next();
 				logger.debug(att);
@@ -273,13 +278,13 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 			}
 		    }
 		}
-
-		GinaApiLdapUtils.closeQuietly(answer);
 	    }
 	} catch (NamingException e) {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
 	} finally {
+	    GinaApiLdapUtils.closeQuietly(answerAtt);
+	    GinaApiLdapUtils.closeQuietly(answer);
 	    closeDirContext();
 	}
 
