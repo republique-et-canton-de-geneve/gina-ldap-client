@@ -2,19 +2,27 @@ package gina.api.util;
 
 import java.util.List;
 
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 public class GinaApiLdapUtils {
-    
+
+    // Logger
+    private static final Logger LOG = Logger.getLogger(GinaApiLdapUtils.class);
+
+    // LDAP Attributes
     public static final String ATTRIBUTE_MEMBEROF = "memberOf";
     public static final String ATTRIBUTE_MEMBER = "member";
     public static final String ATTRIBUTE_CN = "cn";
-
     public static final int LDAP_DEFAULT_TIMEOUT = 3000;
 
+    // Constructeur
     private GinaApiLdapUtils() {
     }
-    
+
     public static String extractDomain(final String domaineapplication) {
 	String result = null;
 	if (StringUtils.isNotBlank(domaineapplication) && domaineapplication.contains(".")) {
@@ -23,7 +31,7 @@ public class GinaApiLdapUtils {
 	}
 	return result;
     }
-    
+
     public static String extractApplication(final String domaineapplication) {
 	String result = null;
 	if (StringUtils.isNotBlank(domaineapplication) && domaineapplication.contains(".")) {
@@ -32,7 +40,7 @@ public class GinaApiLdapUtils {
 	}
 	return result;
     }
-    
+
     public static String createPropertie(final List<String> list) {
 	StringBuilder builder = new StringBuilder();
 	int size = 0;
@@ -48,6 +56,16 @@ public class GinaApiLdapUtils {
 
     public static String getLdapFilterUser(String user) {
 	return "(&(objectClass=user)(cn=" + user + "))";
+    }
+
+    public static void closeQuietly(NamingEnumeration obj) {
+	if (obj != null) {
+	    try {
+		obj.close();
+	    } catch (NamingException e) {
+		LOG.error(e);
+	    }
+	}
     }
 
 }

@@ -42,33 +42,29 @@
 	</scm>
 
 	<dependencies>
-    	<dependency>
-			<groupId>ch.ge.cti</groupId>
-			<artifactId>ConfigurationLoader</artifactId>
-			<version>1.0.1</version>
-    	</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>ch.ge.cti.ct.act</groupId> -->
-<!-- 			<artifactId>ct_configuration</artifactId> -->
-<!-- 			<version>1.0.2-SNAPSHOT</version> -->
-<!-- 		</dependency> -->
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.6.0</version>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
 		</dependency>
+
+		<!-- **************************** -->
+		<!-- ***** PROVIDED ************* -->
+		<!-- **************************** -->
+
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>dom4j</groupId>
-			<artifactId>dom4j</artifactId>
-		</dependency>
+		
+		<!-- **************************** -->
+		<!-- ***** TEST ***************** -->
+		<!-- **************************** -->
+		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hamcrest</groupId>

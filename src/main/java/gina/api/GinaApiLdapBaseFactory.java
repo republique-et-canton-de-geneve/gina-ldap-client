@@ -3,7 +3,6 @@ package gina.api;
 import org.apache.log4j.Logger;
 
 import gina.api.util.GinaApiLdapConfiguration;
-import gina.api.util.GinaApiLdapDirContext;
 
 public class GinaApiLdapBaseFactory {
 
@@ -18,7 +17,7 @@ public class GinaApiLdapBaseFactory {
 	try {
 	    GinaApiLdapBaseAble result;
 
-	    if (GinaApiLdapDirContext.APPLICATION.equals(ldapConf.getLdapType())) {
+	    if (GinaApiLdapConfiguration.APPLICATION.equals(ldapConf.getLdapType())) {
 		result = new GinaApiLdapBaseAbleApplicationImpl(ldapConf);
 	    } else {
 		result = new GinaApiLdapBaseAbleDomainImpl(ldapConf);

@@ -33,17 +33,18 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
     // Message d'erreur pour les méthodes non implémentées
     protected static final String NOT_IMPLEMENTED = "Not implemented";
-    
-    // 
+
+    //
     protected LdapContext ctxtDir = null;
 
     protected GinaApiLdapConfiguration ldapConf = null;
-    
+
     protected void closeDirContext(boolean closeConnection) {
-	if(closeConnection) {
+	if (closeConnection) {
 	    closeDirContext();
 	}
     }
+
     protected void closeDirContext() {
 	if (ctxtDir != null) {
 	    logger.info("closeDirContext");
@@ -56,14 +57,14 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	}
 
     }
-    
+
     protected InitialLdapContext createDirContext() throws GinaException {
 	logger.info("createDirContext");
 
 	InitialLdapContext result = null;
 
 	Hashtable<String, String> env = new Hashtable<String, String>(15);
-	
+
 	env.put(Context.INITIAL_CONTEXT_FACTORY, GinaApiLdapConfiguration.LDAP_CONTEXT_FACTORY);
 	env.put(Context.SECURITY_AUTHENTICATION, GinaApiLdapConfiguration.LDAP_AUTHENTICATION_MODE);
 	env.put(Context.SECURITY_PROTOCOL, "ssl");
@@ -77,14 +78,14 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	env.put("com.sun.jndi.ldap.connect.pool.prefsize", "10");
 	env.put("com.sun.jndi.ldap.connect.pool.debug", "fine");
 	env.put("com.sun.jndi.ldap.connect.pool.timeout", "300000");
-	
+
 	env.put(Context.PROVIDER_URL, ldapConf.getLdapServerUrl() + "/" + ldapConf.getLdapBaseDn());
 	env.put(Context.SECURITY_PRINCIPAL, ldapConf.getLdapUser());
 	env.put(Context.SECURITY_CREDENTIALS, ldapConf.getLdapPassword());
 	env.put("com.sun.jndi.ldap.read.timeout", String.valueOf(ldapConf.getLdapTimeLimit()));
 
 	try {
-	    result = new InitialLdapContext(env, null); 
+	    result = new InitialLdapContext(env, null);
 	} catch (NamingException e) {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
@@ -104,7 +105,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     protected SearchControls getSearchControls(final String[] attributes) {
 	final SearchControls searchControls = getSearchControls();
 
-	if(attributes != null && attributes.length > 0) {
+	if (attributes != null && attributes.length > 0) {
 	    searchControls.setReturningAttributes(attributes);
 	}
 
@@ -152,13 +153,12 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 		    }
 		}
 	    }
-	    
-	    answer.close();
+
+	    GinaApiLdapUtils.closeQuietly(answer);
 	} catch (NamingException e) {
-	    logger.error(e); 
+	    logger.error(e);
 	    throw new GinaException(e.getMessage());
-	}
-	finally {
+	} finally {
 	    closeDirContext();
 	}
 
@@ -201,29 +201,30 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 			    Attribute attribute = attrs.get(attr);
 			    if (attribute != null) {
 				NamingEnumeration<?> nameEnum = attribute.getAll();
-				String value = "";
-				while (nameEnum.hasMoreElements()) {
-				    if (value.isEmpty()) {
-					value = (String) nameEnum.next();
-				    } else {
-					value = value + ":" + (String) nameEnum.next();
+				if (nameEnum != null) {
+				    String value = "";
+				    while (nameEnum.hasMoreElements()) {
+					if (value.isEmpty()) {
+					    value = (String) nameEnum.next();
+					} else {
+					    value = value + ":" + (String) nameEnum.next();
+					}
 				    }
+				    logger.debug("value=" + value);
+				    myMap.put(paramArrayOfString[i], value);
 				}
-				nameEnum.close();
-				logger.debug("value=" + value);
-				myMap.put(paramArrayOfString[i], value);
+				GinaApiLdapUtils.closeQuietly(nameEnum);
 			    }
 			}
 		    }
 		}
-		
-		answer.close();
+
+		GinaApiLdapUtils.closeQuietly(answer);
 	    }
 	} catch (NamingException e) {
-	    logger.error(e); 
+	    logger.error(e);
 	    throw new GinaException(e.getMessage());
-	}
-	finally {
+	} finally {
 	    closeDirContext(closeConnection);
 	}
 
@@ -245,7 +246,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	    String ginaDomain = GinaApiLdapUtils.extractDomain(application);
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
-	    SearchControls searchControls = getSearchControls(new String[] {GinaApiLdapUtils.ATTRIBUTE_MEMBEROF});
+	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBEROF });
 	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
 
@@ -268,18 +269,17 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 				    roles.add(roleClean);
 				}
 			    }
-			    answerAtt.close();
+			    GinaApiLdapUtils.closeQuietly(answerAtt);
 			}
 		    }
 		}
-		
-		answer.close();
+
+		GinaApiLdapUtils.closeQuietly(answer);
 	    }
 	} catch (NamingException e) {
-	    logger.error(e); 
+	    logger.error(e);
 	    throw new GinaException(e.getMessage());
-	}
-	finally {
+	} finally {
 	    closeDirContext();
 	}
 
@@ -290,8 +290,8 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
     @Override
     @Deprecated
-    public void sendMail(String from, String to[], String cc[], String subject,
-            String text, String mimeType) throws GinaException, RemoteException {
+    public void sendMail(String from, String to[], String cc[], String subject, String text, String mimeType)
+	    throws GinaException, RemoteException {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
 
