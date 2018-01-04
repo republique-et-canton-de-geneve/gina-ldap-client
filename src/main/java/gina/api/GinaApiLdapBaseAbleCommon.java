@@ -55,7 +55,6 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	    }
 	    ctxtDir = null;
 	}
-
     }
 
     protected InitialLdapContext createDirContext() throws GinaException {
