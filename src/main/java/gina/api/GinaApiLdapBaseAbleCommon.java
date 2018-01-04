@@ -61,26 +61,23 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
 	InitialLdapContext result = null;
 
-	Hashtable<String, String> env = new Hashtable<String, String>(15);
+	Hashtable<String, String> env = new Hashtable<String, String>();
 
 	env.put(Context.INITIAL_CONTEXT_FACTORY, GinaApiLdapConfiguration.LDAP_CONTEXT_FACTORY);
 	env.put(Context.SECURITY_AUTHENTICATION, GinaApiLdapConfiguration.LDAP_AUTHENTICATION_MODE);
-	env.put(Context.SECURITY_PROTOCOL, "ssl");
 	env.put(Context.REFERRAL, GinaApiLdapConfiguration.LDAP_REFERRAL_MODE);
 	env.put("java.naming.ldap.version", "3");
 
-	// Pooling
 	env.put("com.sun.jndi.ldap.connect.pool", "true");
-	env.put("com.sun.jndi.ldap.connect.pool.initsize", "10");
-	env.put("com.sun.jndi.ldap.connect.pool.maxsize", "20");
-	env.put("com.sun.jndi.ldap.connect.pool.prefsize", "10");
-	env.put("com.sun.jndi.ldap.connect.pool.debug", "fine");
-	env.put("com.sun.jndi.ldap.connect.pool.timeout", "300000");
 
 	env.put(Context.PROVIDER_URL, ldapConf.getLdapServerUrl() + "/" + ldapConf.getLdapBaseDn());
 	env.put(Context.SECURITY_PRINCIPAL, ldapConf.getLdapUser());
 	env.put(Context.SECURITY_CREDENTIALS, ldapConf.getLdapPassword());
 	env.put("com.sun.jndi.ldap.read.timeout", String.valueOf(ldapConf.getLdapTimeLimit()));
+
+	if(ldapConf.getLdapServerUrl().startsWith("ldaps")) {
+	    env.put(Context.SECURITY_PROTOCOL, "ssl");
+	}
 
 	try {
 	    result = new InitialLdapContext(env, null);
