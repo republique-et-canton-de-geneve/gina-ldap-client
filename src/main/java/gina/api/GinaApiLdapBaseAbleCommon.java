@@ -18,6 +18,7 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
+import javax.naming.ldap.LdapContext;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -34,7 +35,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     protected static final String NOT_IMPLEMENTED = "Not implemented";
     
     // 
-    protected InitialLdapContext ctxtDir = null;
+    protected LdapContext ctxtDir = null;
 
     protected GinaApiLdapConfiguration ldapConf = null;
     
@@ -61,16 +62,20 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
 	InitialLdapContext result = null;
 
-	Hashtable<String, String> env = new Hashtable<String, String>(12);
+	Hashtable<String, String> env = new Hashtable<String, String>(14);
 	
 	env.put(Context.INITIAL_CONTEXT_FACTORY, GinaApiLdapConfiguration.LDAP_CONTEXT_FACTORY);
 	env.put(Context.SECURITY_AUTHENTICATION, GinaApiLdapConfiguration.LDAP_AUTHENTICATION_MODE);
 	env.put(Context.SECURITY_PROTOCOL, "ssl");
 	env.put(Context.REFERRAL, GinaApiLdapConfiguration.LDAP_REFERRAL_MODE);
 	env.put("java.naming.ldap.version", "3");
+
+	// Pooling
 	env.put("com.sun.jndi.ldap.connect.pool", "true");
+	env.put("com.sun.jndi.ldap.connect.pool.initsize", "10");
 	env.put("com.sun.jndi.ldap.connect.pool.maxsize", "20");
 	env.put("com.sun.jndi.ldap.connect.pool.prefsize", "10");
+	env.put("com.sun.jndi.ldap.connect.pool.debug", "fine");
 
 	env.put(Context.PROVIDER_URL, ldapConf.getLdapServerUrl() + "/" + ldapConf.getLdapBaseDn());
 	env.put(Context.SECURITY_PRINCIPAL, ldapConf.getLdapUser());
@@ -90,6 +95,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     protected SearchControls getSearchControls() {
 	SearchControls searchControls = new SearchControls();
 	searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+	searchControls.setReturningObjFlag(false);
 
 	return searchControls;
     }
@@ -145,6 +151,8 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 		    }
 		}
 	    }
+	    
+	    answer.close();
 	} catch (NamingException e) {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
@@ -200,12 +208,15 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 					value = value + ":" + (String) nameEnum.next();
 				    }
 				}
+				nameEnum.close();
 				logger.debug("value=" + value);
 				myMap.put(paramArrayOfString[i], value);
 			    }
 			}
 		    }
 		}
+		
+		answer.close();
 	    }
 	} catch (NamingException e) {
 	    logger.error(e); 
@@ -256,9 +267,12 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 				    roles.add(roleClean);
 				}
 			    }
+			    answerAtt.close();
 			}
 		    }
 		}
+		
+		answer.close();
 	    }
 	} catch (NamingException e) {
 	    logger.error(e); 

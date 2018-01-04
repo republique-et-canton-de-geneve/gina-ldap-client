@@ -75,10 +75,13 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 			    value = value + ":" + (String) nameEnum.next();
 			}
 		    }
+		    nameEnum.close();
 		    logger.debug("value=" + value);
 		    myMap.put(attrs[i], value);
 		}
 	    }
+	    
+	    answer.close();
 	} catch (NamingException e) {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
@@ -120,7 +123,10 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    SearchControls searchControls = getSearchControls();
 	    String searchFilter = "(&(objectClass=users)(cn=" + user + ")&(objectClass=memberOf)(cn=" + role + "))";
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
-	    return (answer != null && answer.hasMoreElements());
+	    boolean result = (answer != null && answer.hasMoreElements());
+	    answer.close();
+
+	    return result;
 	} catch (NamingException e) {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
@@ -142,28 +148,32 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	String user = System.getProperty(USER_NAME);
 	logger.debug("user=" + user);
 	try {
-	    SearchControls searchControls = getSearchControls(new String[] {GinaApiLdapUtils.ATTRIBUTE_MEMBEROF});
+	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBEROF });
 	    String searchFilter = "(&(objectClass=users)(cn=" + user + "))";
 	    NamingEnumeration<?> answer = ctxtDir.search("", searchFilter, searchControls);
-
-	    while (answer.hasMoreElements()) {
-		SearchResult sr = (SearchResult) answer.next();
-		Attributes attributes = sr.getAttributes();
-		if (attributes != null) {
-		    NamingEnumeration<?> nameEnum = attributes.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
-		    String value = "";
-		    while (nameEnum.hasMoreElements()) {
-			String role = (String) nameEnum.next();
-			roles.add(role);
+	    if (answer != null) {
+		while (answer.hasMoreElements()) {
+		    SearchResult sr = (SearchResult) answer.next();
+		    Attributes attributes = sr.getAttributes();
+		    if (attributes != null) {
+			NamingEnumeration<?> nameEnum = attributes.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
+			String value = "";
+			while (nameEnum.hasMoreElements()) {
+			    String role = (String) nameEnum.next();
+			    roles.add(role);
+			}
+			logger.debug("value=" + value);
+			
+			nameEnum.close();
 		    }
-		    logger.debug("value=" + value);
 		}
+		
+		answer.close();
 	    }
 	} catch (NamingException e) {
-	    logger.error(e); 
+	    logger.error(e);
 	    throw new GinaException(e.getMessage());
-	}
-	finally {
+	} finally {
 	    closeDirContext();
 	}
 
@@ -199,7 +209,10 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 			roles.add(roleCleanString[0]);
 		    }
 		}
+		nameEnum.close();
 	    }
+	    
+	    answer.close();
 	} catch (NamingException e) {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
@@ -224,19 +237,23 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	try {
 	    SearchControls searchControls = getSearchControls(new String[] {GinaApiLdapUtils.ATTRIBUTE_CN});
 
-	    String searchFilter = "cn=*";
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=Groups,ou=" + appli + "", "(&(cn=*))", searchControls);
-	    while (answer.hasMoreElements()) {
-		SearchResult sr = (SearchResult) answer.next();
-		logger.debug("sr=" + sr);
-		NamingEnumeration<?> nameEnum = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_CN).getAll();
-		if (nameEnum != null) {
-		    while (nameEnum.hasMoreElements()) {
-			String role = (String) nameEnum.next();
-			logger.debug("role=" + role);
-			roles.add(role);
-		    }
-		}
+	    if(answer != null) {
+        	    while (answer.hasMoreElements()) {
+        		SearchResult sr = (SearchResult) answer.next();
+        		logger.debug("sr=" + sr);
+        		NamingEnumeration<?> nameEnum = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_CN).getAll();
+        		if (nameEnum != null) {
+        		    while (nameEnum.hasMoreElements()) {
+        			String role = (String) nameEnum.next();
+        			logger.debug("role=" + role);
+        			roles.add(role);
+        		    }
+        		    nameEnum.close();
+        		}
+        	    }
+        	    
+        	    answer.close();
 	    }
 	} catch (NamingException e) {
 	    logger.error(e); 
@@ -293,6 +310,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 			}
 		    }
 		}
+		answer.close();
 	    }
 	} catch (NamingException e) {
 	    logger.error(e); 
@@ -354,6 +372,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 			}
 		    }
 		}
+		
+		answer.close();
 	    }
 	} catch (NamingException e) {
 	    logger.error(e); 

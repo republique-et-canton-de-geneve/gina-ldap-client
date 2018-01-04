@@ -66,9 +66,12 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 				return true;
 			    }
 			}
+			answerAtt.close();
 		    }
 		}
 	    }
+	    
+	    answer.close();
 	} catch (NamingException e) {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
@@ -105,8 +108,10 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 			logger.debug("cn=" + cn);
 			roles.add(cn);
 		    }
-
+		    att.close();
 		}
+		
+		answer.close();
 	    }
 	} catch (NamingException e) {
 	    logger.error(e); 
@@ -137,6 +142,8 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	    NamingEnumeration<?> answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=*))", searchControls);
 
 	    list = parseAnswer(answer, attrs);
+	    
+	    answer.close();
 	} catch (NamingException e) {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
@@ -168,6 +175,8 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 		    searchControls);
 
 	    list = parseAnswer(answer, attrs);
+	    
+	    answer.close();
 	} catch (NamingException e) {
 	    logger.error(e); 
 	    throw new GinaException(e.getMessage());
@@ -279,6 +288,8 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 			}
 		    }
 		}
+		
+		sr = null;
 	    }
 	}
 	
