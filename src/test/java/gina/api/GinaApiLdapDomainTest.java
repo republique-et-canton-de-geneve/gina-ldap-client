@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.naming.NamingException;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -45,7 +44,7 @@ public class GinaApiLdapDomainTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @BeforeClass
-    public static void initApi() throws ConfigurationException {
+    public static void initApi() {
 	    String server = "ldaps://vldap-dev.ceti.etat-ge.ch:636";
 	    String base = GinaApiLdapUtils.createPropertie(Arrays.asList("ou=CSBUGTRACK,o=gina"));
 	    String user = GinaApiLdapUtils.createPropertie(Arrays.asList("cn=tcnvldap6470devaag,ou=Users,ou=CSBUGTRACK,o=gina"));
