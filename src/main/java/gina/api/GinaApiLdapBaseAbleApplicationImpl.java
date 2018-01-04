@@ -351,9 +351,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 				    String username = member.substring(0, member.indexOf(',')).replace("cn=", "")
 					    .toLowerCase();
 				    if (!users.contains(username)) {
-					Map<String, String> map = new HashMap<String, String>();
 					users.add(username);
-					map = this.getUserAttrs(username, paramArrayOfString, false);
+					Map<String, String> map = this.getUserAttrs(username, paramArrayOfString, false);
 					list.add(map);
 				    }
 				}
