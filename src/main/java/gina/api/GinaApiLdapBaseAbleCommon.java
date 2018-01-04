@@ -57,10 +57,6 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     }
 
     protected InitialLdapContext createDirContext() throws GinaException {
-	logger.info("createDirContext");
-
-	InitialLdapContext result = null;
-
 	Hashtable<String, String> env = new Hashtable<String, String>();
 
 	env.put(Context.INITIAL_CONTEXT_FACTORY, GinaApiLdapConfiguration.LDAP_CONTEXT_FACTORY);
@@ -79,6 +75,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	    env.put(Context.SECURITY_PROTOCOL, "ssl");
 	}
 
+	InitialLdapContext result;
 	try {
 	    result = new InitialLdapContext(env, null);
 	} catch (NamingException e) {
