@@ -143,7 +143,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 		    Attribute cn = attrs.get("cn");
 		    if (cn != null) {
 			String cnString = (String) cn.get();
-			Attribute departmentNumber = attrs.get("departmentNumber");
+			Attribute departmentNumber = attrs.get(GinaApiLdapUtils.ATTRIBUTE_DEPARTMENT_NUMBER);
 			if (user.equalsIgnoreCase(cnString) && departmentNumber != null
 				&& StringUtils.isNotBlank((String) departmentNumber.get())) {
 			    return true;
