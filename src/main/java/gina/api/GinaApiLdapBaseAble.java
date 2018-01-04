@@ -10,7 +10,7 @@ public interface GinaApiLdapBaseAble extends GinaApiBaseAble {
      * 
      * @see gina.api.GinaApiLdapBaseAble#getRoles(java.lang.String)
      */
-    public List<String> getRoles() throws GinaException, RemoteException;
+    public List<String> getRoles() throws RemoteException;
 
     /**
      * Donne tous les rôles de l'utilisateur passé en paramètre pour l'application courante
@@ -18,10 +18,10 @@ public interface GinaApiLdapBaseAble extends GinaApiBaseAble {
      * @see gina.api.GinaApiBaseAble#getUserRoles(java.lang.String,
      * java.lang.String)
      */
-    public List<String> getUserRoles(String user) throws GinaException, RemoteException;
+    public List<String> getUserRoles(String user) throws RemoteException;
 
-    public boolean hasRole(String role) throws GinaException, RemoteException;
+    public boolean hasRole(String role) throws RemoteException;
 
-    public boolean hasUserRole(String user, String role) throws GinaException, RemoteException;
+    public boolean hasUserRole(String user, String role) throws RemoteException;
 
 }

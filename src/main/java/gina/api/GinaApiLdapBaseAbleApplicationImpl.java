@@ -134,7 +134,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      * @see gina.api.GinaApiLdapBaseAble#getRoles(java.lang.String)
      */
     @Override
-    public List<String> getRoles() throws GinaException, RemoteException {
+    public List<String> getRoles() throws RemoteException {
 	init();
 	List<String> roles = new ArrayList<String>();
 	String user = System.getProperty(USER_NAME);
@@ -286,13 +286,12 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 				if (member != null) {
 				    logger.debug("member=" + member);
 
-				    String username = member.substring(0, member.indexOf(",")).replace("cn=", "")
+				    String username = member.substring(0, member.indexOf(',')).replace("cn=", "")
 					    .toLowerCase();
 				    logger.debug("username=" + username);
 				    if (StringUtils.isNotBlank(username) && !users.contains(username)) {
-					Map<String, String> map = new HashMap<String, String>();
 					users.add(username);
-					map = this.getUserAttrs(username, paramArrayOfString, false);
+					Map<String, String> map = this.getUserAttrs(username, paramArrayOfString, false);
 					list.add(map);
 				    }
 				}
@@ -335,7 +334,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
-		    logger.debug("name : " + sr.getName().substring(0, sr.getName().indexOf(",")).replace("cn=", ""));
+		    logger.debug("name : " + sr.getName().substring(0, sr.getName().indexOf(',')).replace("cn=", ""));
 
 		    Attributes attrs = sr.getAttributes();
 		    logger.debug("sr=" + sr);
@@ -348,7 +347,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 				String member = (String) attmember.get(j);
 
 				if (member != null) {
-				    String username = member.substring(0, member.indexOf(",")).replace("cn=", "")
+				    String username = member.substring(0, member.indexOf(',')).replace("cn=", "")
 					    .toLowerCase();
 				    if (!users.contains(username)) {
 					Map<String, String> map = new HashMap<String, String>();
