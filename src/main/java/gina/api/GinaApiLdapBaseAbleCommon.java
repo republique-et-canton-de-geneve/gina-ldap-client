@@ -47,7 +47,6 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
     protected void closeDirContext() {
 	if (ctxtDir != null) {
-	    logger.info("closeDirContext");
 	    try {
 		ctxtDir.close();
 	    } catch (NamingException e) {
