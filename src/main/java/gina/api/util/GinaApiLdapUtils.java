@@ -59,7 +59,7 @@ public class GinaApiLdapUtils {
 	return "(&(objectClass=user)(cn=" + user + "))";
     }
 
-    public static void closeQuietly(NamingEnumeration obj) {
+    public static void closeQuietly(NamingEnumeration<?> obj) {
 	if (obj != null) {
 	    try {
 		obj.close();
