@@ -36,20 +36,6 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     }
 
     /*
-     * (non-Javadoc) Retourne vrai si l'utilisateur courant à le role donné pour
-     * l'application donnée
-     * 
-     * @see gina.api.GinaApiLdapBaseAble#hasUserRole(java.lang.String,
-     * java.lang.String, java.lang.String)
-     */
-
-    public boolean hasRole(String role) throws GinaException, RemoteException {
-	init();
-	String user = System.getProperty(USER_NAME);
-	return hasUserRole(user, role);
-    }
-
-    /*
      * (non-Javadoc) Retourne vrai si l'utilisateur donné à le role donné pour
      * l'application donnée
      * 

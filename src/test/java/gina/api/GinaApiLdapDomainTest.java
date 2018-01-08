@@ -233,22 +233,6 @@ public class GinaApiLdapDomainTest {
     // -----------------------------------------------------------------------------------------
     
     @Test
-    public void hasRoleWithRoleTest() {
-	LOG.info(GinaApiLdapContants.START_METHOD);
-        
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
-
-        try {
-            api.hasRole(LDAP_DOMAIN_TEST_ROLE);
-	    assertTrue(false);
-	} catch (RemoteException e) {
-	    LOG.error(e);
-	    assertTrue(false);
-	}
-    }
-
-    @Test
     public void hasRoleWithApplicationAndRoleTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
 	
