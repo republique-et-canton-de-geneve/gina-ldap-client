@@ -246,13 +246,11 @@ public class GinaApiLdapApplicationTest {
     public void getUserAttrsWithAttrsTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
 	
+	thrown.expect(GinaException.class);
+        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
         try {
-            Map<String,String> result = api.getUserAttrs(GinaApiLdapContants.TEST_ATTRS);
-	    Assert.assertNotNull(result);
-	    assertSame(0, result.size());
-	    LOG.info("result=" + result);
-	} catch (GinaException e) {
-	    LOG.error(e);
+            api.getUserAttrs(GinaApiLdapContants.TEST_ATTRS);
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);

@@ -36,59 +36,6 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     }
 
     /*
-     * (non-Javadoc) Donne les valeurs des attributs passé en paramètre pour
-     * l'utilisateur courant
-     * 
-     * @see gina.api.GinaApiLdapBaseAble#getUserAttrs(java.lang.String[])
-     */
-    @Override
-    public Map<String, String> getUserAttrs(String[] attrs) throws GinaException, RemoteException {
-	Arrays.asList(attrs).contains("param");
-	Map<String, String> myMap = new HashMap<String, String>();
-	String user = System.getProperty(USER_NAME);
-	NamingEnumeration<?> answer = null;
-	NamingEnumeration<?> nameEnum = null;
-
-	init();
-	try {
-	    SearchControls searchControls = new SearchControls();
-	    searchControls.setReturningAttributes(attrs);
-	    searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
-	    answer = ctxtDir.search("", searchFilter, searchControls);
-	    if (answer != null) {
-		while (answer.hasMoreElements()) {
-		    SearchResult sr = (SearchResult) answer.next();
-		    Attributes attributes = sr.getAttributes();
-		    for (int i = 0; i < attrs.length; i++) {
-			nameEnum = attributes.get(attrs[i]).getAll();
-			String value = "";
-			while (nameEnum.hasMoreElements()) {
-			    if (value.isEmpty()) {
-				value = (String) nameEnum.next();
-			    } else {
-				value = value + ":" + (String) nameEnum.next();
-			    }
-			}
-			GinaApiLdapUtils.closeQuietly(nameEnum);
-			logger.debug("value=" + value);
-			myMap.put(attrs[i], value);
-		    }
-		}
-	    }
-	} catch (NamingException e) {
-	    logger.error(e);
-	    throw new GinaException(e.getMessage());
-	} finally {
-	    GinaApiLdapUtils.closeQuietly(nameEnum);
-	    GinaApiLdapUtils.closeQuietly(answer);
-	    closeDirContext();
-	}
-
-	return myMap;
-    }
-
-    /*
      * (non-Javadoc) Retourne vrai si l'utilisateur courant à le role donné pour
      * l'application donnée
      * 
