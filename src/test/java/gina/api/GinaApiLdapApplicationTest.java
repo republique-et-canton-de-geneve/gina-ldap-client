@@ -177,6 +177,22 @@ public class GinaApiLdapApplicationTest {
     }
 
     @Test
+    public void hasUserRoleWithUserAndApplicationAndRoleTest() {
+	LOG.info(GinaApiLdapContants.START_METHOD);
+	try {
+	    boolean ret = api.hasUserRole(GinaApiLdapContants.DRIVONOL_USERNAME, LDAP_APPLICATION_TEST_DOMAINE_APPLICATION,
+		    LDAP_APPLICATION_TEST_ROLE);
+	    Assert.assertTrue( GinaApiLdapContants.DRIVONOL_USERNAME + " devrait avoir le role " + LDAP_APPLICATION_TEST_ROLE + " pour l'application " + LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, ret );
+	} catch (GinaException e) {
+	    LOG.error(e);
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    LOG.error(e);
+	    assertTrue(false);
+	}
+    }
+
+    @Test
     public void getRolesTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
 
