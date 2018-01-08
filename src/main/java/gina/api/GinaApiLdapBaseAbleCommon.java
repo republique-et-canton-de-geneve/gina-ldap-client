@@ -384,4 +384,9 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
 
+    @Override
+    public List<Map<String, String>> getAllUsers(String filter, String attrs[]) throws GinaException, RemoteException {
+	throw new GinaException(NOT_IMPLEMENTED);
+    }
+
 }
