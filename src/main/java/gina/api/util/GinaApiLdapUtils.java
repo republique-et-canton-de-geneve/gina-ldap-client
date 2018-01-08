@@ -56,7 +56,7 @@ public class GinaApiLdapUtils {
     }
 
     public static String getLdapFilterUser(String user) {
-	return "(&(objectClass=user)(cn=" + user + "))";
+	return "(&(objectClass=person)(cn=" + user + "))";
     }
 
     public static void closeQuietly(NamingEnumeration<?> obj) {

@@ -45,14 +45,21 @@ public class GinaApiLdapDomainTest {
 
     @BeforeClass
     public static void initApi() {
-	    String server = "ldaps://vldap-dev.ceti.etat-ge.ch:636";
-	    String base = GinaApiLdapUtils.createPropertie(Arrays.asList("ou=CSBUGTRACK,o=gina"));
-	    String user = GinaApiLdapUtils.createPropertie(Arrays.asList("cn=tcnvldap6470devaag,ou=Users,ou=CSBUGTRACK,o=gina"));
-	    String password = "Xhngmfxp9";
-	    int timeout = GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT;
+	String base = GinaApiLdapUtils.createPropertie(Arrays.asList("ou=CSBUGTRACK,o=gina"));
 
-	    GinaApiLdapConfiguration ldapConf = new GinaApiLdapConfiguration(server, base, user, password, timeout);
-	    api = GinaApiLdapBaseFactory.getInstance(ldapConf);
+	String server = "ldaps://vldap-dev.ceti.etat-ge.ch:636";
+	String user = GinaApiLdapUtils
+		.createPropertie(Arrays.asList("cn=tcnvldap6470devaag,ou=Users,ou=CSBUGTRACK,o=gina"));
+	String password = "Xhngmfxp9";
+
+	// String server = "ldap://127.0.0.1:30636";
+	// String user = GinaApiLdapUtils.createPropertie(Arrays.asList(""));
+	// String password = "";
+
+	int timeout = GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT;
+
+	GinaApiLdapConfiguration ldapConf = new GinaApiLdapConfiguration(server, base, user, password, timeout);
+	api = GinaApiLdapBaseFactory.getInstance(ldapConf);
     }
     
     @Test
