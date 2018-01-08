@@ -379,9 +379,4 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	return list;
     }
 
-    @Override
-    public boolean hasUserRole(String user, String application, String role) throws GinaException, RemoteException {
-	throw new GinaException(NOT_IMPLEMENTED);
-    }
-
 }
