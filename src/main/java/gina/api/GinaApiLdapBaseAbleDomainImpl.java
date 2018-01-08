@@ -137,17 +137,6 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     // METHODES NON IMPLEMENTEES
     // -----------------------------------------------------------------------------------------
 
-    /*
-     * (non-Javadoc) Donne les valeurs des attributs passé en paramètre pour
-     * l'utilisateur courant
-     * 
-     * @see gina.api.GinaApiLdapBaseAble#getUserAttrs(java.lang.String[])
-     */
-    @Override
-    public Map<String, String> getUserAttrs(String attrs[]) throws GinaException, RemoteException {
-	throw new GinaException(NOT_IMPLEMENTED);
-    }
-
     @Override
     public boolean hasRole(String role) throws GinaException, RemoteException {
 	throw new GinaException(NOT_IMPLEMENTED);
