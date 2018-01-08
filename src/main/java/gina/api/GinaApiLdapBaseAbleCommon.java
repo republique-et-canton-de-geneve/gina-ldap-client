@@ -333,6 +333,22 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     }
 
     @Override
+    public List<String> getBusinessRoles(String application) throws GinaException, RemoteException {
+	List<String> roles = this.getAppRoles(application);
+
+	List<String> result = new ArrayList<String>();
+
+	if (roles != null) {
+	    for (String role : roles) {
+		if (role.startsWith("RM-")) {
+		    result.add(role);
+		}
+	    }
+	}
+	return result;
+    }
+
+    @Override
     @Deprecated
     public void sendMail(String from, String to[], String cc[], String subject, String text, String mimeType)
 	    throws GinaException, RemoteException {
@@ -366,11 +382,6 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     @Override
     public List<String> getIntegrationUserAttributes(String paramString1, String paramString2)
 	    throws GinaException, RemoteException {
-	throw new GinaException(NOT_IMPLEMENTED);
-    }
-
-    @Override
-    public List<String> getBusinessRoles(String paramString) throws GinaException, RemoteException {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
 
