@@ -196,13 +196,14 @@ public class GinaApiLdapApplicationTest {
     public void getRolesTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
 
-	try {
-	    List<String> ret = api.getRoles();
-	    assertSame(0, ret.size());
-	    // La recherche de roles se fait avec l'utilisateur specifié dans le fichier properties (TCNXXX) donc ça doit retourner 0 
-	} catch (GinaException e) {
+	thrown.expect(GinaException.class);
+        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+        try {
+            api.getRoles();
 	    assertTrue(false);
 	} catch (RemoteException e) {
+	    LOG.error(e);
 	    assertTrue(false);
 	}
     }

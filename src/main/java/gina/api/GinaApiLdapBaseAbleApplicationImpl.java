@@ -76,51 +76,6 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     }
 
     /*
-     * (non-Javadoc) Donne tous les rôles de l'utilisateur courant
-     * 
-     * @see gina.api.GinaApiLdapBaseAble#getRoles(java.lang.String)
-     */
-    @Override
-    public List<String> getRoles() throws RemoteException {
-	init();
-	List<String> roles = new ArrayList<String>();
-	String user = System.getProperty(USER_NAME);
-	logger.debug("user=" + user);
-	NamingEnumeration<?> answer = null;
-	NamingEnumeration<?> nameEnum = null;
-	try {
-	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBEROF });
-	    String searchFilter = "(&(objectClass=users)(cn=" + user + "))";
-	    answer = ctxtDir.search("", searchFilter, searchControls);
-	    if (answer != null) {
-		while (answer.hasMoreElements()) {
-		    SearchResult sr = (SearchResult) answer.next();
-		    Attributes attributes = sr.getAttributes();
-		    if (attributes != null) {
-			nameEnum = attributes.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
-			String value = "";
-			while (nameEnum.hasMoreElements()) {
-			    String role = (String) nameEnum.next();
-			    roles.add(role);
-			}
-			logger.debug("value=" + value);
-			GinaApiLdapUtils.closeQuietly(nameEnum);
-		    }
-		}
-	    }
-	} catch (NamingException e) {
-	    logger.error(e);
-	    throw new GinaException(e.getMessage());
-	} finally {
-	    GinaApiLdapUtils.closeQuietly(nameEnum);
-	    GinaApiLdapUtils.closeQuietly(answer);
-	    closeDirContext();
-	}
-
-	return roles;
-    }
-
-    /*
      * (non-Javadoc) Donne tous les rôles de l'utilisateur passé en paramètre
      * 
      * @see gina.api.GinaApiLdapBaseAble#getUserRoles(java.lang.String,
