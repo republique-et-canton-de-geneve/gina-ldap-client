@@ -13,6 +13,12 @@ public interface GinaApiLdapBaseAble extends GinaApiBaseAble {
      */
     public List<String> getUserRoles(String user) throws RemoteException;
 
+    /**
+     * Indique si l'utilisateur passé en paramètre a le rôle pour l'application courante
+     * 
+     * @see gina.api.GinaApiBaseAble#hasUserRole(java.lang.String,
+     * java.lang.String)
+     */
     public boolean hasUserRole(String user, String role) throws RemoteException;
 
 }
