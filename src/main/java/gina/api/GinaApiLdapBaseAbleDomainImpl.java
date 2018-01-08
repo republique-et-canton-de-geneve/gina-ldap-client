@@ -148,11 +148,6 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     }
 
     @Override
-    public List<String> getRoles() throws RemoteException {
-	throw new GinaException(NOT_IMPLEMENTED);
-    }
-
-    @Override
     public List<String> getUserRoles(String user) throws GinaException, RemoteException {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
