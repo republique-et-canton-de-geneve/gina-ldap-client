@@ -44,14 +44,6 @@ public class Main {
 	    LOG.debug(roles);
 
 
-	    LOG.debug(TEST_SEPARATOR + "getRoles");
-            roles = ldapApplication.getRoles();
-            LOG.debug("size=" + roles.size());
-            for (String role : roles) {
-        	LOG.debug("role=" + role);
-	    }
-
-            
 	    LOG.debug(TEST_SEPARATOR + "getUserRoles(userName)");
             roles = ldapApplication.getUserRoles(userName);
             for (String role : roles) {

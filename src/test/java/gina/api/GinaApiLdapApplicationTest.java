@@ -149,20 +149,6 @@ public class GinaApiLdapApplicationTest {
     }
 
     @Test
-    public void hasRoleTest() {
-	LOG.info(GinaApiLdapContants.START_METHOD);
-
-	try {
-	    boolean ret = api.hasRole("ADMIN");
-	    assertSame(false, ret);
-	} catch (GinaException e) {
-	    assertTrue(false);
-	} catch (RemoteException e) {
-	    assertTrue(false);
-	}
-    }
-
-    @Test
     public void hasRoleUserTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
 
@@ -185,22 +171,6 @@ public class GinaApiLdapApplicationTest {
 	    Assert.assertTrue( GinaApiLdapContants.DRIVONOL_USERNAME + " devrait avoir le role " + LDAP_APPLICATION_TEST_ROLE + " pour l'application " + LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, ret );
 	} catch (GinaException e) {
 	    LOG.error(e);
-	    assertTrue(false);
-	} catch (RemoteException e) {
-	    LOG.error(e);
-	    assertTrue(false);
-	}
-    }
-
-    @Test
-    public void getRolesTest() {
-	LOG.info(GinaApiLdapContants.START_METHOD);
-
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
-
-        try {
-            api.getRoles();
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
