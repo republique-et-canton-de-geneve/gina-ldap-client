@@ -1,0 +1,420 @@
+version: 1
+
+dn: ou=OAC,o=gina
+objectClass: organizationalUnit
+objectClass: top
+ou: OAC
+
+dn: ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: organizationalUnit
+objectClass: top
+ou: CAMAC-GENEVE
+
+dn: ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: organizationalUnit
+objectClass: top
+ou: Users
+
+dn: cn=VALBONESI,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: withMemberOf
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: VALBONESI
+sn: VALBONESI
+departmentNumber: UO6115
+displayName: Valbonesi Michel (DALE)
+employeeNumber: 20939921
+givenName: Michel
+initials: VM
+mail: michel.valbonesi@etat.ge.ch
+memberOf: cn=CONTEXTE-APA,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=PREAVISEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=UTILISATEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+telephoneNumber: +41225466446
+title: Architecte LCI
+uid: VALBONESI
+
+dn: cn=NICOLETJD,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: withMemberOf
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: NICOLETJD
+sn: Nicolet
+departmentNumber: UO3612
+displayName: Nicolet Jean-Daniel (DSE)
+employeeNumber: 20716062
+givenName: Jean-daniel
+initials: NJ
+mail: jean-daniel.nicolet@etat.ge.ch
+memberOf: cn=CONTEXTE-APA,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=REQUERANT,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=UTILISATEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+telephoneNumber: +41223880088
+title: Analyste en informatique
+uid: NICOLETJD
+
+dn: cn=DAGUIND,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: withMemberOf
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: DAGUIND
+sn: Daguin
+departmentNumber: UO5740
+displayName: Daguin David (DSE)
+employeeNumber: E1900045
+givenName: David
+initials: DD
+mail: david.daguin@etat.ge.ch
+memberOf: cn=ADMIN,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=TECH-AUDITEUR-AUTORISATIONS,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=TECH-GESTIONNAIRE-AUTORISATIONS,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=UTILISATEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+telephoneNumber: +41223880294
+title: Coordinateur de projet
+uid: DAGUIND
+
+dn: cn=DRIVONOL,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: withMemberOf
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: DRIVONOL
+sn: Drivon
+departmentNumber: UO5740
+displayName: Drivon Olivier (DSE)
+givenName: Olivier
+initials: OD
+mail: Olivier.Drivon@etat.ge.ch
+memberOf: cn=ADMIN,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=CONTEXTE-APA,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=CTX-INTERNE,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=DATA-APA,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=FCT-RECEPTION,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=GRP-OAC,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=PREAVISEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=PREAVISEUR-FEU,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=REQUERANT,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=ROLE-RECEPTION,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=TECH-AUDITEUR-AUTORISATIONS,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=TECH-GESTIONNAIRE-AUTORISATIONS,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=UTILISATEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+telephoneNumber: +41223880332
+title: Analyste fonctionnel
+uid: DRIVONOL
+
+dn: cn=PALANDELLA,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: withMemberOf
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: PALANDELLA
+sn: PALANDELLA
+departmentNumber: UO5739
+displayName: Palandella Eric (DSE)
+employeeNumber: 20732652
+givenName: Eric
+initials: PE
+mail: eric.palandella@etat.ge.ch
+memberOf: cn=ADMIN,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=UTILISATEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+telephoneNumber: +41223880300
+title: Concepteur
+uid: PALANDELLA
+
+dn: cn=GUILLERMETD,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: withMemberOf
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: GUILLERMETD
+sn: Guillermet
+departmentNumber: UO6115
+displayName: Guillermet Daniel (DALE)
+employeeNumber: 40004589
+givenName: Daniel
+initials: DG
+mail: daniel.guillermet@etat.ge.ch
+memberOf: cn=CONTEXTE-APA,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=PREAVISEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=UTILISATEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+telephoneNumber: +41225466438
+title: Architecte LCI
+uid: GUILLERMETD
+
+dn: cn=IPW,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: withMemberOf
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: IPW
+sn: Ip
+departmentNumber: UO6115
+displayName: Ip Wing Lun (DALE)
+employeeNumber: 40108540
+givenName: Wing Lun
+initials: WI
+mail: Wing-Lun.Ip@etat.ge.ch
+memberOf: cn=CONTEXTE-APA,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=PREAVISEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=UTILISATEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+telephoneNumber: +41225466441
+title: Architecte LCI
+uid: IPW
+
+dn: cn=UNGARON,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: withMemberOf
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: UNGARON
+sn: Ungaro
+departmentNumber: UO6114
+displayName: Ungaro Nicolas (DALE)
+employeeNumber: 40011668
+givenName: Nicolas
+initials: NU
+mail: nicolas.ungaro@etat.ge.ch
+memberOf: cn=CONTEXTE-DD,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=UTILISATEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+telephoneNumber: +41225466447
+title: Architecte LCI
+uid: UNGARON
+
+dn: cn=GARCIDAN,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: withMemberOf
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: GARCIDAN
+sn: Garcia
+departmentNumber: UO6115
+displayName: Garcia Dan (DALE)
+employeeNumber: 40111288
+givenName: Dan
+initials: DG
+mail: Dan.Garcia@etat.ge.ch
+memberOf: cn=CONTEXTE-APA,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=PREAVISEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=UTILISATEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+telephoneNumber: +41225466401
+title: Architecte LCI
+uid: GARCIDAN
+
+dn: cn=LEJEUNET,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: withMemberOf
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: LEJEUNET
+sn: Lejeune
+departmentNumber: UO5740
+displayName: Lejeune Thierry (DSE)
+givenName: Thierry
+initials: TL
+mail: Thierry.Lejeune@etat.ge.ch
+memberOf: cn=ADMIN,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=CONTEXTE-APA,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=RECEPTION,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=REQUERANT,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=TECH-AUDITEUR-AUTORISATIONS,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=TECH-GESTIONNAIRE-AUTORISATIONS,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=UTILISATEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+telephoneNumber: +41223880297
+title: Architecte
+uid: LEJEUNET
+
+dn: cn=LIENHARDT,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: withMemberOf
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: LIENHARDT
+sn: LIENHARDT
+departmentNumber: UO5740
+displayName: Lienhardt Eric (DSE)
+employeeNumber: 20607678
+givenName: Eric
+initials: LE
+mail: eric.lienhardt@etat.ge.ch
+memberOf: cn=CONTEXTE-APA,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=REQUERANT,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+memberOf: cn=UTILISATEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+telephoneNumber: +41223880084
+title:: QXJjaGl0ZWN0ZSBkZSBkw6l2ZWxvcHBlbWVudA==
+uid: LIENHARDT
+
+dn: ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: organizationalUnit
+objectClass: top
+ou: Groups
+
+dn: cn=ADMIN,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: ADMIN
+member: cn=DAGUIND,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=DRIVONOL,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=LEJEUNET,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=PALANDELLA,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+
+dn: cn=COMMUNE,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: COMMUNE
+
+dn: cn=CONTEXTE-APA,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: CONTEXTE-APA
+member: cn=DRIVONOL,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=GARCIDAN,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=GUILLERMETD,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=IPW,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=LEJEUNET,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=LIENHARDT,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=NICOLETJD,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=VALBONESI,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+
+dn: cn=CONTEXTE-DD,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: CONTEXTE-DD
+member: cn=UNGARON,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+
+dn: cn=CTX-INTERNE,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: CTX-INTERNE
+member: cn=DRIVONOL,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+
+dn: cn=DATA-APA,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: DATA-APA
+member: cn=DRIVONOL,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+
+dn: cn=F-REDACTEUR-01,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: F-REDACTEUR-01
+
+dn: cn=FCT-RECEPTION,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: FCT-RECEPTION
+member: cn=DRIVONOL,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+
+dn: cn=GRP-OAC,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: GRP-OAC
+member: cn=DRIVONOL,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+
+dn: cn=JURISTE,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: JURISTE
+
+dn: cn=PREAVISEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: PREAVISEUR
+member: cn=DRIVONOL,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=GARCIDAN,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=GUILLERMETD,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=IPW,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=VALBONESI,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+
+dn: cn=PREAVISEUR-FEU,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: PREAVISEUR-FEU
+member: cn=DRIVONOL,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+
+dn: cn=RECEPTION,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: RECEPTION
+member: cn=LEJEUNET,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+
+dn: cn=REQUERANT,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: REQUERANT
+member: cn=DRIVONOL,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=LEJEUNET,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=LIENHARDT,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=NICOLETJD,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+
+dn: cn=ROLE-RECEPTION,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: ROLE-RECEPTION
+member: cn=DRIVONOL,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+
+dn: cn=TECH-AUDITEUR-AUTORISATIONS,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: TECH-AUDITEUR-AUTORISATIONS
+member: cn=DAGUIND,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=DRIVONOL,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=GRISARDM,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=LEJEUNET,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=PINDAOA,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=SCIRETTA,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=WEINMANND,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+
+dn: cn=TECH-CONCEPTEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: TECH-CONCEPTEUR
+
+dn: cn=TECH-CONTROLEUR-INTERNE,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: TECH-CONTROLEUR-INTERNE
+
+dn: cn=TECH-GESTIONNAIRE-AUTORISATIONS,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: TECH-GESTIONNAIRE-AUTORISATIONS
+member: cn=DAGUIND,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=DRIVONOL,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=LEJEUNET,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=SCIRETTA,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+
+dn: cn=UTILISATEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: UTILISATEUR
+member: cn=DAGUIND,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=DRIVONOL,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=GARCIDAN,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=GUILLERMETD,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=IPW,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=LEJEUNET,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=LIENHARDT,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=NICOLETJD,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=PALANDELLA,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=UNGARON,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+member: cn=VALBONESI,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina
+
+dn: cn=VALIDEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: VALIDEUR
+
