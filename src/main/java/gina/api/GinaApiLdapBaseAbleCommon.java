@@ -284,6 +284,54 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	return roles;
     }
 
+    /*
+     * (non-Javadoc) Retourne vrai si l'utilisateur donné à le role donné pour
+     * l'application donnée
+     * 
+     * @see gina.api.GinaApiLdapBaseAble#hasUserRole(java.lang.String,
+     * java.lang.String, java.lang.String)
+     */
+    @Override
+    public boolean hasUserRole(String user, String application, String role) throws GinaException, RemoteException {
+	init();
+	NamingEnumeration<?> answer = null;
+	NamingEnumeration<?> answerAtt = null;
+
+	try {
+	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
+
+	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBER });
+	    answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=" + role + "))", searchControls);
+
+	    while (answer.hasMoreElements()) {
+		SearchResult sr = (SearchResult) answer.next();
+		if (sr != null) {
+		    logger.debug("sr=" + sr);
+		    Attributes attrs = sr.getAttributes();
+		    if (attrs != null && attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBER) != null) {
+			answerAtt = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_MEMBER).getAll();
+			while (answerAtt.hasMoreElements()) {
+			    String att = (String) answerAtt.next();
+			    if (att.toUpperCase().contains(user.toUpperCase())) {
+				return true;
+			    }
+			}
+			GinaApiLdapUtils.closeQuietly(answerAtt);
+		    }
+		}
+	    }
+	} catch (NamingException e) {
+	    logger.error(e);
+	    throw new GinaException(e.getMessage());
+	} finally {
+	    GinaApiLdapUtils.closeQuietly(answerAtt);
+	    GinaApiLdapUtils.closeQuietly(answer);
+	    closeDirContext();
+	}
+
+	return false;
+    }
+
     @Override
     @Deprecated
     public void sendMail(String from, String to[], String cc[], String subject, String text, String mimeType)
