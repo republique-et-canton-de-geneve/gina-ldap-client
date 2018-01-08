@@ -401,6 +401,19 @@ public class GinaApiLdapApplicationTest {
 	assertTrue(true);
     }
 
+    @Test
+    public void getBusinessRolesTest() {
+	LOG.info(GinaApiLdapContants.START_METHOD);
+        try {
+            List<String> roles = api.getBusinessRoles(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION);
+	    Assert.assertNotNull(roles);
+	    Assert.assertTrue(roles.size() == 0);
+	} catch (RemoteException e) {
+	    LOG.error(e);
+	    assertTrue(false);
+	}
+    }
+    
     // -----------------------------------------------------------------------------------------
     // METHODES NON IMPLEMENTEES
     // -----------------------------------------------------------------------------------------
@@ -437,22 +450,6 @@ public class GinaApiLdapApplicationTest {
 	}
     }
 
-    @Test
-    public void getBusinessRolesTest() {
-	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
-
-        try {
-            api.getBusinessRoles(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION);
-	    assertTrue(false);
-	} catch (RemoteException e) {
-	    LOG.error(e);
-	    assertTrue(false);
-	}
-    }
-    
     @Test
     public void getUsersByPhoneTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
