@@ -206,29 +206,6 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    /*
-     * (non-Javadoc) Retourne vrai si l'utilisateur courant à le role donné pour
-     * l'application donnée
-     * 
-     * @see gina.api.GinaApiLdapBaseAble#hasUserRole(java.lang.String,
-     * java.lang.String, java.lang.String)
-     */
-    @Override
-    public boolean hasRole(String application, String role) throws GinaException, RemoteException {
-	throw new GinaException(NOT_IMPLEMENTED);
-    }
-
-    /*
-     * (non-Javadoc) Donne tous les rôles de l'utilisateur courant pour
-     * l'application passée en paramètre
-     * 
-     * @see gina.api.GinaApiLdapBaseAble#getRoles(java.lang.String)
-     */
-    @Override
-    public List<String> getRoles(String application) throws GinaException, RemoteException {
-	throw new GinaException(NOT_IMPLEMENTED);
-    }
-
     @Override
     public boolean hasUserRole(String user, String role) throws GinaException, RemoteException {
 	throw new GinaException(NOT_IMPLEMENTED);

@@ -374,4 +374,14 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
 
+    @Override
+    public boolean hasRole(String application, String role) throws GinaException, RemoteException {
+	throw new GinaException(NOT_IMPLEMENTED);
+    }
+
+    @Override
+    public List<String> getRoles(String application) throws GinaException, RemoteException {
+	throw new GinaException(NOT_IMPLEMENTED);
+    }
+
 }
