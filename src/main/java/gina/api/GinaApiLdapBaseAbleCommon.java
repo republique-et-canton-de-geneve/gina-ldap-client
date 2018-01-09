@@ -308,23 +308,21 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBER });
-	    answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=" + role + "))", searchControls);
+	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication), GinaApiLdapUtils.getLdapFilterCn(role), searchControls);
 
 	    while (answer.hasMoreElements()) {
 		SearchResult sr = (SearchResult) answer.next();
-		if (sr != null) {
-		    logger.debug("sr=" + sr);
-		    Attributes attrs = sr.getAttributes();
-		    if (attrs != null && attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBER) != null) {
-			answerAtt = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_MEMBER).getAll();
-			while (answerAtt.hasMoreElements()) {
-			    String att = (String) answerAtt.next();
-			    if (att.toUpperCase().contains(user.toUpperCase())) {
-				return true;
-			    }
+		logger.debug("sr=" + sr);
+		Attributes attrs = sr.getAttributes();
+		if (attrs != null && attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBER) != null) {
+		    answerAtt = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_MEMBER).getAll();
+		    while (answerAtt.hasMoreElements()) {
+			String att = (String) answerAtt.next();
+			if (att.toUpperCase().contains(user.toUpperCase())) {
+			    return true;
 			}
-			GinaApiLdapUtils.closeQuietly(answerAtt);
 		    }
+		    GinaApiLdapUtils.closeQuietly(answerAtt);
 		}
 	    }
 	} catch (NamingException e) {
