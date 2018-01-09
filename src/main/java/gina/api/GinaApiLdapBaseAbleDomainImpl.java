@@ -78,7 +78,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
      * @see gina.api.GinaApiLdapBaseAble#getUsers(java.lang.String)
      */
     @Override
-    public List<Map<String, String>> getUsers(String application, String attrs[])
+    public List<Map<String, String>> getUsers(String application, String[] attrs)
 	    throws GinaException, RemoteException {
 	init();
 	List<Map<String, String>> list;
@@ -110,7 +110,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
      * java.lang.String, java.lang.String[])
      */
     @Override
-    public List<Map<String, String>> getUsers(String application, String role, String attrs[])
+    public List<Map<String, String>> getUsers(String application, String role, String[] attrs)
 	    throws GinaException, RemoteException {
 	init();
 	List<Map<String, String>> list;
