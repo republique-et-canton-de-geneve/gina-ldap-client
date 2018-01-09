@@ -55,8 +55,20 @@ public class GinaApiLdapUtils {
 	return builder.toString();
     }
 
+    public static String getLdapFilterOu(String ou) {
+	return "ou=" + ou;
+    }
+
+    public static String getLdapFilterGroup(String role) {
+	return "ou=Groups,ou=" + role;
+    }
+
     public static String getLdapFilterUser(String user) {
 	return "(&(objectClass=person)(cn=" + user + "))";
+    }
+
+    public static String getLdapFilterCn(String cn) {
+	return "(&(cn=" + cn + "))";
     }
 
     public static void closeQuietly(NamingEnumeration<?> obj) {

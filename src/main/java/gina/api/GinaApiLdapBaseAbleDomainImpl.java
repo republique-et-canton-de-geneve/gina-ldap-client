@@ -45,7 +45,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_CN });
-	    answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=*))", searchControls);
+	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication), GinaApiLdapUtils.getLdapFilterCn("*"), searchControls);
 
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
@@ -87,7 +87,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls();
-	    answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=*))", searchControls);
+	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication), GinaApiLdapUtils.getLdapFilterCn("*"), searchControls);
 
 	    list = parseAnswer(answer, attrs);
 
@@ -119,7 +119,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls();
-	    answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=" + role + "))", searchControls);
+	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication), GinaApiLdapUtils.getLdapFilterCn(role), searchControls);
 
 	    list = parseAnswer(answer, attrs);
 	} catch (NamingException e) {
