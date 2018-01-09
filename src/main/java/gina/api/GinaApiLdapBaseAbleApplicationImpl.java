@@ -116,7 +116,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	try {
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_CN });
 
-	    answer = ctxtDir.search("ou=Groups,ou=" + appli + "", "(&(cn=*))", searchControls);
+	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterGroup(appli), GinaApiLdapUtils.getLdapFilterCn("*"), searchControls);
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
@@ -155,7 +155,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBER });
-	    answer = ctxtDir.search("ou=Groups,ou=" + ginaApplication, "(&(cn=*))", searchControls);
+	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterGroup(ginaApplication), GinaApiLdapUtils.getLdapFilterCn("*"), searchControls);
 
 	    if (answer != null) {
 		logger.debug("answer=" + answer);
@@ -219,7 +219,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBER });
-	    answer = ctxtDir.search("ou=" + ginaApplication, "(&(cn=" + role + "))", searchControls);
+	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication), GinaApiLdapUtils.getLdapFilterCn(role), searchControls);
 
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
