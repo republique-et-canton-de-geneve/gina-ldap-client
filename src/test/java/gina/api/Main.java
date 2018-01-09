@@ -1,7 +1,6 @@
 package gina.api;
 
 import java.rmi.RemoteException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
