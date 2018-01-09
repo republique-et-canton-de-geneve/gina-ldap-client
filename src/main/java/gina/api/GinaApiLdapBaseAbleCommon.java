@@ -357,7 +357,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
     @Override
     @Deprecated
-    public void sendMail(String from, String to[], String cc[], String subject, String text, String mimeType)
+    public void sendMail(String from, String[] to, String[] cc, String subject, String text, String mimeType)
 	    throws GinaException, RemoteException {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
@@ -451,12 +451,12 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     }
 
     @Override
-    public List<Map<String, String>> getAllUsers(String filter, String attrs[]) throws GinaException, RemoteException {
+    public List<Map<String, String>> getAllUsers(String filter, String[] attrs) throws GinaException, RemoteException {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
 
     @Override
-    public Map<String, String> getUserAttrs(String attrs[]) throws GinaException, RemoteException {
+    public Map<String, String> getUserAttrs(String[] attrs) throws GinaException, RemoteException {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
 
