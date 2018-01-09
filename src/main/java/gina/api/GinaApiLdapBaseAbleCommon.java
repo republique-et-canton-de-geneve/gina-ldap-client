@@ -361,19 +361,16 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     }
 
     @Override
-    @Deprecated
     public String getUser() throws GinaException, RemoteException {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
 
     @Override
-    @Deprecated
     public String getLanguage() throws GinaException, RemoteException {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
 
     @Override
-    @Deprecated
     public String getEnvironment() throws GinaException, RemoteException {
 	throw new GinaException(NOT_IMPLEMENTED);
     }
