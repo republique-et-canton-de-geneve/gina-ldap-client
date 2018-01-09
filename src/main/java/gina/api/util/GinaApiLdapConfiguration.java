@@ -25,14 +25,18 @@ public class GinaApiLdapConfiguration {
     private int ldapTimeLimit = GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT;
     private String ldapType;
     
+    public GinaApiLdapConfiguration(final String server, final String base) {
+	this(server, base, null, null, GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT);
+    }
+
     public GinaApiLdapConfiguration(final String server, final String base, final String user, final String password) {
 	this(server, base, user, password, GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT);
     }
 
     public GinaApiLdapConfiguration(final String server, final String base, final String user, final String password,
 	    final int timeLimit) {
-	Validate.notNull(server);
-	Validate.notNull(base);
+	Validate.notEmpty(server);
+	Validate.notEmpty(base);
 	Validate.notNull(user);
 	Validate.notNull(password);
 
