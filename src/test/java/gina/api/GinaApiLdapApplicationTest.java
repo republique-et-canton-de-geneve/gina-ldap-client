@@ -46,15 +46,14 @@ public class GinaApiLdapApplicationTest {
 
     @BeforeClass
     public static void initApi() {
-	String base = GinaApiLdapUtils.createPropertie(Arrays.asList("ou=OAC,o=gina"));
+	String base = "ou=OAC,o=gina";
 	
 	String server = "ldaps://vldap-dev.ceti.etat-ge.ch:636";
-	String user = GinaApiLdapUtils
-		.createPropertie(Arrays.asList("cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina"));
+	String user = "cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina";
 	String password = "Uddyzfsp4";
 	
 //	 String server = "ldap://127.0.0.1:30636";
-//	 String user = GinaApiLdapUtils.createPropertie(Arrays.asList(""));
+//	 String user = "";
 //	 String password = "";
 	
 	int timeout = GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT;
