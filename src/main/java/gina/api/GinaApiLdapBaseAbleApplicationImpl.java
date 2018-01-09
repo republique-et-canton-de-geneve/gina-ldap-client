@@ -24,9 +24,6 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     // Logger
     private static Logger logger = Logger.getLogger(GinaApiLdapBaseAbleApplicationImpl.class);
 
-    // Variable system user name
-    private static final String USER_NAME = "user.name";
-
     // Constructeur
     public GinaApiLdapBaseAbleApplicationImpl(GinaApiLdapConfiguration ldapConf) {
 	Validate.notNull(ldapConf);
