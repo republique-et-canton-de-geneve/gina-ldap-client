@@ -38,7 +38,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      * java.lang.String, java.lang.String)
      */
     @Override
-    public boolean hasUserRole(String user, String role) throws GinaException, RemoteException {
+    public boolean hasUserRole(String user, String role) throws RemoteException {
 	init();
 	NamingEnumeration<?> answer = null;
 
@@ -63,7 +63,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      * java.lang.String)
      */
     @Override
-    public List<String> getUserRoles(String user) throws GinaException, RemoteException {
+    public List<String> getUserRoles(String user) throws RemoteException {
 	init();
 	List<String> roles = new ArrayList<String>();
 	NamingEnumeration<?> answer = null;
