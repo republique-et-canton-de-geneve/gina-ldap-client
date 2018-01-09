@@ -19,8 +19,8 @@ public class Main {
 	
 	try {
 	    String server = "ldaps://vldap-dev.ceti.etat-ge.ch:636";
-	    String base = GinaApiLdapUtils.createPropertie(Arrays.asList("ou=OAC,o=gina"));
-	    String user = GinaApiLdapUtils.createPropertie(Arrays.asList("cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina"));
+	    String base = "ou=OAC,o=gina";
+	    String user = "cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina";
 	    String password = "Uddyzfsp4";
 	    int timeout = GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT;
 
