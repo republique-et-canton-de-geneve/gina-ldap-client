@@ -148,7 +148,6 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     public List<Map<String, String>> getUsers(String application, String[] paramArrayOfString)
 	    throws GinaException, RemoteException {
 	init();
-	List<String> users = new ArrayList<String>();
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 	NamingEnumeration<?> answer = null;
 	try {
@@ -157,39 +156,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBER });
 	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterGroup(ginaApplication), GinaApiLdapUtils.getLdapFilterCn("*"), searchControls);
 
-	    if (answer != null) {
-		logger.debug("answer=" + answer);
-		while (answer.hasMoreElements()) {
-		    SearchResult sr = (SearchResult) answer.next();
-		    logger.debug("sr=" + sr);
-		    Attributes attrs = sr.getAttributes();
-
-		    if (attrs != null) {
-			Attribute attmember = attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBER);
-			logger.debug("attmember=" + attmember);
-
-			if (attmember != null) {
-			    for (int j = 0; j < attmember.size(); j++) {
-				String member = (String) attmember.get(j);
-
-				if (member != null) {
-				    logger.debug("member=" + member);
-
-				    String username = member.substring(0, member.indexOf(',')).replace("cn=", "")
-					    .toLowerCase();
-				    logger.debug("username=" + username);
-				    if (StringUtils.isNotBlank(username) && !users.contains(username)) {
-					users.add(username);
-					Map<String, String> map = this.getUserAttrs(username, paramArrayOfString,
-						false);
-					list.add(map);
-				    }
-				}
-			    }
-			}
-		    }
-		}
-	    }
+	    list = parseAnswer(answer, paramArrayOfString);
 	} catch (NamingException e) {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
@@ -212,7 +179,6 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     public List<Map<String, String>> getUsers(String application, String role, String[] paramArrayOfString)
 	    throws GinaException, RemoteException {
 	init();
-	List<String> users = new ArrayList<String>();
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 	NamingEnumeration<?> answer = null;
 	try {
@@ -221,36 +187,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBER });
 	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication), GinaApiLdapUtils.getLdapFilterCn(role), searchControls);
 
-	    if (answer != null) {
-		while (answer.hasMoreElements()) {
-		    SearchResult sr = (SearchResult) answer.next();
-		    logger.debug("name : " + sr.getName().substring(0, sr.getName().indexOf(',')).replace("cn=", ""));
-
-		    Attributes attrs = sr.getAttributes();
-		    logger.debug("sr=" + sr);
-		    if (attrs != null) {
-			Attribute attmember = attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBER);
-			logger.debug("attmember=" + attmember);
-
-			if (attmember != null) {
-			    for (int j = 0; j < attmember.size(); j++) {
-				String member = (String) attmember.get(j);
-
-				if (member != null) {
-				    String username = member.substring(0, member.indexOf(',')).replace("cn=", "")
-					    .toLowerCase();
-				    if (!users.contains(username)) {
-					users.add(username);
-					Map<String, String> map = this.getUserAttrs(username, paramArrayOfString,
-						false);
-					list.add(map);
-				    }
-				}
-			    }
-			}
-		    }
-		}
-	    }
+	    list = parseAnswer(answer, paramArrayOfString);
 	} catch (NamingException e) {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
@@ -262,4 +199,43 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	return list;
     }
 
+    private List<Map<String, String>> parseAnswer(final NamingEnumeration<?> answer, final String[] paramArrayOfString)
+	    throws NamingException, GinaException, RemoteException {
+	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+
+	if (answer != null) {
+	    List<String> users = new ArrayList<String>();
+
+	    while (answer.hasMoreElements()) {
+		SearchResult sr = (SearchResult) answer.next();
+		logger.debug("name : " + sr.getName());
+
+		Attributes attrs = sr.getAttributes();
+		logger.debug("sr=" + sr);
+		if (attrs != null) {
+		    Attribute attmember = attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBER);
+		    logger.debug("attmember=" + attmember);
+
+		    if (attmember != null) {
+			for (int j = 0; j < attmember.size(); j++) {
+			    String member = (String) attmember.get(j);
+
+			    if (member != null) {
+				String username = member.substring(0, member.indexOf(',')).replace("cn=", "")
+					.toLowerCase();
+				if (StringUtils.isNotBlank(username) && !users.contains(username)) {
+				    users.add(username);
+				    Map<String, String> map = this.getUserAttrs(username, paramArrayOfString, false);
+				    list.add(map);
+				}
+			    }
+			}
+		    }
+		}
+	    }
+	}
+
+	return list;
+    }
+    
 }
