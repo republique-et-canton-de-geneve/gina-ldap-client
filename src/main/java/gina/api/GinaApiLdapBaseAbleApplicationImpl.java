@@ -71,7 +71,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	try {
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBEROF });
-	    String searchFilter = "(&(objectClass=users)(cn=" + user + "))";
+	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
 	    answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    while (answer.hasMoreElements()) {
