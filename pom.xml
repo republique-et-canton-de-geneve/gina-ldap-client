@@ -20,7 +20,7 @@
 
 	<ciManagement>
 		<system>jenkins</system>
-		<url>http://ic.etat-ge.ch:20200/jenkins/job/ct-gina-ldap-client/</url>
+		<url>https://prod.etat-ge.ch/jenkins_act/job/ct-gina-ldap-client</url>
 	</ciManagement>
 
 	<issueManagement>
