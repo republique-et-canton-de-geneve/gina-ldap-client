@@ -39,6 +39,9 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      */
     @Override
     public boolean hasUserRole(String user, String role) throws RemoteException {
+	GinaApiLdapUtils.checkParam(user);
+	GinaApiLdapUtils.checkParam(role);
+
 	init();
 	NamingEnumeration<?> answer = null;
 
@@ -64,6 +67,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      */
     @Override
     public List<String> getUserRoles(String user) throws RemoteException {
+	GinaApiLdapUtils.checkParam(user);
+	
 	init();
 	List<String> roles = new ArrayList<String>();
 	NamingEnumeration<?> answer = null;
@@ -108,6 +113,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      */
     @Override
     public List<String> getAppRoles(String appli) throws GinaException, RemoteException {
+	GinaApiLdapUtils.checkParam(appli);
+	
 	init();
 	List<String> roles = new ArrayList<String>();
 	NamingEnumeration<?> answer = null;
@@ -147,6 +154,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     @Override
     public List<Map<String, String>> getUsers(String application, String[] paramArrayOfString)
 	    throws GinaException, RemoteException {
+	GinaApiLdapUtils.checkParam(application);
+	
 	init();
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 	NamingEnumeration<?> answer = null;
@@ -178,6 +187,9 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     @Override
     public List<Map<String, String>> getUsers(String application, String role, String[] paramArrayOfString)
 	    throws GinaException, RemoteException {
+	GinaApiLdapUtils.checkParam(application);
+	GinaApiLdapUtils.checkParam(role);
+	
 	init();
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 	NamingEnumeration<?> answer = null;

@@ -36,6 +36,8 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
      */
     @Override
     public List<String> getAppRoles(String application) throws GinaException, RemoteException {
+	GinaApiLdapUtils.checkParam(application);
+	
 	NamingEnumeration<?> answer = null;
 	NamingEnumeration<?> att = null;
 
@@ -80,6 +82,8 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     @Override
     public List<Map<String, String>> getUsers(String application, String[] attrs)
 	    throws GinaException, RemoteException {
+	GinaApiLdapUtils.checkParam(application);
+	
 	init();
 	List<Map<String, String>> list;
 	NamingEnumeration<?> answer = null;
@@ -112,6 +116,9 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     @Override
     public List<Map<String, String>> getUsers(String application, String role, String[] attrs)
 	    throws GinaException, RemoteException {
+	GinaApiLdapUtils.checkParam(application);
+	GinaApiLdapUtils.checkParam(role);
+	
 	init();
 	List<Map<String, String>> list;
 	NamingEnumeration<?> answer = null;

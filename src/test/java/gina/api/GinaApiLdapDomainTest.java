@@ -98,6 +98,22 @@ public class GinaApiLdapDomainTest {
     }
     
     @Test
+    public void getUserAttrsWithUserAndAttrs_wildcard_Test() {
+	LOG.info(GinaApiLdapContants.START_METHOD);
+
+	thrown.expect(GinaException.class);
+        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.PARAM_NOT_VALID));
+
+        try {
+	    api.getUserAttrs("*", GinaApiLdapContants.TEST_ATTRS);
+	    assertTrue(false);
+	} catch (RemoteException e) {
+	    LOG.error(e);
+	    assertTrue(false);
+	}
+    }
+    
+    @Test
     public void getUserRolesWithUserAndApplicationTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
 	try {

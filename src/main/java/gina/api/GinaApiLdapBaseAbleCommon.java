@@ -34,6 +34,9 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     // Message d'erreur pour les méthodes non implémentées
     protected static final String NOT_IMPLEMENTED = "Not implemented";
 
+    // Message d'erreur pour les paramètres non valides
+    public static final String PARAM_NOT_VALID = "Paramètre non valide pour cette méthode";
+
     //
     protected LdapContext ctxtDir = null;
 
@@ -127,6 +130,8 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
      */
     @Override
     public boolean isValidUser(String user) throws GinaException, RemoteException {
+	GinaApiLdapUtils.checkParam(user);
+	
 	init();
 	NamingEnumeration<?> answer = null;
 	try {
@@ -178,6 +183,8 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
     public Map<String, String> getUserAttrs(String user, String[] paramArrayOfString, boolean closeConnection)
 	    throws GinaException, RemoteException {
+	GinaApiLdapUtils.checkParam(user);
+	
 	Arrays.asList(paramArrayOfString).contains("param");
 	Map<String, String> myMap = new HashMap<String, String>();
 	NamingEnumeration<?> answer = null;
@@ -240,6 +247,9 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
      */
     @Override
     public List<String> getUserRoles(String user, String application) throws GinaException, RemoteException {
+	GinaApiLdapUtils.checkParam(user);
+	GinaApiLdapUtils.checkParam(application);
+	
 	init();
 	List<String> roles = new ArrayList<String>();
 	NamingEnumeration<?> answer = null;
@@ -300,6 +310,10 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
      */
     @Override
     public boolean hasUserRole(String user, String application, String role) throws GinaException, RemoteException {
+	GinaApiLdapUtils.checkParam(user);
+	GinaApiLdapUtils.checkParam(application);
+	GinaApiLdapUtils.checkParam(role);
+
 	init();
 	NamingEnumeration<?> answer = null;
 	NamingEnumeration<?> answerAtt = null;
@@ -339,6 +353,8 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
     @Override
     public List<String> getBusinessRoles(String application) throws GinaException, RemoteException {
+	GinaApiLdapUtils.checkParam(application);
+	
 	List<String> roles = this.getAppRoles(application);
 
 	List<String> result = new ArrayList<String>();

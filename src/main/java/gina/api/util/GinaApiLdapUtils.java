@@ -8,6 +8,9 @@ import javax.naming.NamingException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import gina.api.GinaApiLdapBaseAbleCommon;
+import gina.api.GinaException;
+
 public class GinaApiLdapUtils {
 
     // Logger
@@ -81,4 +84,19 @@ public class GinaApiLdapUtils {
 	}
     }
 
+    /**
+     * On enlève les espaces en début et fin.
+     * On lève une exception : 
+     *  - si la valeur est nulle, vide
+     *  - si la valeur contient une etoile
+     *  - si la taille est inférieure à 3 caractères
+     * @param param la valeur à vérifier
+     */
+    public static void checkParam(final String param) {
+	final String trimedParam = StringUtils.trim(param);
+
+	if(StringUtils.isEmpty(trimedParam) || trimedParam.contains("*") || trimedParam.length() < 3) {
+	    throw new GinaException(GinaApiLdapBaseAbleCommon.PARAM_NOT_VALID);
+	}
+    }
 }
