@@ -222,7 +222,6 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 					}
 					logger.debug("value=" + value);
 					myMap.put(paramArrayOfString[i], value);
-					GinaApiLdapUtils.closeQuietly(nameEnum);
 				    }
 				} finally {
 				    GinaApiLdapUtils.closeQuietly(nameEnum);
