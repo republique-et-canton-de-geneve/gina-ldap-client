@@ -18,10 +18,10 @@ import org.junit.rules.ExpectedException;
 import gina.api.util.GinaApiLdapConfiguration;
 import gina.api.util.GinaApiLdapUtils;
 
-public class GinaApiLdapGestrepoTest {
+public class GinaApiLdapApplicationCtiGestrepoTest {
 
     // Logger
-    private static final Logger LOG = Logger.getLogger(GinaApiLdapGestrepoTest.class);
+    private static final Logger LOG = Logger.getLogger(GinaApiLdapApplicationCtiGestrepoTest.class);
 
     // LDAP au niveau de l'application - Domaine Gina
     private static final String LDAP_APPLICATION_TEST_DOMAINE = "CTI";
