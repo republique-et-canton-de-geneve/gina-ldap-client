@@ -22,7 +22,7 @@ import gina.api.util.GinaApiLdapUtils;
 public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommon {
 
     // Logger
-    private static Logger logger = Logger.getLogger(GinaApiLdapBaseAbleApplicationImpl.class);
+    private static final Logger logger = Logger.getLogger(GinaApiLdapBaseAbleApplicationImpl.class);
 
     // Constructeur
     public GinaApiLdapBaseAbleApplicationImpl(GinaApiLdapConfiguration ldapConf) {
