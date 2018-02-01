@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.naming.NamingException;
 
+import com.googlecode.junittoolbox.ParallelRunner;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -18,9 +19,10 @@ import org.junit.matchers.JUnitMatchers;
 import org.junit.rules.ExpectedException;
 
 import gina.api.util.GinaApiLdapConfiguration;
-import gina.api.util.GinaApiLdapEncoder;
 import gina.api.util.GinaApiLdapUtils;
+import org.junit.runner.RunWith;
 
+@RunWith(ParallelRunner.class)
 public class GinaApiLdapDomainTest {
 
     // Logger
