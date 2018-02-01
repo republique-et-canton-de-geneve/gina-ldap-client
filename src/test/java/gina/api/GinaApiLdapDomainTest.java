@@ -18,6 +18,7 @@ import org.junit.matchers.JUnitMatchers;
 import org.junit.rules.ExpectedException;
 
 import gina.api.util.GinaApiLdapConfiguration;
+import gina.api.util.GinaApiLdapEncoder;
 import gina.api.util.GinaApiLdapUtils;
 
 public class GinaApiLdapDomainTest {
@@ -95,22 +96,6 @@ public class GinaApiLdapDomainTest {
 	    assertTrue(false);
 	}
 	assertTrue(true);
-    }
-    
-    @Test
-    public void getUserAttrsWithUserAndAttrs_wildcard_Test() {
-	LOG.info(GinaApiLdapContants.START_METHOD);
-
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapUtils.PARAM_NOT_VALID));
-
-        try {
-	    api.getUserAttrs("*", GinaApiLdapContants.TEST_ATTRS);
-	    assertTrue(false);
-	} catch (RemoteException e) {
-	    LOG.error(e);
-	    assertTrue(false);
-	}
     }
     
     @Test
