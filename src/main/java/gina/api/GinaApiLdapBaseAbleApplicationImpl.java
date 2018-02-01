@@ -48,7 +48,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 
 	try {
 	    SearchControls searchControls = getSearchControls();
-	    String searchFilter = "(&(objectClass=users)(cn=" + encodedUser + ")&(objectClass=memberOf)(cn=" + encodedRole + "))";
+	    String searchFilter = "(&(objectClass=users)(cn=" + encodedUser + ")&(objectClass=memberOf)(cn="
+		    + encodedRole + "))";
 	    answer = ctxtDir.search("", searchFilter, searchControls);
 	    return answer != null && answer.hasMoreElements();
 	} catch (NamingException e) {
@@ -69,13 +70,12 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     @Override
     public List<String> getUserRoles(String user) throws RemoteException {
 	final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
-	
+
 	init();
 	List<String> roles = new ArrayList<String>();
 	NamingEnumeration<?> answer = null;
 	NamingEnumeration<?> nameEnum = null;
 	try {
-
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBEROF });
 	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(encodedUser);
 	    answer = ctxtDir.search("", searchFilter, searchControls);
@@ -84,22 +84,24 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 		SearchResult sr = (SearchResult) answer.next();
 		logger.debug("sr=" + sr);
 		Attributes attributes = sr.getAttributes();
-		nameEnum = attributes.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
-		while (nameEnum.hasMoreElements()) {
-		    String role = (String) nameEnum.next();
-		    if (StringUtils.isNotBlank(role)) {
-			String roleClean = StringUtils.replaceOnce(role, "cn=", "");
-			String[] roleCleanString = StringUtils.split(roleClean, ",", 2);
-			roles.add(roleCleanString[0]);
+		try {
+		    nameEnum = attributes.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
+		    while (nameEnum.hasMoreElements()) {
+			String role = (String) nameEnum.next();
+			if (StringUtils.isNotBlank(role)) {
+			    String roleClean = StringUtils.replaceOnce(role, "cn=", "");
+			    String[] roleCleanString = StringUtils.split(roleClean, ",", 2);
+			    roles.add(roleCleanString[0]);
+			}
 		    }
+		} finally {
+		    GinaApiLdapUtils.closeQuietly(nameEnum);
 		}
-		GinaApiLdapUtils.closeQuietly(nameEnum);
 	    }
 	} catch (NamingException e) {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
 	} finally {
-	    GinaApiLdapUtils.closeQuietly(nameEnum);
 	    GinaApiLdapUtils.closeQuietly(answer);
 	    closeDirContext();
 	}
@@ -115,7 +117,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     @Override
     public List<String> getAppRoles(String appli) throws GinaException, RemoteException {
 	final String encodedAppli = GinaApiLdapEncoder.filterEncode(appli);
-	
+
 	init();
 	List<String> roles = new ArrayList<String>();
 	NamingEnumeration<?> answer = null;
@@ -124,18 +126,22 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	try {
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_CN });
 
-	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterGroup(encodedAppli), GinaApiLdapUtils.getLdapFilterCn("*"), searchControls);
+	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterGroup(encodedAppli),
+		    GinaApiLdapUtils.getLdapFilterCn("*"), searchControls);
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
 		    logger.debug("sr=" + sr);
-		    nameEnum = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_CN).getAll();
-		    if (nameEnum != null) {
-			while (nameEnum.hasMoreElements()) {
-			    String role = (String) nameEnum.next();
-			    logger.debug("role=" + role);
-			    roles.add(role);
+		    try {
+			nameEnum = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_CN).getAll();
+			if (nameEnum != null) {
+			    while (nameEnum.hasMoreElements()) {
+				String role = (String) nameEnum.next();
+				logger.debug("role=" + role);
+				roles.add(role);
+			    }
 			}
+		    } finally {
 			GinaApiLdapUtils.closeQuietly(nameEnum);
 		    }
 		}
@@ -144,7 +150,6 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
 	} finally {
-	    GinaApiLdapUtils.closeQuietly(nameEnum);
 	    GinaApiLdapUtils.closeQuietly(answer);
 	    closeDirContext();
 	}
@@ -156,7 +161,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     public List<Map<String, String>> getUsers(String application, String[] paramArrayOfString)
 	    throws GinaException, RemoteException {
 	final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
-	
+
 	init();
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 	NamingEnumeration<?> answer = null;
@@ -164,7 +169,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(encodedApplication);
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBER });
-	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterGroup(ginaApplication), GinaApiLdapUtils.getLdapFilterCn("*"), searchControls);
+	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterGroup(ginaApplication),
+		    GinaApiLdapUtils.getLdapFilterCn("*"), searchControls);
 
 	    list = parseAnswer(answer, paramArrayOfString);
 	} catch (NamingException e) {
@@ -190,7 +196,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    throws GinaException, RemoteException {
 	final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
 	final String encodedRole = GinaApiLdapEncoder.filterEncode(role);
-	
+
 	init();
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 	NamingEnumeration<?> answer = null;
@@ -198,7 +204,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(encodedApplication);
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBER });
-	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication), GinaApiLdapUtils.getLdapFilterCn(encodedRole), searchControls);
+	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication),
+		    GinaApiLdapUtils.getLdapFilterCn(encodedRole), searchControls);
 
 	    list = parseAnswer(answer, paramArrayOfString);
 	} catch (NamingException e) {
@@ -250,5 +257,5 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 
 	return list;
     }
-    
+
 }

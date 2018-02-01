@@ -69,17 +69,17 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
 	env.put(Context.PROVIDER_URL, ldapConf.getLdapServerUrl() + "/" + ldapConf.getLdapBaseDn());
 
-	if(StringUtils.isNotEmpty(ldapConf.getLdapUser())) {
+	if (StringUtils.isNotEmpty(ldapConf.getLdapUser())) {
 	    env.put(Context.SECURITY_PRINCIPAL, ldapConf.getLdapUser());
 	}
 
-	if(StringUtils.isNotEmpty(ldapConf.getLdapPassword())) {
+	if (StringUtils.isNotEmpty(ldapConf.getLdapPassword())) {
 	    env.put(Context.SECURITY_CREDENTIALS, ldapConf.getLdapPassword());
 	}
 
 	env.put("com.sun.jndi.ldap.read.timeout", String.valueOf(ldapConf.getLdapTimeLimit()));
 
-	if(ldapConf.getLdapServerUrl().startsWith("ldaps")) {
+	if (ldapConf.getLdapServerUrl().startsWith("ldaps")) {
 	    env.put(Context.SECURITY_PROTOCOL, "ssl");
 	}
 
@@ -129,7 +129,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     @Override
     public boolean isValidUser(String user) throws GinaException, RemoteException {
 	final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
-	
+
 	init();
 	NamingEnumeration<?> answer = null;
 	try {
@@ -182,7 +182,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     public Map<String, String> getUserAttrs(String user, String[] paramArrayOfString, boolean closeConnection)
 	    throws GinaException, RemoteException {
 	final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
-	
+
 	Arrays.asList(paramArrayOfString).contains("param");
 	Map<String, String> myMap = new HashMap<String, String>();
 	NamingEnumeration<?> answer = null;
@@ -205,22 +205,26 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 			    logger.debug("attr=" + attr);
 			    Attribute attribute = attrs.get(attr);
 			    if (attribute != null) {
-				nameEnum = attribute.getAll();
-				if (nameEnum != null) {
-				    String value = "";
-				    while (nameEnum.hasMoreElements()) {
-					if (value.isEmpty()) {
-					    value = (String) nameEnum.next();
-					} else {
-					    StringBuilder sb = new StringBuilder();
-					    sb.append(value);
-					    sb.append(":");
-					    sb.append((String) nameEnum.next());
-					    value = sb.toString();
+				try {
+				    nameEnum = attribute.getAll();
+				    if (nameEnum != null) {
+					String value = "";
+					while (nameEnum.hasMoreElements()) {
+					    if (value.isEmpty()) {
+						value = (String) nameEnum.next();
+					    } else {
+						StringBuilder sb = new StringBuilder();
+						sb.append(value);
+						sb.append(":");
+						sb.append((String) nameEnum.next());
+						value = sb.toString();
+					    }
 					}
+					logger.debug("value=" + value);
+					myMap.put(paramArrayOfString[i], value);
+					GinaApiLdapUtils.closeQuietly(nameEnum);
 				    }
-				    logger.debug("value=" + value);
-				    myMap.put(paramArrayOfString[i], value);
+				} finally {
 				    GinaApiLdapUtils.closeQuietly(nameEnum);
 				}
 			    }
@@ -232,7 +236,6 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
 	} finally {
-	    GinaApiLdapUtils.closeQuietly(nameEnum);
 	    GinaApiLdapUtils.closeQuietly(answer);
 	    closeDirContext(closeConnection);
 	}
@@ -251,7 +254,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     public List<String> getUserRoles(String user, String application) throws GinaException, RemoteException {
 	final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
 	final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
-	
+
 	init();
 	List<String> roles = new ArrayList<String>();
 	NamingEnumeration<?> answer = null;
@@ -273,18 +276,22 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 			final Attributes attrs = sr.getAttributes();
 			logger.debug("attrs=" + attrs);
 			if (attrs != null && attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF) != null) {
-			    answerAtt = attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
-			    while (answerAtt.hasMoreElements()) {
-				String att = (String) answerAtt.next();
-				logger.debug(att);
-				String pattern = ",ou=Groups,ou=" + ginaApplication + ",ou=" + ginaDomain + ",o=gina";
-				if (StringUtils.isNotBlank(att) && att.contains(pattern)) {
-				    String roleClean = StringUtils.replaceOnce(att, "cn=", "");
-				    roleClean = StringUtils.replaceOnce(roleClean, pattern, "");
-				    roles.add(roleClean);
+			    try {
+				answerAtt = attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
+				while (answerAtt.hasMoreElements()) {
+				    String att = (String) answerAtt.next();
+				    logger.debug(att);
+				    String pattern = ",ou=Groups,ou=" + ginaApplication + ",ou=" + ginaDomain
+					    + ",o=gina";
+				    if (StringUtils.isNotBlank(att) && att.contains(pattern)) {
+					String roleClean = StringUtils.replaceOnce(att, "cn=", "");
+					roleClean = StringUtils.replaceOnce(roleClean, pattern, "");
+					roles.add(roleClean);
+				    }
 				}
+			    } finally {
+				GinaApiLdapUtils.closeQuietly(answerAtt);
 			    }
-			    GinaApiLdapUtils.closeQuietly(answerAtt);
 			}
 		    }
 		}
@@ -293,7 +300,6 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
 	} finally {
-	    GinaApiLdapUtils.closeQuietly(answerAtt);
 	    GinaApiLdapUtils.closeQuietly(answer);
 	    closeDirContext();
 	}
@@ -324,28 +330,31 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(encodedApplication);
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBER });
-	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication), GinaApiLdapUtils.getLdapFilterCn(encodedRole), searchControls);
+	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication),
+		    GinaApiLdapUtils.getLdapFilterCn(encodedRole), searchControls);
 
 	    while (answer.hasMoreElements()) {
 		SearchResult sr = (SearchResult) answer.next();
 		logger.debug("sr=" + sr);
 		Attributes attrs = sr.getAttributes();
 		if (attrs != null && attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBER) != null) {
-		    answerAtt = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_MEMBER).getAll();
-		    while (answerAtt.hasMoreElements()) {
-			String att = (String) answerAtt.next();
-			if (att.toUpperCase().contains(encodedUser.toUpperCase())) {
-			    return true;
+		    try {
+			answerAtt = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_MEMBER).getAll();
+			while (answerAtt.hasMoreElements()) {
+			    String att = (String) answerAtt.next();
+			    if (att.toUpperCase().contains(encodedUser.toUpperCase())) {
+				return true;
+			    }
 			}
+		    } finally {
+			GinaApiLdapUtils.closeQuietly(answerAtt);
 		    }
-		    GinaApiLdapUtils.closeQuietly(answerAtt);
 		}
 	    }
 	} catch (NamingException e) {
 	    logger.error(e);
 	    throw new GinaException(e.getMessage());
 	} finally {
-	    GinaApiLdapUtils.closeQuietly(answerAtt);
 	    GinaApiLdapUtils.closeQuietly(answer);
 	    closeDirContext();
 	}
@@ -356,7 +365,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     @Override
     public List<String> getBusinessRoles(String application) throws GinaException, RemoteException {
 	final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
-	
+
 	List<String> roles = this.getAppRoles(encodedApplication);
 
 	List<String> result = new ArrayList<String>();
