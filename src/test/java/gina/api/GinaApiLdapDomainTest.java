@@ -99,6 +99,19 @@ public class GinaApiLdapDomainTest {
     }
     
     @Test
+    public void getUserAttrsWithUserAndAttrs_wildcard_Test() {
+	LOG.info(GinaApiLdapContants.START_METHOD);
+
+        try {
+            Map<String, String> users = api.getUserAttrs("*", GinaApiLdapContants.TEST_ATTRS);
+	    assertTrue(users == null || users.size() == 0);
+	} catch (RemoteException e) {
+	    LOG.error(e);
+	    assertTrue(false);
+	}
+    }
+    
+    @Test
     public void getUserRolesWithUserAndApplicationTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
 	try {
