@@ -17,6 +17,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
 
 import gina.api.util.GinaApiLdapConfiguration;
+import gina.api.util.GinaApiLdapEncoder;
 import gina.api.util.GinaApiLdapUtils;
 
 public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommon {
@@ -39,15 +40,15 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      */
     @Override
     public boolean hasUserRole(String user, String role) throws RemoteException {
-	GinaApiLdapUtils.checkParam(user);
-	GinaApiLdapUtils.checkParam(role);
+	final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
+	final String encodedRole = GinaApiLdapEncoder.filterEncode(role);
 
 	init();
 	NamingEnumeration<?> answer = null;
 
 	try {
 	    SearchControls searchControls = getSearchControls();
-	    String searchFilter = "(&(objectClass=users)(cn=" + user + ")&(objectClass=memberOf)(cn=" + role + "))";
+	    String searchFilter = "(&(objectClass=users)(cn=" + encodedUser + ")&(objectClass=memberOf)(cn=" + encodedRole + "))";
 	    answer = ctxtDir.search("", searchFilter, searchControls);
 	    return answer != null && answer.hasMoreElements();
 	} catch (NamingException e) {
@@ -67,7 +68,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      */
     @Override
     public List<String> getUserRoles(String user) throws RemoteException {
-	GinaApiLdapUtils.checkParam(user);
+	final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
 	
 	init();
 	List<String> roles = new ArrayList<String>();
@@ -76,7 +77,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	try {
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBEROF });
-	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
+	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(encodedUser);
 	    answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    while (answer.hasMoreElements()) {
@@ -113,7 +114,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      */
     @Override
     public List<String> getAppRoles(String appli) throws GinaException, RemoteException {
-	GinaApiLdapUtils.checkParam(appli);
+	final String encodedAppli = GinaApiLdapEncoder.filterEncode(appli);
 	
 	init();
 	List<String> roles = new ArrayList<String>();
@@ -123,7 +124,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 	try {
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_CN });
 
-	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterGroup(appli), GinaApiLdapUtils.getLdapFilterCn("*"), searchControls);
+	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterGroup(encodedAppli), GinaApiLdapUtils.getLdapFilterCn("*"), searchControls);
 	    if (answer != null) {
 		while (answer.hasMoreElements()) {
 		    SearchResult sr = (SearchResult) answer.next();
@@ -154,13 +155,13 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     @Override
     public List<Map<String, String>> getUsers(String application, String[] paramArrayOfString)
 	    throws GinaException, RemoteException {
-	GinaApiLdapUtils.checkParam(application);
+	final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
 	
 	init();
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 	NamingEnumeration<?> answer = null;
 	try {
-	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
+	    String ginaApplication = GinaApiLdapUtils.extractApplication(encodedApplication);
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBER });
 	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterGroup(ginaApplication), GinaApiLdapUtils.getLdapFilterCn("*"), searchControls);
@@ -187,17 +188,17 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     @Override
     public List<Map<String, String>> getUsers(String application, String role, String[] paramArrayOfString)
 	    throws GinaException, RemoteException {
-	GinaApiLdapUtils.checkParam(application);
-	GinaApiLdapUtils.checkParam(role);
+	final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
+	final String encodedRole = GinaApiLdapEncoder.filterEncode(role);
 	
 	init();
 	List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 	NamingEnumeration<?> answer = null;
 	try {
-	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
+	    String ginaApplication = GinaApiLdapUtils.extractApplication(encodedApplication);
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBER });
-	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication), GinaApiLdapUtils.getLdapFilterCn(role), searchControls);
+	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication), GinaApiLdapUtils.getLdapFilterCn(encodedRole), searchControls);
 
 	    list = parseAnswer(answer, paramArrayOfString);
 	} catch (NamingException e) {

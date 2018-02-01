@@ -22,10 +22,6 @@ public class GinaApiLdapUtils {
     public static final String ATTRIBUTE_DEPARTMENT_NUMBER = "departmentNumber";
     public static final int LDAP_DEFAULT_TIMEOUT = 3000;
 
-    // Message d'erreur pour les paramètres non valides
-    public static final String PARAM_NOT_VALID = "Paramètre non valide pour cette méthode";
-
-
     // Constructeur
     private GinaApiLdapUtils() {
     }
@@ -87,19 +83,4 @@ public class GinaApiLdapUtils {
 	}
     }
 
-    /**
-     * On enlève les espaces en début et fin.
-     * On lève une exception : 
-     *  - si la valeur est nulle, vide
-     *  - si la valeur contient une etoile
-     *  - si la taille est inférieure à 3 caractères
-     * @param param la valeur à vérifier
-     */
-    public static void checkParam(final String param) {
-	final String trimedParam = StringUtils.trim(param);
-
-	if(StringUtils.isEmpty(trimedParam) || trimedParam.contains("*") || trimedParam.length() < 3) {
-	    throw new GinaException(PARAM_NOT_VALID);
-	}
-    }
 }

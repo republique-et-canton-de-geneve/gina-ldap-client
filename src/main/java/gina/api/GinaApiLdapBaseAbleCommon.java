@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import gina.api.util.GinaApiLdapConfiguration;
+import gina.api.util.GinaApiLdapEncoder;
 import gina.api.util.GinaApiLdapUtils;
 
 public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
@@ -127,15 +128,15 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
      */
     @Override
     public boolean isValidUser(String user) throws GinaException, RemoteException {
-	GinaApiLdapUtils.checkParam(user);
+	final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
 	
 	init();
 	NamingEnumeration<?> answer = null;
 	try {
 	    SearchControls searchControls = getSearchControls();
 	    Attributes matchAttrs = new BasicAttributes(true);
-	    matchAttrs.put(new BasicAttribute("cn", user));
-	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
+	    matchAttrs.put(new BasicAttribute("cn", encodedUser));
+	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(encodedUser);
 	    answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    while (answer.hasMoreElements()) {
@@ -147,7 +148,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 		    if (cn != null) {
 			String cnString = (String) cn.get();
 			Attribute departmentNumber = attrs.get(GinaApiLdapUtils.ATTRIBUTE_DEPARTMENT_NUMBER);
-			if (user.equalsIgnoreCase(cnString) && departmentNumber != null
+			if (encodedUser.equalsIgnoreCase(cnString) && departmentNumber != null
 				&& StringUtils.isNotBlank((String) departmentNumber.get())) {
 			    return true;
 			}
@@ -180,7 +181,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
     public Map<String, String> getUserAttrs(String user, String[] paramArrayOfString, boolean closeConnection)
 	    throws GinaException, RemoteException {
-	GinaApiLdapUtils.checkParam(user);
+	final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
 	
 	Arrays.asList(paramArrayOfString).contains("param");
 	Map<String, String> myMap = new HashMap<String, String>();
@@ -190,7 +191,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	init();
 	try {
 	    SearchControls searchControls = getSearchControls(paramArrayOfString);
-	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
+	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(encodedUser);
 	    answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    if (answer != null) {
@@ -248,8 +249,8 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
      */
     @Override
     public List<String> getUserRoles(String user, String application) throws GinaException, RemoteException {
-	GinaApiLdapUtils.checkParam(user);
-	GinaApiLdapUtils.checkParam(application);
+	final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
+	final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
 	
 	init();
 	List<String> roles = new ArrayList<String>();
@@ -257,11 +258,11 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	NamingEnumeration<?> answerAtt = null;
 
 	try {
-	    String ginaDomain = GinaApiLdapUtils.extractDomain(application);
-	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
+	    String ginaDomain = GinaApiLdapUtils.extractDomain(encodedApplication);
+	    String ginaApplication = GinaApiLdapUtils.extractApplication(encodedApplication);
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBEROF });
-	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(user);
+	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(encodedUser);
 	    answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    if (answer != null) {
@@ -311,19 +312,19 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
      */
     @Override
     public boolean hasUserRole(String user, String application, String role) throws GinaException, RemoteException {
-	GinaApiLdapUtils.checkParam(user);
-	GinaApiLdapUtils.checkParam(application);
-	GinaApiLdapUtils.checkParam(role);
+	final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
+	final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
+	final String encodedRole = GinaApiLdapEncoder.filterEncode(role);
 
 	init();
 	NamingEnumeration<?> answer = null;
 	NamingEnumeration<?> answerAtt = null;
 
 	try {
-	    String ginaApplication = GinaApiLdapUtils.extractApplication(application);
+	    String ginaApplication = GinaApiLdapUtils.extractApplication(encodedApplication);
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBER });
-	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication), GinaApiLdapUtils.getLdapFilterCn(role), searchControls);
+	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication), GinaApiLdapUtils.getLdapFilterCn(encodedRole), searchControls);
 
 	    while (answer.hasMoreElements()) {
 		SearchResult sr = (SearchResult) answer.next();
@@ -333,7 +334,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 		    answerAtt = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_MEMBER).getAll();
 		    while (answerAtt.hasMoreElements()) {
 			String att = (String) answerAtt.next();
-			if (att.toUpperCase().contains(user.toUpperCase())) {
+			if (att.toUpperCase().contains(encodedUser.toUpperCase())) {
 			    return true;
 			}
 		    }
@@ -354,9 +355,9 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
     @Override
     public List<String> getBusinessRoles(String application) throws GinaException, RemoteException {
-	GinaApiLdapUtils.checkParam(application);
+	final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
 	
-	List<String> roles = this.getAppRoles(application);
+	List<String> roles = this.getAppRoles(encodedApplication);
 
 	List<String> result = new ArrayList<String>();
 
