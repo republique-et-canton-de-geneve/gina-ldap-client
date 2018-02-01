@@ -102,7 +102,7 @@ public class GinaApiLdapDomainTest {
 	LOG.info(GinaApiLdapContants.START_METHOD);
 
 	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.PARAM_NOT_VALID));
+        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapUtils.PARAM_NOT_VALID));
 
         try {
 	    api.getUserAttrs("*", GinaApiLdapContants.TEST_ATTRS);
