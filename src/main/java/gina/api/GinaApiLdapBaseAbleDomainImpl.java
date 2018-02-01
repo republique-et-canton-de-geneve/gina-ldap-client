@@ -11,6 +11,7 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+import javax.naming.ldap.LdapContext;
 
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
@@ -42,12 +43,13 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	NamingEnumeration<?> answer = null;
 	NamingEnumeration<?> att = null;
 
-	init();
+	LdapContext ctxtDir = null;
 	List<String> roles = new ArrayList<String>();
 	try {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(encodedApplication);
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_CN });
+	    ctxtDir = getLdapContext();
 	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication),
 		    GinaApiLdapUtils.getLdapFilterCn("*"), searchControls);
 
@@ -71,7 +73,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	    throw new GinaException(e.getMessage());
 	} finally {
 	    GinaApiLdapUtils.closeQuietly(answer);
-	    closeDirContext();
+	    closeDirContext(ctxtDir);
 	}
 
 	return roles;
@@ -88,13 +90,14 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	    throws GinaException, RemoteException {
 	final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
 
-	init();
+	LdapContext ctxtDir = null;
 	List<Map<String, String>> list;
 	NamingEnumeration<?> answer = null;
 	try {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(encodedApplication);
 
 	    SearchControls searchControls = getSearchControls();
+	    ctxtDir = getLdapContext();
 	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication),
 		    GinaApiLdapUtils.getLdapFilterCn("*"), searchControls);
 
@@ -105,7 +108,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	    throw new GinaException(e.getMessage());
 	} finally {
 	    GinaApiLdapUtils.closeQuietly(answer);
-	    closeDirContext();
+	    closeDirContext(ctxtDir);
 	}
 
 	return list;
@@ -124,13 +127,14 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
 	final String encodedRole = GinaApiLdapEncoder.filterEncode(role);
 
-	init();
+	LdapContext ctxtDir = null;
 	List<Map<String, String>> list;
 	NamingEnumeration<?> answer = null;
 	try {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(encodedApplication);
 
 	    SearchControls searchControls = getSearchControls();
+	    ctxtDir = getLdapContext();
 	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication),
 		    GinaApiLdapUtils.getLdapFilterCn(encodedRole), searchControls);
 
@@ -140,7 +144,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 	    throw new GinaException(e.getMessage());
 	} finally {
 	    GinaApiLdapUtils.closeQuietly(answer);
-	    closeDirContext();
+	    closeDirContext(ctxtDir);
 	}
 
 	return list;

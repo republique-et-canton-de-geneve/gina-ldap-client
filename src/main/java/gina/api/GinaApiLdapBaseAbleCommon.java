@@ -35,18 +35,15 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     // Message d'erreur pour les méthodes non implémentées
     protected static final String NOT_IMPLEMENTED = "Not implemented";
 
-    //
-    protected LdapContext ctxtDir = null;
-
     protected GinaApiLdapConfiguration ldapConf = null;
 
-    protected void closeDirContext(boolean closeConnection) {
+    protected void closeDirContext(LdapContext ctxtDir, boolean closeConnection) {
 	if (closeConnection) {
-	    closeDirContext();
+	    closeDirContext(ctxtDir);
 	}
     }
 
-    protected void closeDirContext() {
+    protected void closeDirContext(LdapContext ctxtDir) {
 	if (ctxtDir != null) {
 	    try {
 		ctxtDir.close();
@@ -112,13 +109,12 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	return searchControls;
     }
 
-    protected void init() throws GinaException {
-	if (ctxtDir == null) {
-	    this.ctxtDir = createDirContext();
+    protected LdapContext getLdapContext() throws GinaException {
+	LdapContext ctxtDir = createDirContext();
 	    if (ctxtDir == null) {
 		throw new GinaException("initialisation impossible");
 	    }
-	}
+	    return ctxtDir;
     }
 
     /*
@@ -130,13 +126,14 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     public boolean isValidUser(String user) throws GinaException, RemoteException {
 	final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
 
-	init();
+	LdapContext ctxtDir = null;
 	NamingEnumeration<?> answer = null;
 	try {
 	    SearchControls searchControls = getSearchControls();
 	    Attributes matchAttrs = new BasicAttributes(true);
 	    matchAttrs.put(new BasicAttribute("cn", encodedUser));
 	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(encodedUser);
+	    ctxtDir = getLdapContext();
 	    answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    while (answer.hasMoreElements()) {
@@ -160,7 +157,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	    throw new GinaException(e.getMessage());
 	} finally {
 	    GinaApiLdapUtils.closeQuietly(answer);
-	    closeDirContext();
+	    closeDirContext(ctxtDir);
 	}
 
 	return false;
@@ -188,10 +185,11 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	NamingEnumeration<?> answer = null;
 	NamingEnumeration<?> nameEnum = null;
 
-	init();
+	LdapContext ctxtDir = null;
 	try {
 	    SearchControls searchControls = getSearchControls(paramArrayOfString);
 	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(encodedUser);
+	    ctxtDir = getLdapContext();
 	    answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    if (answer != null) {
@@ -236,7 +234,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	    throw new GinaException(e.getMessage());
 	} finally {
 	    GinaApiLdapUtils.closeQuietly(answer);
-	    closeDirContext(closeConnection);
+	    closeDirContext(ctxtDir, closeConnection);
 	}
 
 	return myMap;
@@ -254,7 +252,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
 	final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
 
-	init();
+	LdapContext ctxtDir = null;
 	List<String> roles = new ArrayList<String>();
 	NamingEnumeration<?> answer = null;
 	NamingEnumeration<?> answerAtt = null;
@@ -265,6 +263,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBEROF });
 	    String searchFilter = GinaApiLdapUtils.getLdapFilterUser(encodedUser);
+	    ctxtDir = getLdapContext();
 	    answer = ctxtDir.search("", searchFilter, searchControls);
 
 	    if (answer != null) {
@@ -300,7 +299,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	    throw new GinaException(e.getMessage());
 	} finally {
 	    GinaApiLdapUtils.closeQuietly(answer);
-	    closeDirContext();
+	    closeDirContext(ctxtDir);
 	}
 
 	logger.debug("roles=" + roles);
@@ -321,7 +320,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
 	final String encodedRole = GinaApiLdapEncoder.filterEncode(role);
 
-	init();
+	LdapContext ctxtDir = null;
 	NamingEnumeration<?> answer = null;
 	NamingEnumeration<?> answerAtt = null;
 
@@ -329,6 +328,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	    String ginaApplication = GinaApiLdapUtils.extractApplication(encodedApplication);
 
 	    SearchControls searchControls = getSearchControls(new String[] { GinaApiLdapUtils.ATTRIBUTE_MEMBER });
+	    ctxtDir = getLdapContext();
 	    answer = ctxtDir.search(GinaApiLdapUtils.getLdapFilterOu(ginaApplication),
 		    GinaApiLdapUtils.getLdapFilterCn(encodedRole), searchControls);
 
@@ -355,7 +355,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	    throw new GinaException(e.getMessage());
 	} finally {
 	    GinaApiLdapUtils.closeQuietly(answer);
-	    closeDirContext();
+	    closeDirContext(ctxtDir);
 	}
 
 	return false;
