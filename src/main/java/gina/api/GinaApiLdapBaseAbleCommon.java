@@ -371,6 +371,9 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	return result;
     }
 
+    /**
+     * @deprecated
+     */
     @Override
     @Deprecated
     public void sendMail(String from, String[] to, String[] cc, String subject, String text, String mimeType)
