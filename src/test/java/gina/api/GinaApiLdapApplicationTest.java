@@ -17,10 +17,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+
+import com.googlecode.junittoolbox.ParallelRunner;
 
 import gina.api.util.GinaApiLdapConfiguration;
 import gina.api.util.GinaApiLdapUtils;
 
+@RunWith(ParallelRunner.class)
 public class GinaApiLdapApplicationTest {
 
     // Logger
