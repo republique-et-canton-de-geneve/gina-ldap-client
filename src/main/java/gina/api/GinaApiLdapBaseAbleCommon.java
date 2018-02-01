@@ -34,9 +34,6 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     // Message d'erreur pour les méthodes non implémentées
     protected static final String NOT_IMPLEMENTED = "Not implemented";
 
-    // Message d'erreur pour les paramètres non valides
-    public static final String PARAM_NOT_VALID = "Paramètre non valide pour cette méthode";
-
     //
     protected LdapContext ctxtDir = null;
 

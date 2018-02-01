@@ -8,7 +8,6 @@ import javax.naming.NamingException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import gina.api.GinaApiLdapBaseAbleCommon;
 import gina.api.GinaException;
 
 public class GinaApiLdapUtils {
@@ -22,6 +21,10 @@ public class GinaApiLdapUtils {
     public static final String ATTRIBUTE_CN = "cn";
     public static final String ATTRIBUTE_DEPARTMENT_NUMBER = "departmentNumber";
     public static final int LDAP_DEFAULT_TIMEOUT = 3000;
+
+    // Message d'erreur pour les paramètres non valides
+    public static final String PARAM_NOT_VALID = "Paramètre non valide pour cette méthode";
+
 
     // Constructeur
     private GinaApiLdapUtils() {
@@ -96,7 +99,7 @@ public class GinaApiLdapUtils {
 	final String trimedParam = StringUtils.trim(param);
 
 	if(StringUtils.isEmpty(trimedParam) || trimedParam.contains("*") || trimedParam.length() < 3) {
-	    throw new GinaException(GinaApiLdapBaseAbleCommon.PARAM_NOT_VALID);
+	    throw new GinaException(PARAM_NOT_VALID);
 	}
     }
 }
