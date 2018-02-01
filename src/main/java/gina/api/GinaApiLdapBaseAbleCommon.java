@@ -211,7 +211,11 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 					if (value.isEmpty()) {
 					    value = (String) nameEnum.next();
 					} else {
-					    value = value + ":" + (String) nameEnum.next();
+					    StringBuilder sb = new StringBuilder();
+					    sb.append(value);
+					    sb.append(":");
+					    sb.append((String) nameEnum.next());
+					    value = sb.toString();
 					}
 				    }
 				    logger.debug("value=" + value);
