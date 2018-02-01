@@ -29,7 +29,9 @@ public class GinaApiLdapBaseFactory {
 	    throw e;
 	} catch (Exception e) {
 	    LOG.error(e);
-	    throw new GinaException(e.getMessage());
+	    GinaException ge = new GinaException(e.getMessage());
+	    ge.initCause(e);
+	    throw ge;
 	}
     }
 
