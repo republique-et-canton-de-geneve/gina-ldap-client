@@ -8,8 +8,6 @@ import javax.naming.NamingException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import gina.api.GinaException;
-
 public class GinaApiLdapUtils {
 
     // Logger

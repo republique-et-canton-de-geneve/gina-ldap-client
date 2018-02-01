@@ -85,7 +85,7 @@ public final class GinaApiLdapEncoder {
      *            the value to escape.
      * @return a properly escaped representation of the supplied value.
      */
-    public static String filterEncode(String value) throws GinaException {
+    public static String filterEncode(String value) {
 	final String trimedValue = StringUtils.trim(value);
 
 	if (StringUtils.isEmpty(trimedValue)) {
