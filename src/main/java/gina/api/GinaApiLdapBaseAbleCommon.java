@@ -50,7 +50,6 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 	    } catch (NamingException e) {
 		logger.error(e);
 	    }
-	    ctxtDir = null;
 	}
     }
 
