@@ -17,14 +17,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-
-import com.googlecode.junittoolbox.ParallelRunner;
 
 import gina.api.util.GinaApiLdapConfiguration;
 import gina.api.util.GinaApiLdapUtils;
 
-@RunWith(ParallelRunner.class)
 public class GinaApiLdapApplicationTest {
 
     // Logger
@@ -33,51 +29,58 @@ public class GinaApiLdapApplicationTest {
     // LDAP au niveau de l'application - Domaine Gina
     private static final String LDAP_APPLICATION_TEST_DOMAINE = "OAC";
 
-    // LDAP au niveau de l'application  - Application Gina
+    // LDAP au niveau de l'application - Application Gina
     private static final String LDAP_APPLICATION_TEST_APPLICATION = "CAMAC-GENEVE";
 
     // LDAP au niveau de l'application - Domaine + Application Gina
-    private static final String LDAP_APPLICATION_TEST_DOMAINE_APPLICATION = LDAP_APPLICATION_TEST_DOMAINE + "." + LDAP_APPLICATION_TEST_APPLICATION;
+    private static final String LDAP_APPLICATION_TEST_DOMAINE_APPLICATION = LDAP_APPLICATION_TEST_DOMAINE + "."
+	    + LDAP_APPLICATION_TEST_APPLICATION;
 
     // LDAP au niveau du domaine - Rôle de test
     private static final String LDAP_APPLICATION_TEST_ROLE = "UTILISATEUR";
 
-    private static GinaApiLdapBaseAble api;
+    protected static GinaApiLdapBaseAble api;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @BeforeClass
     public static void initApi() {
+	LOG.info(GinaApiLdapContants.START_METHOD);
+
 	String base = "ou=OAC,o=gina";
-	
+
 	String server = "ldaps://vldap-dev.ceti.etat-ge.ch:636";
 	String user = "cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina";
 	String password = "Uddyzfsp4";
-	
-//	 String server = "ldap://127.0.0.1:30636";
-//	 String user = "";
-//	 String password = "";
-	
+
+	// String server = "ldap://127.0.0.1:30636";
+	// String user = "";
+	// String password = "";
+
 	int timeout = GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT;
 
 	GinaApiLdapConfiguration ldapConf = new GinaApiLdapConfiguration(server, base, user, password, timeout);
 	api = GinaApiLdapBaseFactory.getInstance(ldapConf);
+
+	LOG.info(GinaApiLdapContants.END_METHOD);
     }
 
     @Test
     public void getAllUsersTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.getAllUsers("FILTER", GinaApiLdapContants.TEST_ATTRS);
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.getAllUsers("FILTER", GinaApiLdapContants.TEST_ATTRS);
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
@@ -100,6 +103,8 @@ public class GinaApiLdapApplicationTest {
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
@@ -112,7 +117,7 @@ public class GinaApiLdapApplicationTest {
 	    boolean result = api.isValidUser(GinaApiLdapContants.DRIVONOL_USERNAME);
 	    LOG.info("result=" + result);
 	    assertTrue(result);
-	    
+
 	    // Utilisateur non valide
 	    result = api.isValidUser(GinaApiLdapContants.PINAUDJ_USERNAME);
 	    LOG.info("result=" + result);
@@ -123,6 +128,8 @@ public class GinaApiLdapApplicationTest {
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
@@ -147,6 +154,8 @@ public class GinaApiLdapApplicationTest {
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
@@ -161,6 +170,8 @@ public class GinaApiLdapApplicationTest {
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
@@ -168,15 +179,19 @@ public class GinaApiLdapApplicationTest {
     public void hasUserRoleWithUserAndApplicationAndRoleTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
 	try {
-	    boolean ret = api.hasUserRole(GinaApiLdapContants.DRIVONOL_USERNAME, LDAP_APPLICATION_TEST_DOMAINE_APPLICATION,
-		    LDAP_APPLICATION_TEST_ROLE);
-	    Assert.assertTrue( GinaApiLdapContants.DRIVONOL_USERNAME + " devrait avoir le role " + LDAP_APPLICATION_TEST_ROLE + " pour l'application " + LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, ret );
+	    boolean ret = api.hasUserRole(GinaApiLdapContants.DRIVONOL_USERNAME,
+		    LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, LDAP_APPLICATION_TEST_ROLE);
+	    Assert.assertTrue(GinaApiLdapContants.DRIVONOL_USERNAME + " devrait avoir le role "
+		    + LDAP_APPLICATION_TEST_ROLE + " pour l'application " + LDAP_APPLICATION_TEST_DOMAINE_APPLICATION,
+		    ret);
 	} catch (GinaException e) {
 	    LOG.error(e);
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
@@ -196,102 +211,116 @@ public class GinaApiLdapApplicationTest {
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
     @Test
     public void getUserTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.getUser();
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.getUser();
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
     @Test
     public void getUserAttrsWithAttrsTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.getUserAttrs(GinaApiLdapContants.TEST_ATTRS);
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.getUserAttrs(GinaApiLdapContants.TEST_ATTRS);
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
     @Test
     public void getLanguageTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.getLanguage();
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.getLanguage();
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
     @Test
     public void getEnvironmentTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.getEnvironment();
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.getEnvironment();
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
     @Test
     public void hasRoleWithApplicationAndRoleTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.hasRole(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, LDAP_APPLICATION_TEST_ROLE);
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.hasRole(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, LDAP_APPLICATION_TEST_ROLE);
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
     @Test
     public void getRolesWithApplicationTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.getRoles(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION);
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.getRoles(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION);
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
@@ -299,7 +328,8 @@ public class GinaApiLdapApplicationTest {
     public void getUserRolesWithUserAndApplicationTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
 	try {
-	    List<String> roles = api.getUserRoles(GinaApiLdapContants.DRIVONOL_USERNAME, LDAP_APPLICATION_TEST_DOMAINE_APPLICATION);
+	    List<String> roles = api.getUserRoles(GinaApiLdapContants.DRIVONOL_USERNAME,
+		    LDAP_APPLICATION_TEST_DOMAINE_APPLICATION);
 	    Assert.assertNotNull(roles);
 	    Assert.assertTrue(roles.size() > 0);
 	    LOG.info("roles.size()=" + roles.size());
@@ -312,6 +342,8 @@ public class GinaApiLdapApplicationTest {
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
 	assertTrue(true);
     }
@@ -320,16 +352,17 @@ public class GinaApiLdapApplicationTest {
     public void getUsersWithApplicationAndAttrsTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
 	try {
-	    List<Map<String, String>> users = api.getUsers(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, GinaApiLdapContants.TEST_ATTRS);
+	    List<Map<String, String>> users = api.getUsers(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION,
+		    GinaApiLdapContants.TEST_ATTRS);
 	    Assert.assertNotNull(users);
 	    Assert.assertFalse(users.isEmpty());
 	    LOG.info("users.size()=" + users.size());
 	    LOG.info("users=" + users);
 
 	    boolean containsUserTest = false;
-	    for( Map<String, String> user : users) {
+	    for (Map<String, String> user : users) {
 		String uid = user.get("uid");
-		if(StringUtils.isNotBlank(uid) && uid.contains(GinaApiLdapContants.DRIVONOL_USERNAME)) {
+		if (StringUtils.isNotBlank(uid) && uid.contains(GinaApiLdapContants.DRIVONOL_USERNAME)) {
 		    containsUserTest = true;
 		}
 	    }
@@ -340,6 +373,8 @@ public class GinaApiLdapApplicationTest {
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
 	assertTrue(true);
     }
@@ -348,19 +383,20 @@ public class GinaApiLdapApplicationTest {
     public void getUsersTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
 	try {
-	    List<Map<String, String>> users = api.getUsers(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, LDAP_APPLICATION_TEST_ROLE, GinaApiLdapContants.TEST_ATTRS);
+	    List<Map<String, String>> users = api.getUsers(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION,
+		    LDAP_APPLICATION_TEST_ROLE, GinaApiLdapContants.TEST_ATTRS);
 	    Assert.assertNotNull(users);
 	    Assert.assertTrue(users.size() > 0);
 	    LOG.debug("users.size()=" + users.size());
 	    LOG.debug("users=" + users);
-	    
+
 	    boolean found = false;
-	    for(Map<String, String> user : users) {
-		    String uid = user.get("uid");
-		    if(GinaApiLdapContants.DRIVONOL_USERNAME.equals(uid)) {
-			found = true;
-			break;
-		    }
+	    for (Map<String, String> user : users) {
+		String uid = user.get("uid");
+		if (GinaApiLdapContants.DRIVONOL_USERNAME.equals(uid)) {
+		    found = true;
+		    break;
+		}
 	    }
 	    assertTrue("Le user " + GinaApiLdapContants.DRIVONOL_USERNAME + " devrait faire partie de la liste", found);
 	} catch (GinaException e) {
@@ -369,6 +405,8 @@ public class GinaApiLdapApplicationTest {
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
 	assertTrue(true);
     }
@@ -376,16 +414,18 @@ public class GinaApiLdapApplicationTest {
     @Test
     public void getBusinessRolesTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-        try {
-            List<String> roles = api.getBusinessRoles(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION);
+	try {
+	    List<String> roles = api.getBusinessRoles(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION);
 	    Assert.assertNotNull(roles);
 	    Assert.assertTrue(roles.size() == 0);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
-    
+
     // -----------------------------------------------------------------------------------------
     // METHODES NON IMPLEMENTEES
     // -----------------------------------------------------------------------------------------
@@ -393,196 +433,220 @@ public class GinaApiLdapApplicationTest {
     @Test
     public void getIntegrationUserRolesTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.getIntegrationUserRoles(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, "ABC");
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.getIntegrationUserRoles(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, "ABC");
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
     @Test
     public void getIntegrationUserAttributesTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.getIntegrationUserAttributes(LDAP_APPLICATION_TEST_DOMAINE, LDAP_APPLICATION_TEST_DOMAINE_APPLICATION);
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.getIntegrationUserAttributes(LDAP_APPLICATION_TEST_DOMAINE, LDAP_APPLICATION_TEST_DOMAINE_APPLICATION);
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
     @Test
     public void getUsersByPhoneTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.getUsersByPhone("ABC", true, GinaApiLdapContants.TEST_ATTRS);
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.getUsersByPhone("ABC", true, GinaApiLdapContants.TEST_ATTRS);
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
-    
+
     @Test
     public void getUsersBySIRHNumberTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.getUsersBySIRHNumber("ABC", true, GinaApiLdapContants.TEST_ATTRS);
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.getUsersBySIRHNumber("ABC", true, GinaApiLdapContants.TEST_ATTRS);
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
-    
+
     @Test
     public void getUsersByNameTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.getUsersByName("ABC", true, GinaApiLdapContants.TEST_ATTRS);
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.getUsersByName("ABC", true, GinaApiLdapContants.TEST_ATTRS);
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
-    
+
     @Test
     public void getInheritingRolesTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.getInheritingRoles(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, LDAP_APPLICATION_TEST_ROLE);
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.getInheritingRoles(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, LDAP_APPLICATION_TEST_ROLE);
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
-    
+
     @Test
     public void getPMProprieteMetierTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.getPMProprieteMetier(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION);
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.getPMProprieteMetier(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION);
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
-    
+
     @Test
     public void getOwnIDUniqueForPPorPseudoTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-            try {
-        	api.getOwnIDUniqueForPPorPseudo();
-	    } catch (RemoteException e) {
-		LOG.error(e);
-		assertTrue(false);
-	    } catch (NamingException e) {
-		LOG.error(e);
-		assertTrue(false);
-	    }
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.getOwnIDUniqueForPPorPseudo();
+	} catch (RemoteException e) {
+	    LOG.error(e);
+	    assertTrue(false);
+	} catch (NamingException e) {
+	    LOG.error(e);
+	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
+	}
     }
-    
+
     @Test
     public void getOwnPMProprieteMetierTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.getOwnPMProprieteMetier("");
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.getOwnPMProprieteMetier("");
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
-    
+
     @Test
     public void getPPProprieteMetierTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.getPPProprieteMetier("");
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.getPPProprieteMetier("");
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
-    
+
     @Test
     public void getOwnPPProprieteMetierTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.getOwnPPProprieteMetier("");
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	try {
+	    api.getOwnPPProprieteMetier("");
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
-    
+
     @Test
     public void sendMailTest() {
 	LOG.info(GinaApiLdapContants.START_METHOD);
-	
-	thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        String[] foo = { "" };
-        
-        try {
-            api.sendMail("", foo, foo, "", "", "");
+	thrown.expect(GinaException.class);
+	thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+
+	String[] foo = { "" };
+
+	try {
+	    api.sendMail("", foo, foo, "", "", "");
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 }

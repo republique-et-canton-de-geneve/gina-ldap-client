@@ -70,6 +70,8 @@ public class GinaApiLdapApplicationCtiGestrepoTest {
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
@@ -92,6 +94,8 @@ public class GinaApiLdapApplicationCtiGestrepoTest {
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
@@ -115,6 +119,8 @@ public class GinaApiLdapApplicationCtiGestrepoTest {
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
@@ -139,6 +145,8 @@ public class GinaApiLdapApplicationCtiGestrepoTest {
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
@@ -153,6 +161,8 @@ public class GinaApiLdapApplicationCtiGestrepoTest {
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
@@ -171,6 +181,8 @@ public class GinaApiLdapApplicationCtiGestrepoTest {
 	} catch (RemoteException e) {
 	    LOG.error(e);
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 
@@ -191,6 +203,8 @@ public class GinaApiLdapApplicationCtiGestrepoTest {
 	    assertTrue(false);
 	} catch (RemoteException e) {
 	    assertTrue(false);
+	} finally {
+	    LOG.info(GinaApiLdapContants.END_METHOD);
 	}
     }
 }
