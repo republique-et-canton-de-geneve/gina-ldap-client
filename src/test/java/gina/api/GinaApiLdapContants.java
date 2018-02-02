@@ -17,4 +17,7 @@ public class GinaApiLdapContants {
     // String indiquant le début d'un test
     protected static final String START_METHOD = "START";
 
+    // String indiquant la fin d'un test
+    protected static final String END_METHOD = "END";
+
 }
