@@ -11,48 +11,56 @@ public class GinaApiLdapConfiguration {
 
     // Type d'accès au LDAP
     public static final String DOMAIN = "domain";
+
     public static final String APPLICATION = "application";
 
     // Configuration du LDAP
     public static final String LDAP_CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
+
     public static final String LDAP_AUTHENTICATION_MODE = "simple";
+
     public static final String LDAP_REFERRAL_MODE = "follow";
-    
+
     private String ldapServerUrl = null;
+
     private String ldapBaseDn = null;
+
     private String ldapUser = null;
+
     private String ldapPassword = null;
+
     private int ldapTimeLimit = GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT;
+
     private String ldapType;
-    
+
     public GinaApiLdapConfiguration(final String server, final String base) {
-	this(server, base, null, null, GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT);
+        this(server, base, null, null, GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT);
     }
 
     public GinaApiLdapConfiguration(final String server, final String base, final String user, final String password) {
-	this(server, base, user, password, GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT);
+        this(server, base, user, password, GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT);
     }
 
     public GinaApiLdapConfiguration(final String server, final String base, final String user, final String password,
-	    final int timeLimit) {
-	Validate.notEmpty(server);
-	Validate.notEmpty(base);
-	Validate.notNull(user);
-	Validate.notNull(password);
+            final int timeLimit) {
+        Validate.notEmpty(server);
+        Validate.notEmpty(base);
+        Validate.notNull(user);
+        Validate.notNull(password);
 
-	this.ldapServerUrl = server;
-	this.ldapBaseDn = base;
-	this.ldapUser = user;
-	this.ldapPassword = password;
-	this.ldapTimeLimit = timeLimit;
+        this.ldapServerUrl = server;
+        this.ldapBaseDn = base;
+        this.ldapUser = user;
+        this.ldapPassword = password;
+        this.ldapTimeLimit = timeLimit;
 
-	int count = StringUtils.countMatches(user, ",ou=");
-	LOG.debug("count=" + count);
-	if (count > 2) {
-	    this.ldapType = APPLICATION;
-	} else {
-	    this.ldapType = DOMAIN;
-	}
+        int count = StringUtils.countMatches(user, ",ou=");
+        LOG.debug("count=" + count);
+        if (count > 2) {
+            this.ldapType = APPLICATION;
+        } else {
+            this.ldapType = DOMAIN;
+        }
     }
 
     public String getLdapServerUrl() {
