@@ -428,7 +428,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public List<Map<String, String>> getUsersBySIRHNumber(String paramString, Boolean paramBoolean,
+    @Override public List<Map<String, String>> getUsersBySIRHNumber(String sirhNumber, Boolean paramBoolean,
             String[] paramArrayOfString) {
         throw new GinaException(NOT_IMPLEMENTED);
     }

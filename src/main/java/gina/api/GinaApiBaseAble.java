@@ -28,7 +28,7 @@ public interface GinaApiBaseAble {
      * @param attrs tableau des attributs, ou null pour obtenir tous les attributs disponibles
      * @return liste de Maps contenant les attributs demandés pour chaque utilisateur
      */
-    List<Map<String,String>> getAllUsers(String filter, String attrs[]) throws RemoteException;
+    List<Map<String, String>> getAllUsers(String filter, String[] attrs) throws RemoteException;
 
     /**
      * Donne les valeurs de certaines informations concernant un utilisateur.
@@ -38,7 +38,7 @@ public interface GinaApiBaseAble {
      * @return Attributs sous la forme d'une Map <cle, valeur>. Les cles sont les
      *         noms des attributs, ou null si l'utilisateur n'existe pas.
      */
-    Map<String,String> getUserAttrs(String username, String attrs[]) throws RemoteException;
+    Map<String, String> getUserAttrs(String username, String[] attrs) throws RemoteException;
 
     /**
      * Donne les valeurs de certaines informations concernant l'utilisateur.
@@ -47,7 +47,7 @@ public interface GinaApiBaseAble {
      * @param attrs tableau des noms des attributs, ou null pour obtenir tous les attributs disponibles
      * @return Attributs demandés sous la forme d'une Map. Les cles sont les noms des attributs
      */
-    Map<String,String> getUserAttrs(String attrs[]) throws RemoteException;
+    Map<String,String> getUserAttrs(String[] attrs) throws RemoteException;
 
     /**
      * Donne la langue de l'utilisateur courant
@@ -142,7 +142,7 @@ public interface GinaApiBaseAble {
      * @deprecated Cette methode ne doit plus être utilisee
      */
     @Deprecated
-    List<Map<String,String>> getUsers(String application, String attrs[]) throws RemoteException;
+    List<Map<String, String>> getUsers(String application, String[] attrs) throws RemoteException;
 
     /**
      * Donne la liste des utilisateurs ayants un role donne
@@ -153,7 +153,7 @@ public interface GinaApiBaseAble {
      * @return liste de Maps contenant les attributs demandes pour chaque
      *         utilisateur ayant le role
      */
-    List<Map<String,String>> getUsers(String application, String role, String attrs[]) throws RemoteException;
+    List<Map<String, String>> getUsers(String application, String role, String[] attrs) throws RemoteException;
 
     /**
      * Donne la liste des utilisateurs par numéro de telephone
@@ -162,17 +162,17 @@ public interface GinaApiBaseAble {
      * @param activUser Status du compte utilisateur (actif/inactif)
      * @return liste des utilisateurs
      */
-    List<Map<String,String>> getUsersByPhone(String phoneNumber, Boolean activUser, String[] attrs)
+    List<Map<String, String>> getUsersByPhone(String phoneNumber, Boolean activUser, String[] attrs)
    			throws RemoteException;
 
    /**
     * Donne la liste des utilisateurs par numero SIRH
     *
-    * @param SIRHNumber numero SIRH
+    * @param sirhNumber numero SIRH
     * @param activUser Status du compte utilisateur (actif/inactif)
     * @return liste des utilisateurs
     */
-   List<Map<String,String>> getUsersBySIRHNumber(String SIRHNumber, Boolean activUser, String[] attrs)
+   List<Map<String,String>> getUsersBySIRHNumber(String sirhNumber, Boolean activUser, String[] attrs)
   			throws RemoteException;
 
    /**
@@ -182,7 +182,7 @@ public interface GinaApiBaseAble {
     * @param activUser Status du compte utilisateur (actif/inactif)
     * @return liste des utilisateurs
     */
-   List<Map<String,String>> getUsersByName(String name, Boolean activUser, String[] attrs)
+   List<Map<String, String>> getUsersByName(String name, Boolean activUser, String[] attrs)
   			throws RemoteException;
 
     /**
@@ -243,6 +243,6 @@ public interface GinaApiBaseAble {
      * @deprecated Cette methode ne doit plus être utilisee
      */
     @Deprecated
-    void sendMail(String from, String to[], String cc[], String subject,
-            String text, String mimeType) throws RemoteException;
+    void sendMail(String from, String[] to, String[] cc, String subject, String text, String mimeType)
+            throws RemoteException;
 }
