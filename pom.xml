@@ -2,6 +2,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter</artifactId>
+        <version>2.0.5.RELEASE</version>
+    </dependency>
+
     <parent>
         <artifactId>melusine_super_parent</artifactId>
         <groupId>ch.ge.cti.melusine</groupId>
@@ -37,10 +44,9 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:svn:http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/trunk/</connection>
-        <developerConnection>scm:svn:http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/trunk/
-        </developerConnection>
-        <url>http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client/trunk/</url>
+        <connection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/ct-gina-ldap-client.git</connection>
+        <developerConnection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/ct-gina-ldap-client.git</developerConnection>
+        <url>https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/ct-gina-ldap-client.git</url>
     </scm>
 
     <dependencies>
