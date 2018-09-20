@@ -38,7 +38,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      * @see gina.api.GinaApiLdapBaseAble#hasUserRole(java.lang.String,
      * java.lang.String, java.lang.String)
      */
-    @Override public boolean hasUserRole(String user, String role) {
+    @Override
+    public boolean hasUserRole(String user, String role) {
         final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
         final String encodedRole = GinaApiLdapEncoder.filterEncode(role);
 
@@ -67,7 +68,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      * @see gina.api.GinaApiLdapBaseAble#getUserRoles(java.lang.String,
      * java.lang.String)
      */
-    @Override public List<String> getUserRoles(String user) throws RemoteException {
+    @Override
+    public List<String> getUserRoles(String user) throws RemoteException {
         final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
 
         LdapContext ctxtDir = null;
@@ -114,7 +116,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      *
      * @see gina.api.GinaApiLdapBaseAble#getAppRoles(java.lang.String)
      */
-    @Override public List<String> getAppRoles(String appli) throws RemoteException {
+    @Override
+    public List<String> getAppRoles(String appli) throws RemoteException {
         final String encodedAppli = GinaApiLdapEncoder.filterEncode(appli);
 
         LdapContext ctxtDir = null;
@@ -157,7 +160,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
         return roles;
     }
 
-    @Override public List<Map<String, String>> getUsers(String application, String[] paramArrayOfString)
+    @Override
+    public List<Map<String, String>> getUsers(String application, String[] paramArrayOfString)
             throws RemoteException {
         final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
 
@@ -192,7 +196,8 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      * @see gina.api.GinaApiLdapBaseAble#getUsers(java.lang.String,
      * java.lang.String, java.lang.String[])
      */
-    @Override public List<Map<String, String>> getUsers(String application, String role, String[] paramArrayOfString)
+    @Override
+    public List<Map<String, String>> getUsers(String application, String role, String[] paramArrayOfString)
             throws RemoteException {
         final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
         final String encodedRole = GinaApiLdapEncoder.filterEncode(role);
