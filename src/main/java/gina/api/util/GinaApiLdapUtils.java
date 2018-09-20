@@ -6,12 +6,12 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GinaApiLdapUtils {
 
-    // Logger
-    private static final Logger LOG = Logger.getLogger(GinaApiLdapUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GinaApiLdapUtils.class);
 
     // LDAP Attributes
     public static final String ATTRIBUTE_MEMBEROF = "memberOf";
@@ -80,7 +80,7 @@ public class GinaApiLdapUtils {
             try {
                 obj.close();
             } catch (NamingException e) {
-                LOG.error(e);
+                LOGGER.error("Erreur : ", e);
             }
         }
     }

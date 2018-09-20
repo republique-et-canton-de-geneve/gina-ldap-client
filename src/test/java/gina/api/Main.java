@@ -3,14 +3,14 @@ package gina.api;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import gina.api.util.GinaApiLdapConfiguration;
 import gina.api.util.GinaApiLdapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main {
 
-    private static final Logger LOG = Logger.getLogger(Main.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
     private static final String TEST_SEPARATOR = "************************ ";
 
@@ -40,7 +40,7 @@ public class Main {
             LOG.debug(TEST_SEPARATOR + "getUserRoles(userName)");
             roles = ldapApplication.getUserRoles(userName);
             LOG.debug("size=" + roles.size());
-            LOG.debug(roles);
+            LOG.debug("{}", roles);
 
             LOG.debug(TEST_SEPARATOR + "getUserRoles(userName)");
             roles = ldapApplication.getUserRoles(userName);

@@ -15,15 +15,16 @@ import javax.naming.ldap.LdapContext;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
 
 import gina.api.util.GinaApiLdapConfiguration;
 import gina.api.util.GinaApiLdapEncoder;
 import gina.api.util.GinaApiLdapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommon {
 
-    private static final Logger logger = Logger.getLogger(GinaApiLdapBaseAbleApplicationImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GinaApiLdapBaseAbleApplicationImpl.class);
 
     public GinaApiLdapBaseAbleApplicationImpl(GinaApiLdapConfiguration ldapConf) {
         Validate.notNull(ldapConf);
@@ -52,7 +53,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
             answer = ctxtDir.search("", searchFilter, searchControls);
             return answer != null && answer.hasMoreElements();
         } catch (NamingException e) {
-            logger.error(e);
+            LOGGER.error("Erreur : ",e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -81,7 +82,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 
             while (answer.hasMoreElements()) {
                 SearchResult sr = (SearchResult) answer.next();
-                logger.debug("sr=" + sr);
+                LOGGER.debug("sr=" + sr);
                 Attributes attributes = sr.getAttributes();
                 try {
                     nameEnum = attributes.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
@@ -98,7 +99,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
                 }
             }
         } catch (NamingException e) {
-            logger.error(e);
+            LOGGER.error("Erreur : ", e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -130,13 +131,13 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
             if (answer != null) {
                 while (answer.hasMoreElements()) {
                     SearchResult sr = (SearchResult) answer.next();
-                    logger.debug("sr=" + sr);
+                    LOGGER.debug("sr=" + sr);
                     try {
                         nameEnum = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_CN).getAll();
                         if (nameEnum != null) {
                             while (nameEnum.hasMoreElements()) {
                                 String role = (String) nameEnum.next();
-                                logger.debug("role=" + role);
+                                LOGGER.debug("role=" + role);
                                 roles.add(role);
                             }
                         }
@@ -146,7 +147,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
                 }
             }
         } catch (NamingException e) {
-            logger.error(e);
+            LOGGER.error("Erreur : ", e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -174,7 +175,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 
             list = parseAnswer(answer, paramArrayOfString);
         } catch (NamingException e) {
-            logger.error(e);
+            LOGGER.error("Erreur : ", e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -209,7 +210,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 
             list = parseAnswer(answer, paramArrayOfString);
         } catch (NamingException e) {
-            logger.error(e);
+            LOGGER.error("Erreur : ", e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -228,13 +229,13 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 
             while (answer.hasMoreElements()) {
                 SearchResult sr = (SearchResult) answer.next();
-                logger.debug("name : " + sr.getName());
+                LOGGER.debug("name : " + sr.getName());
 
                 Attributes attrs = sr.getAttributes();
-                logger.debug("sr=" + sr);
+                LOGGER.debug("sr=" + sr);
                 if (attrs != null) {
                     Attribute attmember = attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBER);
-                    logger.debug("attmember=" + attmember);
+                    LOGGER.debug("attmember=" + attmember);
 
                     if (attmember != null) {
                         for (int j = 0; j < attmember.size(); j++) {

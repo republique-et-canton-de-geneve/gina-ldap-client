@@ -10,3 +10,5 @@
 # Maven
 target/
 
+# Project
+ct-gina-ldap-client.log
