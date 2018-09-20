@@ -121,7 +121,8 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
      *
      * @see gina.api.GinaApiLdapBaseAble#isValidUser(java.lang.String)
      */
-    @Override public boolean isValidUser(String user) {
+    @Override
+    public boolean isValidUser(String user) {
         final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
 
         LdapContext ctxtDir = null;
@@ -168,7 +169,8 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
      * @see gina.api.GinaApiLdapBaseAble#getUserAttrs(java.lang.String,
      * java.lang.String[])
      */
-    @Override public Map<String, String> getUserAttrs(String user, String[] paramArrayOfString) {
+    @Override
+    public Map<String, String> getUserAttrs(String user, String[] paramArrayOfString) {
         return this.getUserAttrs(user, paramArrayOfString, true);
     }
 
@@ -242,7 +244,8 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
      * @see gina.api.GinaApiLdapBaseAble#getUserRoles(java.lang.String,
      * java.lang.String)
      */
-    @Override public List<String> getUserRoles(String user, String application) {
+    @Override
+    public List<String> getUserRoles(String user, String application) {
         final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
         final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
 
@@ -308,7 +311,8 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
      * @see gina.api.GinaApiLdapBaseAble#hasUserRole(java.lang.String,
      * java.lang.String, java.lang.String)
      */
-    @Override public boolean hasUserRole(String user, String application, String role) {
+    @Override
+    public boolean hasUserRole(String user, String application, String role) {
         final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
         final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
         final String encodedRole = GinaApiLdapEncoder.filterEncode(role);
@@ -354,7 +358,8 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
         return false;
     }
 
-    @Override public List<String> getBusinessRoles(String application) throws RemoteException {
+    @Override
+    public List<String> getBusinessRoles(String application) throws RemoteException {
         final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
 
         List<String> roles = this.getAppRoles(encodedApplication);
@@ -374,83 +379,103 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     /**
      * @deprecated
      */
-    @Override @Deprecated public void sendMail(String from, String[] to, String[] cc, String subject, String text,
+    @Override
+    @Deprecated
+    public void sendMail(String from, String[] to, String[] cc, String subject, String text,
             String mimeType) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public String getUser() {
+    @Override
+    public String getUser() {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public String getLanguage() {
+    @Override
+    public String getLanguage() {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public String getEnvironment() {
+    @Override
+    public String getEnvironment() {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public List<String> getIntegrationUserRoles(String paramString1, String paramString2) {
+    @Override
+    public List<String> getIntegrationUserRoles(String paramString1, String paramString2) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public List<String> getIntegrationUserAttributes(String paramString1, String paramString2) {
+    @Override
+    public List<String> getIntegrationUserAttributes(String paramString1, String paramString2) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public List<String> getInheritingRoles(String paramString1, String paramString2) {
+    @Override
+    public List<String> getInheritingRoles(String paramString1, String paramString2) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public List<String> getPMProprieteMetier(String paramString) {
+    @Override
+    public List<String> getPMProprieteMetier(String paramString) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public String getOwnIDUniqueForPPorPseudo() {
+    @Override
+    public String getOwnIDUniqueForPPorPseudo() {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public List<String> getOwnPMProprieteMetier(String paramString) {
+    @Override
+    public List<String> getOwnPMProprieteMetier(String paramString) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public List<String> getPPProprieteMetier(String paramString) {
+    @Override
+    public List<String> getPPProprieteMetier(String paramString) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public List<String> getOwnPPProprieteMetier(String paramString) {
+    @Override
+    public List<String> getOwnPPProprieteMetier(String paramString) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public List<Map<String, String>> getUsersByPhone(String paramString, Boolean paramBoolean,
+    @Override
+    public List<Map<String, String>> getUsersByPhone(String paramString, Boolean paramBoolean,
             String[] paramArrayOfString) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public List<Map<String, String>> getUsersBySIRHNumber(String sirhNumber, Boolean paramBoolean,
+    @Override
+    public List<Map<String, String>> getUsersBySIRHNumber(String sirhNumber, Boolean paramBoolean,
             String[] paramArrayOfString) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public List<Map<String, String>> getUsersByName(String paramString, Boolean paramBoolean,
+    @Override
+    public List<Map<String, String>> getUsersByName(String paramString, Boolean paramBoolean,
             String[] paramArrayOfString) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public boolean hasRole(String application, String role) {
+    @Override
+    public boolean hasRole(String application, String role) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public List<String> getRoles(String application) {
+    @Override
+    public List<String> getRoles(String application) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public List<Map<String, String>> getAllUsers(String filter, String[] attrs) {
+    @Override
+    public List<Map<String, String>> getAllUsers(String filter, String[] attrs) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public Map<String, String> getUserAttrs(String[] attrs) {
+    @Override
+    public Map<String, String> getUserAttrs(String[] attrs) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 

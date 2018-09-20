@@ -31,7 +31,8 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
      *
      * @see gina.api.GinaApiLdapBaseAble#getAppRoles(java.lang.String)
      */
-    @Override public List<String> getAppRoles(String application) {
+    @Override
+    public List<String> getAppRoles(String application) {
         final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
 
         NamingEnumeration<?> answer = null;
@@ -80,7 +81,8 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
      *
      * @see gina.api.GinaApiLdapBaseAble#getUsers(java.lang.String)
      */
-    @Override public List<Map<String, String>> getUsers(String application, String[] attrs) {
+    @Override
+    public List<Map<String, String>> getUsers(String application, String[] attrs) {
         final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
 
         LdapContext ctxtDir = null;
@@ -115,7 +117,8 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
      * @see gina.api.GinaApiLdapBaseAble#getUsers(java.lang.String,
      * java.lang.String, java.lang.String[])
      */
-    @Override public List<Map<String, String>> getUsers(String application, String role, String[] attrs) {
+    @Override
+    public List<Map<String, String>> getUsers(String application, String role, String[] attrs) {
         final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
         final String encodedRole = GinaApiLdapEncoder.filterEncode(role);
 
@@ -146,11 +149,13 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
     // METHODES NON IMPLEMENTEES
     // -----------------------------------------------------------------------------------------
 
-    @Override public boolean hasUserRole(String user, String role) {
+    @Override
+    public boolean hasUserRole(String user, String role) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    @Override public List<String> getUserRoles(String user) {
+    @Override
+    public List<String> getUserRoles(String user) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
