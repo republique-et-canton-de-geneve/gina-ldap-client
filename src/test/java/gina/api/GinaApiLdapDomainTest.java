@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.naming.NamingException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -19,11 +18,13 @@ import org.junit.rules.ExpectedException;
 
 import gina.api.util.GinaApiLdapConfiguration;
 import gina.api.util.GinaApiLdapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GinaApiLdapDomainTest {
 
     // Logger
-    private static final Logger LOG = Logger.getLogger(GinaApiLdapDomainTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GinaApiLdapDomainTest.class);
 
     // LDAP au niveau du domaine - Domaine Gina
     private static final String LDAP_DOMAIN_TEST_DOMAINE = "CSBUGTRACK";
@@ -71,10 +72,10 @@ public class GinaApiLdapDomainTest {
                         result);
             }
         } catch (GinaException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -93,10 +94,10 @@ public class GinaApiLdapDomainTest {
             Assert.assertNotNull(result.get("initials"));
             Assert.assertNotNull(result.get("givenName"));
         } catch (GinaException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -112,7 +113,7 @@ public class GinaApiLdapDomainTest {
             Map<String, String> users = api.getUserAttrs("*", GinaApiLdapConstants.TEST_ATTRS);
             assertTrue(users == null || users.size() == 0);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -132,10 +133,10 @@ public class GinaApiLdapDomainTest {
             Assert.assertTrue(roles.contains(LDAP_DOMAIN_TEST_ROLE));
             Assert.assertTrue(GinaApiLdapTools.checkRolesAreCleaned(roles));
         } catch (GinaException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -163,10 +164,10 @@ public class GinaApiLdapDomainTest {
             }
             Assert.assertTrue(containsUserTest);
         } catch (GinaException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -185,10 +186,10 @@ public class GinaApiLdapDomainTest {
                     GinaApiLdapConstants.DTDCOURS01_USERNAME + " devrait avoir le role " + LDAP_DOMAIN_TEST_ROLE
                             + " pour l'application " + LDAP_DOMAIN_TEST_DOMAINE_APPLICATION, ret);
         } catch (GinaException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -218,10 +219,10 @@ public class GinaApiLdapDomainTest {
                         false);
             }
         } catch (GinaException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -243,7 +244,7 @@ public class GinaApiLdapDomainTest {
         } catch (GinaException e) {
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -259,7 +260,7 @@ public class GinaApiLdapDomainTest {
             Assert.assertNotNull(roles);
             Assert.assertTrue(roles.size() == 0);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -281,7 +282,7 @@ public class GinaApiLdapDomainTest {
             api.hasRole(LDAP_DOMAIN_TEST_DOMAINE_APPLICATION, LDAP_DOMAIN_TEST_ROLE);
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -299,7 +300,7 @@ public class GinaApiLdapDomainTest {
             api.getAllUsers("FILTER", GinaApiLdapConstants.TEST_ATTRS);
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -317,7 +318,7 @@ public class GinaApiLdapDomainTest {
             api.getUserAttrs(GinaApiLdapConstants.TEST_ATTRS);
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -335,7 +336,7 @@ public class GinaApiLdapDomainTest {
             api.getRoles("APPLICATION");
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -353,7 +354,7 @@ public class GinaApiLdapDomainTest {
             api.hasUserRole(GinaApiLdapConstants.DTDCOURS01_USERNAME, LDAP_DOMAIN_TEST_ROLE);
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -371,7 +372,7 @@ public class GinaApiLdapDomainTest {
             api.getUserRoles(GinaApiLdapConstants.DTDCOURS01_USERNAME);
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -389,7 +390,7 @@ public class GinaApiLdapDomainTest {
             api.getUser();
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -407,7 +408,7 @@ public class GinaApiLdapDomainTest {
             api.getLanguage();
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -425,7 +426,7 @@ public class GinaApiLdapDomainTest {
             api.getEnvironment();
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -443,7 +444,7 @@ public class GinaApiLdapDomainTest {
             api.getIntegrationUserRoles(LDAP_DOMAIN_TEST_DOMAINE, "ABC");
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -461,7 +462,7 @@ public class GinaApiLdapDomainTest {
             api.getIntegrationUserAttributes(LDAP_DOMAIN_TEST_DOMAINE, LDAP_DOMAIN_TEST_DOMAINE_APPLICATION);
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -479,7 +480,7 @@ public class GinaApiLdapDomainTest {
             api.getUsersByPhone("ABC", true, GinaApiLdapConstants.TEST_ATTRS);
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -497,7 +498,7 @@ public class GinaApiLdapDomainTest {
             api.getUsersBySIRHNumber("ABC", true, GinaApiLdapConstants.TEST_ATTRS);
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -515,7 +516,7 @@ public class GinaApiLdapDomainTest {
             api.getUsersByName("ABC", true, GinaApiLdapConstants.TEST_ATTRS);
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -533,7 +534,7 @@ public class GinaApiLdapDomainTest {
             api.getInheritingRoles(LDAP_DOMAIN_TEST_DOMAINE_APPLICATION, LDAP_DOMAIN_TEST_ROLE);
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -551,7 +552,7 @@ public class GinaApiLdapDomainTest {
             api.getPMProprieteMetier(LDAP_DOMAIN_TEST_DOMAINE_APPLICATION);
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -568,10 +569,10 @@ public class GinaApiLdapDomainTest {
         try {
             api.getOwnIDUniqueForPPorPseudo();
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } catch (NamingException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -589,7 +590,7 @@ public class GinaApiLdapDomainTest {
             api.getOwnPMProprieteMetier("");
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -607,7 +608,7 @@ public class GinaApiLdapDomainTest {
             api.getPPProprieteMetier("");
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -625,7 +626,7 @@ public class GinaApiLdapDomainTest {
             api.getOwnPPProprieteMetier("");
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);
@@ -645,7 +646,7 @@ public class GinaApiLdapDomainTest {
             api.sendMail("", foo, foo, "", "", "");
             assertTrue(false);
         } catch (RemoteException e) {
-            LOG.error(e);
+            LOG.error("Erreur : ", e);;
             assertTrue(false);
         } finally {
             LOG.info(GinaApiLdapConstants.END_METHOD);

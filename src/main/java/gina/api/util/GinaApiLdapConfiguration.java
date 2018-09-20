@@ -2,12 +2,12 @@ package gina.api.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GinaApiLdapConfiguration {
 
-    // Logger
-    private static final Logger LOG = Logger.getLogger(GinaApiLdapConfiguration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GinaApiLdapConfiguration.class);
 
     // Type d'accès au LDAP
     public static final String DOMAIN = "domain";
@@ -21,13 +21,13 @@ public class GinaApiLdapConfiguration {
 
     public static final String LDAP_REFERRAL_MODE = "follow";
 
-    private String ldapServerUrl = null;
+    private String ldapServerUrl;
 
-    private String ldapBaseDn = null;
+    private String ldapBaseDn;
 
-    private String ldapUser = null;
+    private String ldapUser;
 
-    private String ldapPassword = null;
+    private String ldapPassword;
 
     private int ldapTimeLimit = GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT;
 
@@ -55,7 +55,7 @@ public class GinaApiLdapConfiguration {
         this.ldapTimeLimit = timeLimit;
 
         int count = StringUtils.countMatches(user, ",ou=");
-        LOG.debug("count=" + count);
+        LOGGER.debug("count=" + count);
         if (count > 2) {
             this.ldapType = APPLICATION;
         } else {

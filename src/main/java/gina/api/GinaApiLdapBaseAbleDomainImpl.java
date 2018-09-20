@@ -14,11 +14,12 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapContext;
 import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 
-    private static final Logger logger = Logger.getLogger(GinaApiLdapBaseAbleDomainImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GinaApiLdapBaseAbleDomainImpl.class);
 
     public GinaApiLdapBaseAbleDomainImpl(GinaApiLdapConfiguration ldapConf) {
         Validate.notNull(ldapConf);
@@ -54,7 +55,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
                         att = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_CN).getAll();
                         while (att.hasMoreElements()) {
                             String cn = (String) att.next();
-                            logger.debug("cn=" + cn);
+                            LOGGER.debug("cn=" + cn);
                             roles.add(cn);
                         }
                     } finally {
@@ -63,7 +64,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
                 }
             }
         } catch (NamingException e) {
-            logger.error(e);
+            LOGGER.error("Erreur : ", e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -97,7 +98,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
             list = parseAnswer(answer, attrs);
 
         } catch (NamingException e) {
-            logger.error(e);
+            LOGGER.error("Erreur : ", e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -131,7 +132,7 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
 
             list = parseAnswer(answer, attrs);
         } catch (NamingException e) {
-            logger.error(e);
+            LOGGER.error("Erreur : ", e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -165,11 +166,11 @@ public class GinaApiLdapBaseAbleDomainImpl extends GinaApiLdapBaseAbleCommon {
             List<String> users = new ArrayList<String>();
             while (answer.hasMoreElements()) {
                 SearchResult sr = (SearchResult) answer.next();
-                logger.debug("name : " + sr.getName().substring(0, sr.getName().indexOf(','))
+                LOGGER.debug("name : " + sr.getName().substring(0, sr.getName().indexOf(','))
                                            .replace("cn=", ""));
 
                 Attributes attrsResult = sr.getAttributes();
-                logger.debug("sr=" + sr);
+                LOGGER.debug("sr=" + sr);
                 if (attrsResult != null) {
                     Attribute attmember = attrsResult.get(GinaApiLdapUtils.ATTRIBUTE_MEMBER);
 

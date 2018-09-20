@@ -1,12 +1,12 @@
 package gina.api;
 
-import org.apache.log4j.Logger;
-
 import gina.api.util.GinaApiLdapConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GinaApiLdapBaseFactory {
 
-    private static final Logger LOG = Logger.getLogger(GinaApiLdapBaseFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GinaApiLdapBaseFactory.class);
 
     private GinaApiLdapBaseFactory() {
     }
@@ -24,10 +24,10 @@ public class GinaApiLdapBaseFactory {
 
             return result;
         } catch (RuntimeException e) {
-            LOG.error(e);
+            LOGGER.error("Erreur : ", e);
             throw e;
         } catch (Exception e) {
-            LOG.error(e);
+            LOGGER.error("Erreur : ", e);
             GinaException ge = new GinaException(e.getMessage());
             ge.initCause(e);
             throw ge;

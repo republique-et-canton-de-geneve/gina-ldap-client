@@ -21,19 +21,19 @@ import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 
 import gina.api.util.GinaApiLdapConfiguration;
 import gina.api.util.GinaApiLdapEncoder;
 import gina.api.util.GinaApiLdapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
     // Message d'erreur pour les méthodes non implémentées
     protected static final String NOT_IMPLEMENTED = "Not implemented";
 
-    // Logger
-    private static final Logger logger = Logger.getLogger(GinaApiLdapBaseAbleCommon.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GinaApiLdapBaseAbleCommon.class);
 
     protected GinaApiLdapConfiguration ldapConf = null;
 
@@ -48,7 +48,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
             try {
                 ctxtDir.close();
             } catch (NamingException e) {
-                logger.error(e);
+                LOGGER.error("Erreur : ", e);
             }
         }
     }
@@ -83,7 +83,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
         try {
             result = new InitialLdapContext(env, null);
         } catch (NamingException e) {
-            logger.error(e);
+            LOGGER.error("Erreur : ", e);
             throw new GinaException(e.getMessage());
         }
 
@@ -136,7 +136,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
             while (answer.hasMoreElements()) {
                 SearchResult sr = (SearchResult) answer.next();
-                logger.debug("sr=" + sr);
+                LOGGER.debug("sr=" + sr);
                 Attributes attrs = sr.getAttributes();
                 if (attrs != null) {
                     Attribute cn = attrs.get("cn");
@@ -151,7 +151,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
                 }
             }
         } catch (NamingException e) {
-            logger.error(e);
+            LOGGER.error("Erreur : ", e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -191,11 +191,11 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
                 while (answer.hasMoreElements()) {
                     SearchResult sr = (SearchResult) answer.next();
                     Attributes attrs = sr.getAttributes();
-                    logger.debug("sr=" + sr);
+                    LOGGER.debug("sr=" + sr);
                     if (attrs != null) {
                         for (int i = 0; i < paramArrayOfString.length; i++) {
                             String attr = paramArrayOfString[i];
-                            logger.debug("attr=" + attr);
+                            LOGGER.debug("attr=" + attr);
                             Attribute attribute = attrs.get(attr);
                             if (attribute != null) {
                                 try {
@@ -213,7 +213,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
                                                 value = sb.toString();
                                             }
                                         }
-                                        logger.debug("value=" + value);
+                                        LOGGER.debug("value=" + value);
                                         myMap.put(paramArrayOfString[i], value);
                                     }
                                 } finally {
@@ -225,7 +225,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
                 }
             }
         } catch (NamingException e) {
-            logger.error(e);
+            LOGGER.error("Erreur : ", e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -263,16 +263,16 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
             if (answer != null) {
                 while (answer.hasMoreElements()) {
                     SearchResult sr = (SearchResult) answer.next();
-                    logger.debug("sr=" + sr);
+                    LOGGER.debug("sr=" + sr);
                     if (sr != null) {
                         final Attributes attrs = sr.getAttributes();
-                        logger.debug("attrs=" + attrs);
+                        LOGGER.debug("attrs=" + attrs);
                         if (attrs != null && attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF) != null) {
                             try {
                                 answerAtt = attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
                                 while (answerAtt.hasMoreElements()) {
                                     String att = (String) answerAtt.next();
-                                    logger.debug(att);
+                                    LOGGER.debug(att);
                                     String pattern =
                                             ",ou=Groups,ou=" + ginaApplication + ",ou=" + ginaDomain + ",o=gina";
                                     if (StringUtils.isNotBlank(att) && att.contains(pattern)) {
@@ -289,14 +289,14 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
                 }
             }
         } catch (NamingException e) {
-            logger.error(e);
+            LOGGER.error("Erreur : ", e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
             closeDirContext(ctxtDir);
         }
 
-        logger.debug("roles=" + roles);
+        LOGGER.debug("roles=" + roles);
 
         return roles;
     }
@@ -327,7 +327,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
             while (answer.hasMoreElements()) {
                 SearchResult sr = (SearchResult) answer.next();
-                logger.debug("sr=" + sr);
+                LOGGER.debug("sr=" + sr);
                 Attributes attrs = sr.getAttributes();
                 if (attrs != null && attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBER) != null) {
                     try {
@@ -344,7 +344,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
                 }
             }
         } catch (NamingException e) {
-            logger.error(e);
+            LOGGER.error("Erreur : ", e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);

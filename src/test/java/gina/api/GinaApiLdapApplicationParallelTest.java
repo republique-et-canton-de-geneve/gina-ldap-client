@@ -1,6 +1,5 @@
 package gina.api;
 
-import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
@@ -8,16 +7,17 @@ import com.googlecode.junittoolbox.ParallelRunner;
 
 import gina.api.util.GinaApiLdapConfiguration;
 import gina.api.util.GinaApiLdapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RunWith(ParallelRunner.class)
 public class GinaApiLdapApplicationParallelTest extends GinaApiLdapApplicationTest {
 
-    // Logger
-    private static final Logger LOG = Logger.getLogger(GinaApiLdapApplicationParallelTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GinaApiLdapApplicationParallelTest.class);
 
     @BeforeClass
     public static void initApi() {
-        LOG.info(GinaApiLdapConstants.START_METHOD);
+        LOGGER.info(GinaApiLdapConstants.START_METHOD);
 
         System.setProperty("com.sun.jndi.ldap.connect.pool.protocol", "plain ssl");
         System.setProperty("com.sun.jndi.ldap.connect.pool.authentication", "simple");
@@ -42,7 +42,7 @@ public class GinaApiLdapApplicationParallelTest extends GinaApiLdapApplicationTe
         GinaApiLdapConfiguration ldapConf = new GinaApiLdapConfiguration(server, base, user, password, timeout);
         api = GinaApiLdapBaseFactory.getInstance(ldapConf);
 
-        LOG.info(GinaApiLdapConstants.END_METHOD);
+        LOGGER.info(GinaApiLdapConstants.END_METHOD);
     }
 
 }
