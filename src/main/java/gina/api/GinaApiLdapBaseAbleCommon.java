@@ -48,7 +48,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
             try {
                 ctxtDir.close();
             } catch (NamingException e) {
-                LOGGER.error("Erreur : ", e);
+                logException(e);
             }
         }
     }
@@ -83,7 +83,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
         try {
             result = new InitialLdapContext(env, null);
         } catch (NamingException e) {
-            LOGGER.error("Erreur : ", e);
+            logException(e);
             throw new GinaException(e.getMessage());
         }
 
@@ -152,7 +152,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
                 }
             }
         } catch (NamingException e) {
-            LOGGER.error("Erreur : ", e);
+            logException(e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -227,7 +227,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
                 }
             }
         } catch (NamingException e) {
-            LOGGER.error("Erreur : ", e);
+            logException(e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -292,7 +292,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
                 }
             }
         } catch (NamingException e) {
-            LOGGER.error("Erreur : ", e);
+            logException(e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -348,7 +348,7 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
                 }
             }
         } catch (NamingException e) {
-            LOGGER.error("Erreur : ", e);
+            logException(e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -477,6 +477,10 @@ public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
     @Override
     public Map<String, String> getUserAttrs(String[] attrs) {
         throw new GinaException(NOT_IMPLEMENTED);
+    }
+
+    private void logException(Throwable e) {
+        LOGGER.error("Erreur : ", e);
     }
 
 }

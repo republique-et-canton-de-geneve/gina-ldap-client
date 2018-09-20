@@ -54,7 +54,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
             answer = ctxtDir.search("", searchFilter, searchControls);
             return answer != null && answer.hasMoreElements();
         } catch (NamingException e) {
-            LOGGER.error("Erreur : ",e);
+            logException(e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -69,7 +69,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      * java.lang.String)
      */
     @Override
-    public List<String> getUserRoles(String user) throws RemoteException {
+    public List<String> getUserRoles(String user) {
         final String encodedUser = GinaApiLdapEncoder.filterEncode(user);
 
         LdapContext ctxtDir = null;
@@ -84,7 +84,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 
             while (answer.hasMoreElements()) {
                 SearchResult sr = (SearchResult) answer.next();
-                LOGGER.debug("sr=" + sr);
+                LOGGER.debug("sr={}", sr);
                 Attributes attributes = sr.getAttributes();
                 try {
                     nameEnum = attributes.get(GinaApiLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
@@ -101,7 +101,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
                 }
             }
         } catch (NamingException e) {
-            LOGGER.error("Erreur : ", e);
+            logException(e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -117,7 +117,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      * @see gina.api.GinaApiLdapBaseAble#getAppRoles(java.lang.String)
      */
     @Override
-    public List<String> getAppRoles(String appli) throws RemoteException {
+    public List<String> getAppRoles(String appli) {
         final String encodedAppli = GinaApiLdapEncoder.filterEncode(appli);
 
         LdapContext ctxtDir = null;
@@ -134,13 +134,13 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
             if (answer != null) {
                 while (answer.hasMoreElements()) {
                     SearchResult sr = (SearchResult) answer.next();
-                    LOGGER.debug("sr=" + sr);
+                    LOGGER.debug("sr={}", sr);
                     try {
                         nameEnum = sr.getAttributes().get(GinaApiLdapUtils.ATTRIBUTE_CN).getAll();
                         if (nameEnum != null) {
                             while (nameEnum.hasMoreElements()) {
                                 String role = (String) nameEnum.next();
-                                LOGGER.debug("role=" + role);
+                                LOGGER.debug("role={}", role);
                                 roles.add(role);
                             }
                         }
@@ -150,7 +150,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
                 }
             }
         } catch (NamingException e) {
-            LOGGER.error("Erreur : ", e);
+            logException(e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -161,8 +161,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     }
 
     @Override
-    public List<Map<String, String>> getUsers(String application, String[] paramArrayOfString)
-            throws RemoteException {
+    public List<Map<String, String>> getUsers(String application, String[] paramArrayOfString) {
         final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
 
         LdapContext ctxtDir = null;
@@ -179,7 +178,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 
             list = parseAnswer(answer, paramArrayOfString);
         } catch (NamingException e) {
-            LOGGER.error("Erreur : ", e);
+            logException(e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -197,8 +196,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
      * java.lang.String, java.lang.String[])
      */
     @Override
-    public List<Map<String, String>> getUsers(String application, String role, String[] paramArrayOfString)
-            throws RemoteException {
+    public List<Map<String, String>> getUsers(String application, String role, String[] paramArrayOfString) {
         final String encodedApplication = GinaApiLdapEncoder.filterEncode(application);
         final String encodedRole = GinaApiLdapEncoder.filterEncode(role);
 
@@ -215,7 +213,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 
             list = parseAnswer(answer, paramArrayOfString);
         } catch (NamingException e) {
-            LOGGER.error("Erreur : ", e);
+            logException(e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaApiLdapUtils.closeQuietly(answer);
@@ -226,7 +224,7 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
     }
 
     private List<Map<String, String>> parseAnswer(final NamingEnumeration<?> answer, final String[] paramArrayOfString)
-            throws NamingException, RemoteException {
+            throws NamingException {
         List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
         if (answer != null) {
@@ -234,13 +232,13 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
 
             while (answer.hasMoreElements()) {
                 SearchResult sr = (SearchResult) answer.next();
-                LOGGER.debug("name : " + sr.getName());
+                LOGGER.debug("name={}", sr.getName());
 
                 Attributes attrs = sr.getAttributes();
-                LOGGER.debug("sr=" + sr);
+                LOGGER.debug("sr={}", sr);
                 if (attrs != null) {
                     Attribute attmember = attrs.get(GinaApiLdapUtils.ATTRIBUTE_MEMBER);
-                    LOGGER.debug("attmember=" + attmember);
+                    LOGGER.debug("attmember={}", attmember);
 
                     if (attmember != null) {
                         for (int j = 0; j < attmember.size(); j++) {
@@ -262,6 +260,10 @@ public class GinaApiLdapBaseAbleApplicationImpl extends GinaApiLdapBaseAbleCommo
         }
 
         return list;
+    }
+
+    private void logException(Throwable e) {
+        LOGGER.error("Erreur : ", e);
     }
 
 }
