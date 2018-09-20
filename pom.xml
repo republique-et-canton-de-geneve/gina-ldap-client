@@ -1,10 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <!--
-        On herite de spring-boot-dependencies uniquement pour controler les versions des plugins et des dependances.
-        Ce projet n'utilise pas Spring.
+        Ce projet n'utilise pas Spring. Il herite de spring-boot-dependencies uniquement pour controler les versions
+        des plugins et des dependances.
       -->
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -33,13 +34,6 @@
         <url>https://prod.etat-ge.ch/csbugtrack/projects/GINALDAPCLIENT</url>
     </issueManagement>
 
-    <distributionManagement>
-        <site>
-            <id>projects_Website</id>
-            <url>${siteRepository}/ch.ge.cti.ct/ct-gina-ldap-client/${project.version}</url>
-        </site>
-    </distributionManagement>
-
     <scm>
         <connection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/ct-gina-ldap-client.git</connection>
         <developerConnection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/ct-gina-ldap-client.git</developerConnection>
@@ -48,9 +42,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
 
         <!-- **************************** -->
@@ -93,5 +86,38 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <encoding>ISO-8859-1</encoding>
+                    <source>6</source>
+                    <target>6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>etat-de-geneve</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <distributionManagement>
+                <repository>
+                    <id>internal.project.release</id>
+                    <url>http://ctinexus.prod.etat-ge.ch:23000/ctinexus/content/repositories/project_release</url>
+                </repository>
+                <snapshotRepository>
+                    <id>internal.project.snapshot</id>
+                    <url>http://ctinexus.prod.etat-ge.ch:23000/ctinexus/content/repositories/project_snapshot</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 
 </project>

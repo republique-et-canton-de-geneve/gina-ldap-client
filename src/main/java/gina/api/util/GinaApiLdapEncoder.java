@@ -1,6 +1,6 @@
 package gina.api.util;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import gina.api.GinaException;
 

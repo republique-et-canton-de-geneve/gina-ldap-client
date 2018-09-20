@@ -20,7 +20,7 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import gina.api.util.GinaApiLdapConfiguration;
@@ -29,11 +29,11 @@ import gina.api.util.GinaApiLdapUtils;
 
 public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
-    // Logger
-    private static final Logger logger = Logger.getLogger(GinaApiLdapBaseAbleCommon.class);
-
     // Message d'erreur pour les méthodes non implémentées
     protected static final String NOT_IMPLEMENTED = "Not implemented";
+
+    // Logger
+    private static final Logger logger = Logger.getLogger(GinaApiLdapBaseAbleCommon.class);
 
     protected GinaApiLdapConfiguration ldapConf = null;
 
