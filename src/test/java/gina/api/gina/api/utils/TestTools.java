@@ -1,7 +1,7 @@
 package gina.api.gina.api.utils;
 
-import gina.api.GinaApiLdapBaseAbleCommon;
-import gina.api.GinaException;
+import gina.impl.GinaLdapCommon;
+import gina.impl.GinaException;
 import java.util.List;
 import org.hamcrest.CoreMatchers;
 import org.junit.rules.ExpectedException;
@@ -21,7 +21,7 @@ public class TestTools {
 
     public static void expectNotImplemented(ExpectedException thrown) {
         thrown.expect(GinaException.class);
-        thrown.expectMessage(CoreMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+        thrown.expectMessage(CoreMatchers.containsString(GinaLdapCommon.NOT_IMPLEMENTED));
     }
 
 }
