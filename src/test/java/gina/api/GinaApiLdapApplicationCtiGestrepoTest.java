@@ -3,13 +3,14 @@ package gina.api;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import gina.api.gina.api.utils.TestConstants;
-import gina.api.gina.api.utils.TestTools;
 import gina.api.gina.api.utils.TestLoggingWatcher;
+import gina.api.gina.api.utils.TestTools;
 import gina.api.util.GinaApiLdapConfiguration;
 import gina.api.util.GinaApiLdapUtils;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.hamcrest.CoreMatchers;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -97,16 +98,21 @@ public class GinaApiLdapApplicationCtiGestrepoTest {
 
     @Test
     public void getUserAttrsTest() throws RemoteException {
-        Map<String, String> user = api.getUserAttrs(LDAP_APPLICATION_TEST_USER, TestConstants.TEST_ATTRS);
+        Map<String, String> attributes = api.getUserAttrs(LDAP_APPLICATION_TEST_USER, TestConstants.TEST_ATTRS);
 
-        for (Map.Entry<String, String> e : user.entrySet()) {
-            LOGGER.info(e.getKey() + " = {}", e.getValue());
-            if ("uid".equalsIgnoreCase(e.getKey())) {
-                assertThat(e.getValue()).isEqualToIgnoringCase(LDAP_APPLICATION_TEST_USER);
-                break;
-            }
-        }
-        LOGGER.info("user = {}", user);
+        Optional<Map.Entry<String, String>> entry = attributes.entrySet()
+                .stream()
+                .filter(e -> "uid".equalsIgnoreCase(e.getKey()))
+                .findAny();
+
+        assertThat(entry)
+                .isPresent()
+                .hasValueSatisfying(e ->
+                        assertThat(e.getValue())
+                                .as("Le user " + LDAP_APPLICATION_TEST_USER + " devrait faire partie de la liste")
+                                .isEqualToIgnoringCase(LDAP_APPLICATION_TEST_USER));
+
+        LOGGER.info("attribute = {}", entry.get());
     }
 
     @Test

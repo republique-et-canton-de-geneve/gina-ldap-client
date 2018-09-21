@@ -195,7 +195,12 @@ public class GinaApiLdapApplicationTest {
         LOGGER.info("users.size() = {}", users.size());
         LOGGER.info("users = {}", users);
 
-        long nbUsers = users.stream().map(user -> user.get("uid")).filter(Objects::nonNull).filter(uid -> uid.contains(TestConstants.DRIVONOL_USERNAME)).count();
+        long nbUsers = users
+                .stream()
+                .map(user -> user.get("uid"))
+                .filter(Objects::nonNull)
+                .filter(uid -> uid.contains(TestConstants.DRIVONOL_USERNAME))
+                .count();
         assertThat(nbUsers).as("L'utilisateur " + TestConstants.DRIVONOL_USERNAME + " devrait faire partie de la liste")
                 .isEqualTo(1);
     }
@@ -308,12 +313,5 @@ public class GinaApiLdapApplicationTest {
         String[] foo = { "" };
         api.sendMail("", foo, foo, "", "", "");
     }
-
-    /*
-    private void expectNotImplemented() {
-        thrown.expect(GinaException.class);
-        thrown.expectMessage(CoreMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
-    }
-    */
 
 }
