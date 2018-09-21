@@ -1,21 +1,21 @@
 package gina.api;
 
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import gina.api.gina.api.utils.TestConstants;
+import gina.api.gina.api.utils.TestTools;
+import gina.api.gina.api.utils.TestLoggingWatcher;
+import gina.api.util.GinaApiLdapConfiguration;
+import gina.api.util.GinaApiLdapUtils;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
-
-import org.junit.Assert;
+import org.hamcrest.CoreMatchers;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.matchers.JUnitMatchers;
 import org.junit.rules.ExpectedException;
-
-import gina.api.util.GinaApiLdapConfiguration;
-import gina.api.util.GinaApiLdapUtils;
+import org.junit.rules.TestWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,14 @@ public class GinaApiLdapApplicationCtiGestrepoTest {
 
     private static GinaApiLdapBaseAble api;
 
-    @Rule public ExpectedException thrown = ExpectedException.none();
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    /**
+     * Affichage du début et de la fin de chaque methode de test.
+     */
+    @Rule
+    public TestWatcher watcher = new TestLoggingWatcher();
 
     @BeforeClass
     public static void initApi() {
@@ -57,153 +64,77 @@ public class GinaApiLdapApplicationCtiGestrepoTest {
     }
 
     @Test
-    public void getAllUsersTest() {
-        LOGGER.info(GinaApiLdapConstants.START_METHOD);
-
+    public void getAllUsersTest() throws RemoteException {
         thrown.expect(GinaException.class);
-        thrown.expectMessage(JUnitMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
+        thrown.expectMessage(CoreMatchers.containsString(GinaApiLdapBaseAbleCommon.NOT_IMPLEMENTED));
 
-        try {
-            api.getAllUsers("FILTER", GinaApiLdapConstants.TEST_ATTRS);
-            assertTrue(false);
-        } catch (RemoteException e) {
-            LOGGER.error("Erreur : ", e);
-            assertTrue(false);
-        } finally {
-            LOGGER.info(GinaApiLdapConstants.END_METHOD);
-        }
+         api.getAllUsers("FILTER", TestConstants.TEST_ATTRS);
     }
 
     @Test
-    public void getUserRolesTest() {
-        LOGGER.info(GinaApiLdapConstants.START_METHOD);
+    public void getUserRolesTest() throws RemoteException {
+        List<String> roles = api.getUserRoles(LDAP_APPLICATION_TEST_USER);
 
-        try {
-            List<String> roles = api.getUserRoles(LDAP_APPLICATION_TEST_USER);
-            Assert.assertNotNull(roles);
-            Assert.assertTrue(roles.size() > 0);
-            LOGGER.info("roles.size()=" + roles.size());
-            LOGGER.info("roles=" + roles);
-            Assert.assertTrue(GinaApiLdapTools.checkRolesAreCleaned(roles));
-            Assert.assertTrue(roles.contains(LDAP_APPLICATION_TEST_ROLE));
-            Assert.assertTrue(roles.contains("DEVELOPPEUR-CTI"));
-        } catch (GinaException e) {
-            LOGGER.error("Erreur : ", e);
-            assertTrue(false);
-        } catch (RemoteException e) {
-            LOGGER.error("Erreur : ", e);
-            assertTrue(false);
-        } finally {
-            LOGGER.info(GinaApiLdapConstants.END_METHOD);
-        }
+        assertThat(roles).isNotNull();
+        assertThat(roles.size()).isGreaterThan(0);
+        LOGGER.info("roles.size() = {}", roles.size());
+        LOGGER.info("roles = {}", roles);
+        assertThat(TestTools.rolesAreCleaned(roles)).isTrue();
+        assertThat(roles.contains(LDAP_APPLICATION_TEST_ROLE)).isTrue();
+        assertThat(roles.contains("DEVELOPPEUR-CTI")).isTrue();
     }
 
     @Test
-    public void isValidUserTest() {
-        LOGGER.info(GinaApiLdapConstants.START_METHOD);
+    public void isValidUserTest() throws RemoteException {
+        // Utilisateur valide
+        boolean result = api.isValidUser(LDAP_APPLICATION_TEST_USER);
+        assertThat(result).isTrue();
 
-        try {
-            // Utilisateur valide
-            boolean result = api.isValidUser(LDAP_APPLICATION_TEST_USER);
-            LOGGER.info("result=" + result);
-            assertTrue(result);
-
-            // Utilisateur non valide
-            result = api.isValidUser("TAGADA");
-            LOGGER.info("result=" + result);
-            assertTrue(!result);
-        } catch (GinaException e) {
-            LOGGER.error("Erreur : ", e);
-            assertTrue(false);
-        } catch (RemoteException e) {
-            LOGGER.error("Erreur : ", e);
-            assertTrue(false);
-        } finally {
-            LOGGER.info(GinaApiLdapConstants.END_METHOD);
-        }
+        // Utilisateur non valide
+        result = api.isValidUser("TAGADA");
+        assertThat(result).isFalse();
     }
 
     @Test
-    public void getUserAttrsTest() {
-        LOGGER.info(GinaApiLdapConstants.START_METHOD);
+    public void getUserAttrsTest() throws RemoteException {
+        Map<String, String> user = api.getUserAttrs(LDAP_APPLICATION_TEST_USER, TestConstants.TEST_ATTRS);
 
-        try {
-            Map<String, String> user = api.getUserAttrs(LDAP_APPLICATION_TEST_USER, GinaApiLdapConstants.TEST_ATTRS);
-
-            for (Map.Entry<String, String> e : user.entrySet()) {
-                LOGGER.info(e.getKey() + "=" + e.getValue());
-                if ("uid".equalsIgnoreCase(e.getKey())) {
-                    assertTrue(e.getValue().equalsIgnoreCase(LDAP_APPLICATION_TEST_USER));
-                    break;
-                }
+        for (Map.Entry<String, String> e : user.entrySet()) {
+            LOGGER.info(e.getKey() + " = {}", e.getValue());
+            if ("uid".equalsIgnoreCase(e.getKey())) {
+                assertThat(e.getValue()).isEqualToIgnoringCase(LDAP_APPLICATION_TEST_USER);
+                break;
             }
-            LOGGER.info("user=" + user);
-        } catch (GinaException e) {
-            LOGGER.error("Erreur : ", e);
-            assertTrue(false);
-        } catch (RemoteException e) {
-            LOGGER.error("Erreur : ", e);
-            assertTrue(false);
-        } finally {
-            LOGGER.info(GinaApiLdapConstants.END_METHOD);
         }
+        LOGGER.info("user = {}", user);
     }
 
     @Test
-    public void hasRoleUserTest() {
-        LOGGER.info(GinaApiLdapConstants.START_METHOD);
-
-        try {
-            boolean ret = api.hasUserRole(LDAP_APPLICATION_TEST_USER, LDAP_APPLICATION_TEST_ROLE);
-            assertSame(true, ret);
-        } catch (GinaException e) {
-            assertTrue(false);
-        } catch (RemoteException e) {
-            assertTrue(false);
-        } finally {
-            LOGGER.info(GinaApiLdapConstants.END_METHOD);
-        }
+    public void hasRoleUserTest() throws RemoteException {
+        boolean ret = api.hasUserRole(LDAP_APPLICATION_TEST_USER, LDAP_APPLICATION_TEST_ROLE);
+        assertThat(ret).isTrue();
     }
 
     @Test
-    public void hasUserRoleWithUserAndApplicationAndRoleTest() {
-        LOGGER.info(GinaApiLdapConstants.START_METHOD);
-        try {
-            boolean ret = api.hasUserRole(LDAP_APPLICATION_TEST_USER, LDAP_APPLICATION_TEST_DOMAINE_APPLICATION,
-                    LDAP_APPLICATION_TEST_ROLE);
-            Assert.assertTrue(
-                    GinaApiLdapConstants.DRIVONOL_USERNAME + " devrait avoir le role " + LDAP_APPLICATION_TEST_ROLE
-                            + " pour l'application " + LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, ret);
-        } catch (GinaException e) {
-            LOGGER.error("Erreur : ", e);
-            assertTrue(false);
-        } catch (RemoteException e) {
-            LOGGER.error("Erreur : ", e);
-            assertTrue(false);
-        } finally {
-            LOGGER.info(GinaApiLdapConstants.END_METHOD);
-        }
+    public void hasUserRoleWithUserAndApplicationAndRoleTest() throws RemoteException {
+        boolean ret = api.hasUserRole(LDAP_APPLICATION_TEST_USER, LDAP_APPLICATION_TEST_DOMAINE_APPLICATION,
+                LDAP_APPLICATION_TEST_ROLE);
+        assertThat(ret).as(TestConstants.DRIVONOL_USERNAME + " devrait avoir le role "
+                         + LDAP_APPLICATION_TEST_ROLE + " pour l'application "
+                         + LDAP_APPLICATION_TEST_DOMAINE_APPLICATION)
+                       .isTrue();
     }
 
     @Test
-    public void getAppRolesTest() {
-        LOGGER.info(GinaApiLdapConstants.START_METHOD);
-
-        try {
-            List<String> roles = api.getAppRoles(LDAP_APPLICATION_TEST_APPLICATION);
-            Assert.assertNotNull(roles);
-            Assert.assertTrue(roles.size() > 0);
-            LOGGER.info("roles.size()=" + roles.size());
-            LOGGER.info("roles=" + roles);
-            Assert.assertTrue(GinaApiLdapTools.checkRolesAreCleaned(roles));
-            Assert.assertTrue(roles.contains("ADMINISTRATEUR"));
-            Assert.assertTrue(roles.contains("SVN-READONLY-ALL"));
-        } catch (GinaException e) {
-            assertTrue(false);
-        } catch (RemoteException e) {
-            assertTrue(false);
-        } finally {
-            LOGGER.info(GinaApiLdapConstants.END_METHOD);
-        }
+    public void getAppRolesTest() throws RemoteException {
+        List<String> roles = api.getAppRoles(LDAP_APPLICATION_TEST_APPLICATION);
+        assertThat(roles).isNotNull();
+        assertThat(roles.size()).isGreaterThan(0);
+        LOGGER.info("roles.size() = {}", roles.size());
+        LOGGER.info("roles = {}", roles);
+        assertThat(TestTools.rolesAreCleaned(roles)).isTrue();
+        assertThat(roles.contains("ADMINISTRATEUR")).isTrue();
+        assertThat(roles.contains("SVN-READONLY-ALL")).isTrue();
     }
+
 }
