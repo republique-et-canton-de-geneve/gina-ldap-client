@@ -31,7 +31,7 @@ public class GinaLdapApplication extends GinaLdapCommon {
     }
 
     /*
-     * (non-Javadoc) Retourne vrai si l'utilisateur donné à le role donné pour
+     * (non-Javadoc) Retourne vrai si l'utilisateur donné a le role donné pour
      * l'application donnée
      *
      * @see gina.api.GinaApiLdapBaseAble#hasUserRole(java.lang.String,

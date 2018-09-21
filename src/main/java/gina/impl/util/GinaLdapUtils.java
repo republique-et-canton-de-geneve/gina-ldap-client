@@ -28,19 +28,19 @@ public class GinaLdapUtils {
     private GinaLdapUtils() {
     }
 
-    public static String extractDomain(final String domaineapplication) {
+    public static String extractDomain(final String domaineApplication) {
         String result = null;
-        if (StringUtils.isNotBlank(domaineapplication) && domaineapplication.contains(".")) {
-            final String[] splitApplication = StringUtils.split(domaineapplication, ".", 2);
+        if (StringUtils.isNotBlank(domaineApplication) && domaineApplication.contains(".")) {
+            final String[] splitApplication = StringUtils.split(domaineApplication, ".", 2);
             result = splitApplication[0];
         }
         return result;
     }
 
-    public static String extractApplication(final String domaineapplication) {
+    public static String extractApplication(final String domaineApplication) {
         String result = null;
-        if (StringUtils.isNotBlank(domaineapplication) && domaineapplication.contains(".")) {
-            final String[] splitApplication = StringUtils.split(domaineapplication, ".", 2);
+        if (StringUtils.isNotBlank(domaineApplication) && domaineApplication.contains(".")) {
+            final String[] splitApplication = StringUtils.split(domaineApplication, ".", 2);
             result = splitApplication[1];
         }
         return result;

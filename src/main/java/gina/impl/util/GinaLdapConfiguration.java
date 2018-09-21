@@ -55,7 +55,7 @@ public class GinaLdapConfiguration {
         this.ldapTimeLimit = timeLimit;
 
         int count = StringUtils.countMatches(user, ",ou=");
-        LOGGER.debug("count=" + count);
+        LOGGER.debug("count = ", count);
         if (count > 2) {
             this.ldapType = APPLICATION;
         } else {
