@@ -1,10 +1,12 @@
 package gina.api;
 
+import gina.impl.GinaLdapFactory;
+import gina.impl.GinaException;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import gina.api.util.GinaApiLdapConfiguration;
-import gina.api.util.GinaApiLdapUtils;
+import gina.impl.util.GinaLdapConfiguration;
+import gina.impl.util.GinaLdapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,10 +24,10 @@ public class Main {
             String base = "ou=OAC,o=gina";
             String user = "cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina";
             String password = "Uddyzfsp4";
-            int timeout = GinaApiLdapUtils.LDAP_DEFAULT_TIMEOUT;
+            int timeout = GinaLdapUtils.LDAP_DEFAULT_TIMEOUT;
 
-            GinaApiLdapConfiguration ldapConf = new GinaApiLdapConfiguration(server, base, user, password, timeout);
-            GinaApiLdapBaseAble ldapApplication = GinaApiLdapBaseFactory.getInstance(ldapConf);
+            GinaLdapConfiguration ldapConf = new GinaLdapConfiguration(server, base, user, password, timeout);
+            GinaApiLdapBaseAble ldapApplication = GinaLdapFactory.getInstance(ldapConf);
 
             LOG.debug("LDAP APPLICATION");
 

@@ -1,5 +1,6 @@
 package gina.api;
 
+import gina.impl.GinaException;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
