@@ -1,5 +1,6 @@
 package gina.api;
 
+import gina.api.gina.api.utils.TestConstants;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
@@ -17,7 +18,7 @@ public class GinaApiLdapApplicationParallelTest extends GinaApiLdapApplicationTe
 
     @BeforeClass
     public static void initApi() {
-        LOGGER.info(GinaApiLdapConstants.START_METHOD);
+        LOGGER.info(TestConstants.START_METHOD);
 
         System.setProperty("com.sun.jndi.ldap.connect.pool.protocol", "plain ssl");
         System.setProperty("com.sun.jndi.ldap.connect.pool.authentication", "simple");
@@ -42,7 +43,7 @@ public class GinaApiLdapApplicationParallelTest extends GinaApiLdapApplicationTe
         GinaApiLdapConfiguration ldapConf = new GinaApiLdapConfiguration(server, base, user, password, timeout);
         api = GinaApiLdapBaseFactory.getInstance(ldapConf);
 
-        LOGGER.info(GinaApiLdapConstants.END_METHOD);
+        LOGGER.info(TestConstants.END_METHOD);
     }
 
 }

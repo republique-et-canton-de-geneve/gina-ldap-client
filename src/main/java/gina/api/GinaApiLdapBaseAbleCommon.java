@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public abstract class GinaApiLdapBaseAbleCommon implements GinaApiLdapBaseAble {
 
     // Message d'erreur pour les méthodes non implémentées
-    protected static final String NOT_IMPLEMENTED = "Not implemented";
+    public static final String NOT_IMPLEMENTED = "Not implemented";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GinaApiLdapBaseAbleCommon.class);
 

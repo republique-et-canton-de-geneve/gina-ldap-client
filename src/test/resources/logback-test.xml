@@ -3,7 +3,7 @@
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<pattern>%d{HH:mm:ss.SSS} %-5level %logger{35} - %msg%n</pattern>
+			<pattern>%d{HH:mm:ss.SSS} %-5level  %msg  \(%logger{35}\)%n</pattern>
 		</encoder>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>INFO</level>
@@ -14,7 +14,7 @@
 		<file>./ct-gina-ldap-client.log</file>
 		<append>false</append>
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<pattern>%d{HH:mm:ss.SSS} %-5level %logger{35} - %msg%n</pattern>
+			<pattern>%d{HH:mm:ss.SSS} %-5level  %msg  \(%logger{35}\)%n</pattern>
 		</encoder>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>INFO</level>
