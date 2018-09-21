@@ -93,13 +93,12 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <encoding>ISO-8859-1</encoding>
                     <source>1.6</source>
                     <target>1.6</target>
-                    <!-- le JAR cree doit être en Java 6, mais dans les tests on veut utiliser des lambdas -->
+                    <!-- le JAR final doit etre en Java 6, mais dans les tests on veut pouvoir utiliser des lambdas -->
                     <testSource>1.8</testSource>
                     <testTarget>1.8</testTarget>
                 </configuration>

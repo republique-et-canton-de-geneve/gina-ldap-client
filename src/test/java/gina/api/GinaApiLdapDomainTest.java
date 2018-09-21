@@ -11,8 +11,8 @@ import gina.api.util.GinaApiLdapUtils;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.naming.NamingException;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -108,16 +108,16 @@ public class GinaApiLdapDomainTest {
                 .getUsers(LDAP_DOMAIN_TEST_DOMAINE_APPLICATION, TestConstants.TEST_ATTRS);
         assertThat(users).isNotEmpty();
         LOG.info("users.size() = {}", users.size());
-        LOG.debug("users = ", users);
 
-        boolean containsUserTest = false;
-        for (Map<String, String> user : users) {
-            String sn = user.get("sn");
-            if (StringUtils.isNotBlank(sn) && sn.contains(TestConstants.DTDCOURS01_USERNAME)) {
-                containsUserTest = true;
-            }
-        }
-        assertThat(containsUserTest).isTrue();
+        long nbUsers = users
+                .stream()
+                .map(user -> user.get("sn"))
+                .filter(Objects::nonNull)
+                .filter(uid -> uid.contains(TestConstants.DTDCOURS01_USERNAME))
+                .count();
+        assertThat(nbUsers)
+                .as("Le user " + TestConstants.DTDCOURS01_USERNAME + " devrait faire partie de la liste")
+                .isEqualTo(1);
     }
 
     @Test
@@ -135,27 +135,24 @@ public class GinaApiLdapDomainTest {
         List<Map<String, String>> users = api.getUsers(LDAP_DOMAIN_TEST_DOMAINE_APPLICATION, LDAP_DOMAIN_TEST_ROLE,
                                                        TestConstants.TEST_ATTRS);
         assertThat(users).isNotEmpty();
-        LOG.debug("users.size () = ", users.size());
+        LOG.info("users.size () = ", users.size());
 
-        boolean found = false;
-        for (Map<String, String> user : users) {
-            String uid = user.get("uid");
-            if (TestConstants.DTDCOURS01_USERNAME.equals(uid)) {
-                found = true;
-                break;
-            }
-        }
-        assertThat(found)
+        long nbUsers = users
+                .stream()
+                .map(user -> user.get("uid"))
+                .filter(uid -> uid.contains(TestConstants.DTDCOURS01_USERNAME))
+                .count();
+        assertThat(nbUsers)
                 .as("Le user " + TestConstants.DTDCOURS01_USERNAME + " devrait faire partie de la liste")
-                .isTrue();
+                .isEqualTo(1);
     }
 
     @Test
     public void getAppRolesTest() throws RemoteException {
         List<String> roles = api.getAppRoles(LDAP_DOMAIN_TEST_DOMAINE_APPLICATION);
         assertThat(roles).isNotEmpty();
-        LOG.debug("roles.size() = {}", roles.size());
-        LOG.debug("roles = {}", roles);
+        LOG.info("roles.size() = {}", roles.size());
+        LOG.info("roles = {}", roles);
         assertThat(TestTools.rolesAreCleaned(roles)).isTrue();
         assertThat(roles).contains(LDAP_DOMAIN_TEST_ROLE);
     }
@@ -163,7 +160,8 @@ public class GinaApiLdapDomainTest {
     @Test
     public void getBusinessRolesTest() throws RemoteException {
         List<String> roles = api.getBusinessRoles(LDAP_DOMAIN_TEST_DOMAINE_APPLICATION);
-        assertThat(roles).isNotEmpty();
+        assertThat(roles).isNotNull();
+        assertThat(roles).isEmpty();
     }
 
     // -----------------------------------------------------------------------------------------
