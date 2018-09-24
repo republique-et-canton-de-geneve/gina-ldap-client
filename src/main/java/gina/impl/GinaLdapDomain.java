@@ -56,7 +56,7 @@ public class GinaLdapDomain extends GinaLdapCommon {
                         att = sr.getAttributes().get(GinaLdapUtils.ATTRIBUTE_CN).getAll();
                         while (att.hasMoreElements()) {
                             String cn = (String) att.next();
-                            LOGGER.debug("cn=" + cn);
+                            LOGGER.debug("cn = {}", cn);
                             roles.add(cn);
                         }
                     } finally {
@@ -171,11 +171,11 @@ public class GinaLdapDomain extends GinaLdapCommon {
             List<String> users = new ArrayList<String>();
             while (answer.hasMoreElements()) {
                 SearchResult sr = (SearchResult) answer.next();
-                LOGGER.debug("name : " + sr.getName().substring(0, sr.getName().indexOf(','))
+                LOGGER.debug("name = {}", sr.getName().substring(0, sr.getName().indexOf(','))
                                            .replace("cn=", ""));
 
                 Attributes attrsResult = sr.getAttributes();
-                LOGGER.debug("sr=" + sr);
+                LOGGER.debug("sr = {}", sr);
                 if (attrsResult != null) {
                     Attribute attmember = attrsResult.get(GinaLdapUtils.ATTRIBUTE_MEMBER);
 

@@ -7,10 +7,8 @@ public class TestConstants {
      */
     public static final String PINAUDJ_USERNAME = "PINAUDJ";
 
-    /**
-     * Utilisateur DTDCOURS01.
-     */
-    public static final String DTDCOURS01_USERNAME = "DTDCOURS01";
+//    public static final String GENERIC_USERNAME = "DTDCOURS01";
+    public static final String GENERIC_USERNAME = "TCNLDAPAOCAAG";
 
     /**
      * Utilisateur DRIVONOL.
