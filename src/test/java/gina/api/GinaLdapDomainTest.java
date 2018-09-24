@@ -71,18 +71,18 @@ public class GinaLdapDomainTest {
 
     @Test
     public void isValidUserTest() throws RemoteException {
-        boolean result = api.isValidUser(TestConstants.DTDCOURS01_USERNAME);
+        boolean result = api.isValidUser(TestConstants.GENERIC_USERNAME);
         assertThat(result)
-                .as("L'utilisateur " + TestConstants.DTDCOURS01_USERNAME + " est censé être valide !")
+                .as("L'utilisateur " + TestConstants.GENERIC_USERNAME + " est censé être valide !")
                 .isTrue();
     }
 
     @Test
     public void getUserAttrsWithUserAndAttrsTest() throws RemoteException {
-        Map<String, String> result = api.getUserAttrs(TestConstants.DTDCOURS01_USERNAME, TestConstants.TEST_ATTRS);
+        Map<String, String> result = api.getUserAttrs(TestConstants.GENERIC_USERNAME, TestConstants.TEST_ATTRS);
 
         assertThat(result).isNotNull();
-        assertThat(result.get("sn")).isEqualTo(TestConstants.DTDCOURS01_USERNAME);
+        assertThat(result.get("uid")).isEqualTo(TestConstants.GENERIC_USERNAME);
         assertThat(result.get("initials")).isNotNull();
         assertThat(result.get("givenName")).isNotNull();
     }
@@ -95,7 +95,7 @@ public class GinaLdapDomainTest {
 
     @Test
     public void getUserRolesWithUserAndApplicationTest() throws RemoteException {
-        List<String> roles = api.getUserRoles(TestConstants.DTDCOURS01_USERNAME, LDAP_DOMAIN_TEST_DOMAINE_APPLICATION);
+        List<String> roles = api.getUserRoles(TestConstants.GENERIC_USERNAME, LDAP_DOMAIN_TEST_DOMAINE_APPLICATION);
         assertThat(roles).isNotEmpty();
         LOG.info("roles.size() = {}", roles.size());
         LOG.info("roles = {}", roles);
@@ -112,21 +112,21 @@ public class GinaLdapDomainTest {
 
         long nbUsers = users
                 .stream()
-                .map(user -> user.get("sn"))
+                .map(user -> user.get("uid"))
                 .filter(Objects::nonNull)
-                .filter(uid -> uid.contains(TestConstants.DTDCOURS01_USERNAME))
+                .filter(uid -> uid.contains(TestConstants.GENERIC_USERNAME))
                 .count();
         assertThat(nbUsers)
-                .as("Le user " + TestConstants.DTDCOURS01_USERNAME + " devrait faire partie de la liste")
+                .as("Le user " + TestConstants.GENERIC_USERNAME + " devrait faire partie de la liste")
                 .isEqualTo(1);
     }
 
     @Test
     public void hasUserRoleWithUserAndApplicationAndRoleTest() throws RemoteException {
-        boolean ret = api.hasUserRole(TestConstants.DTDCOURS01_USERNAME, LDAP_DOMAIN_TEST_DOMAINE_APPLICATION,
+        boolean ret = api.hasUserRole(TestConstants.GENERIC_USERNAME, LDAP_DOMAIN_TEST_DOMAINE_APPLICATION,
                                       LDAP_DOMAIN_TEST_ROLE);
         assertThat(ret)
-                .as(TestConstants.DTDCOURS01_USERNAME + " devrait avoir le role " + LDAP_DOMAIN_TEST_ROLE
+                .as(TestConstants.GENERIC_USERNAME + " devrait avoir le role " + LDAP_DOMAIN_TEST_ROLE
                           + " pour l'application " + LDAP_DOMAIN_TEST_DOMAINE_APPLICATION)
                 .isTrue();
     }
@@ -136,15 +136,15 @@ public class GinaLdapDomainTest {
         List<Map<String, String>> users = api.getUsers(LDAP_DOMAIN_TEST_DOMAINE_APPLICATION, LDAP_DOMAIN_TEST_ROLE,
                                                        TestConstants.TEST_ATTRS);
         assertThat(users).isNotEmpty();
-        LOG.info("users.size () = ", users.size());
+        LOG.info("users.size () = {}", users.size());
 
         long nbUsers = users
                 .stream()
                 .map(user -> user.get("uid"))
-                .filter(uid -> uid.contains(TestConstants.DTDCOURS01_USERNAME))
+                .filter(uid -> uid.contains(TestConstants.GENERIC_USERNAME))
                 .count();
         assertThat(nbUsers)
-                .as("Le user " + TestConstants.DTDCOURS01_USERNAME + " devrait faire partie de la liste")
+                .as("Le user " + TestConstants.GENERIC_USERNAME + " devrait faire partie de la liste")
                 .isEqualTo(1);
     }
 
@@ -201,14 +201,14 @@ public class GinaLdapDomainTest {
     public void hasUserRoleTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.hasUserRole(TestConstants.DTDCOURS01_USERNAME, LDAP_DOMAIN_TEST_ROLE);
+        api.hasUserRole(TestConstants.GENERIC_USERNAME, LDAP_DOMAIN_TEST_ROLE);
     }
 
     @Test
     public void getUserRolesWithUserTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getUserRoles(TestConstants.DTDCOURS01_USERNAME);
+        api.getUserRoles(TestConstants.GENERIC_USERNAME);
     }
 
     @Test
