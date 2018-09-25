@@ -9,10 +9,16 @@ public class GinaLdapConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GinaLdapConfiguration.class);
 
-    // Type d'accès au LDAP
-    public static final String DOMAIN = "domain";
+//    public static final String DOMAIN = "domain";
+//    public static final String APPLICATION = "application";
 
-    public static final String APPLICATION = "application";
+    /**
+     * Type d'accès au LDAP.
+     */
+    public enum Type {
+        DOMAIN,
+        APPLICATION;
+    }
 
     // Configuration du LDAP
     public static final String LDAP_CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
@@ -31,8 +37,9 @@ public class GinaLdapConfiguration {
 
     private int ldapTimeLimit = GinaLdapUtils.LDAP_DEFAULT_TIMEOUT;
 
-    private String ldapType;
+    private Type ldapType;
 
+    /*
     public GinaLdapConfiguration(final String server, final String base) {
         this(server, base, null, null, GinaLdapUtils.LDAP_DEFAULT_TIMEOUT);
     }
@@ -40,13 +47,15 @@ public class GinaLdapConfiguration {
     public GinaLdapConfiguration(final String server, final String base, final String user, final String password) {
         this(server, base, user, password, GinaLdapUtils.LDAP_DEFAULT_TIMEOUT);
     }
+    */
 
-    public GinaLdapConfiguration(final String server, final String base, final String user, final String password,
-            final int timeLimit) {
-        Validate.notEmpty(server);
-        Validate.notEmpty(base);
-        Validate.notNull(user);
-        Validate.notNull(password);
+    public GinaLdapConfiguration(
+            String server, String base, String user, String password, GinaLdapConfiguration.Type type, int timeLimit) {
+        Validate.notEmpty(server, "server");
+        Validate.notEmpty(base, "base");
+        Validate.notNull(user, "user");
+        Validate.notNull(password, "password");
+        Validate.notNull(type, "type");
 
         this.ldapServerUrl = server;
         this.ldapBaseDn = base;
@@ -54,13 +63,16 @@ public class GinaLdapConfiguration {
         this.ldapPassword = password;
         this.ldapTimeLimit = timeLimit;
 
+        /*
         int count = StringUtils.countMatches(user, ",ou=");
         LOGGER.debug("count = ", count);
         if (count > 2) {
-            this.ldapType = APPLICATION;
+            this.ldapType = Type.APPLICATION;
         } else {
-            this.ldapType = DOMAIN;
+            this.ldapType = Type.DOMAIN;
         }
+        */
+        this.ldapType = type;
     }
 
     public String getLdapServerUrl() {
@@ -103,11 +115,11 @@ public class GinaLdapConfiguration {
         this.ldapTimeLimit = ldapTimeLimit;
     }
 
-    public String getLdapType() {
+    public Type getLdapType() {
         return ldapType;
     }
 
-    public void setLdapType(String ldapType) {
+    public void setLdapType(Type ldapType) {
         this.ldapType = ldapType;
     }
 

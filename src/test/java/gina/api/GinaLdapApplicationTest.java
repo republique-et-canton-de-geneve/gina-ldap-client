@@ -2,6 +2,7 @@ package gina.api;
 
 import static gina.api.gina.api.utils.TestTools.expectNotImplemented;
 import static org.assertj.core.api.Assertions.assertThat;
+import static gina.impl.util.GinaLdapConfiguration.Type.APPLICATION;
 
 import gina.api.gina.api.utils.TestConstants;
 import gina.api.gina.api.utils.TestLoggingWatcher;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.naming.NamingException;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -53,17 +55,18 @@ public class GinaLdapApplicationTest {
     public static void initApi() {
         String base = "ou=OAC,o=gina";
 
-        String server = "ldaps://vldap-dev.ceti.etat-ge.ch:636";
-        String user = "cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina";
-        String password = "Uddyzfsp4";
+        String server = System.getProperty("test.application.server");
+        String user = System.getProperty("test.application.user");
+        String password = System.getProperty("test.application.password");
 
-        // String server = "ldap://127.0.0.1:30636";
-        // String user = "";
-        // String password = "";
+        LOGGER.info("Connexion LDAP : server=[{}], user=[{}]", server, user);
+        if (StringUtils.isBlank(password)) {
+            LOGGER.info("le mot de passe au serveur LDAP (necessaire avec Gina, inutile avec UnboundID) est manquant");
+        }
 
         int timeout = GinaLdapUtils.LDAP_DEFAULT_TIMEOUT;
 
-        GinaLdapConfiguration ldapConf = new GinaLdapConfiguration(server, base, user, password, timeout);
+        GinaLdapConfiguration ldapConf = new GinaLdapConfiguration(server, base, user, password, APPLICATION, timeout);
         api = GinaLdapFactory.getInstance(ldapConf);
     }
 

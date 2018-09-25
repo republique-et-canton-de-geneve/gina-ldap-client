@@ -1,5 +1,7 @@
 package gina.api;
 
+import static gina.impl.util.GinaLdapConfiguration.Type.APPLICATION;
+
 import gina.impl.GinaLdapFactory;
 import gina.impl.GinaException;
 import java.rmi.RemoteException;
@@ -12,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class Main {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     private static final String TEST_SEPARATOR = "************************ ";
 
@@ -26,35 +28,35 @@ public class Main {
             String password = "Uddyzfsp4";
             int timeout = GinaLdapUtils.LDAP_DEFAULT_TIMEOUT;
 
-            GinaLdapConfiguration ldapConf = new GinaLdapConfiguration(server, base, user, password, timeout);
+            GinaLdapConfiguration ldapConf = new GinaLdapConfiguration(server, base, user, password, APPLICATION, timeout);
             GinaApiLdapBaseAble ldapApplication = GinaLdapFactory.getInstance(ldapConf);
 
-            LOG.debug("LDAP APPLICATION");
+            LOGGER.debug("LDAP APPLICATION");
 
             String userName = "DRIVONOL";
-            LOG.debug("userName=" + userName);
+            LOGGER.debug("userName=" + userName);
 
             String roleName = "CAMAC-GENEVE";
-            LOG.debug("roleName=" + roleName);
+            LOGGER.debug("roleName=" + roleName);
 
             List<String> roles;
 
-            LOG.debug(TEST_SEPARATOR + "getUserRoles(userName)");
+            LOGGER.debug(TEST_SEPARATOR + "getUserRoles(userName)");
             roles = ldapApplication.getUserRoles(userName);
-            LOG.debug("size=" + roles.size());
-            LOG.debug("{}", roles);
+            LOGGER.debug("size=" + roles.size());
+            LOGGER.debug("{}", roles);
 
-            LOG.debug(TEST_SEPARATOR + "getUserRoles(userName)");
+            LOGGER.debug(TEST_SEPARATOR + "getUserRoles(userName)");
             roles = ldapApplication.getUserRoles(userName);
             for (String role : roles) {
-                LOG.debug("role=" + role);
+                LOGGER.debug("role=" + role);
             }
 
-            LOG.debug(TEST_SEPARATOR + "getAppRoles(roleName)");
+            LOGGER.debug(TEST_SEPARATOR + "getAppRoles(roleName)");
             roles = ldapApplication.getAppRoles(roleName);
-            LOG.debug("size=" + roles.size());
+            LOGGER.debug("size=" + roles.size());
             for (String role : roles) {
-                LOG.debug("role=" + role);
+                LOGGER.debug("role=" + role);
             }
         } catch (GinaException e) {
             e.printStackTrace();

@@ -89,15 +89,45 @@
                     <testTarget>1.8</testTarget>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <test.domain.server>${ldap.domain.server}</test.domain.server>
+                        <test.domain.user>${ldap.domain.user}</test.domain.user>
+                        <test.domain.password>${ldap.domain.password}</test.domain.password>
+                        <test.application.server>${ldap.application.server}</test.application.server>
+                        <test.application.user>${ldap.application.user}</test.application.user>
+                        <test.application.password>${ldap.application.password}</test.application.password>
+                        <test.gestrepo.server>${ldap.gestrepo.server}</test.gestrepo.server>
+                        <test.gestrepo.user>${ldap.gestrepo.user}</test.gestrepo.user>
+                        <test.gestrepo.password>${ldap.gestrepo.password}</test.gestrepo.password>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <profiles>
         <profile>
+            <!-- Profil avec acces au depot Nexus de l'Etat de Geneve et a Gina.
+                 Ce profil est recommande pour quelqu'un d'interne au reseau de l'Etat.
+              -->
             <id>etat-de-geneve</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+                <ldap.domain.server>ldaps://vldap-dev.ceti.etat-ge.ch:636</ldap.domain.server>
+                <ldap.domain.user>cn=tcnvldap6470devaag,ou=Users,ou=CSBUGTRACK,o=gina</ldap.domain.user>
+                <ldap.application.server>ldaps://vldap-dev.ceti.etat-ge.ch:636</ldap.application.server>
+                <ldap.application.user>cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina</ldap.application.user>
+                <ldap.gestrepo.server>ldaps://vldap-dev.ceti.etat-ge.ch:636</ldap.gestrepo.server>
+                <ldap.gestrepo.user>cn=TCNVLDAP4363DEVAAG,ou=Users,ou=gestrepo,ou=cti,o=gina</ldap.gestrepo.user>
+                <!-- les trois mots de passe doivent etre fournis en ligne de commande, par exemple :
+                     mvn -Dldap.domain.password=XXX -Dldap.application.password=YYY -Dldap.gestrepo.password=ZZZ clean install
+                  -->
+            </properties>
             <distributionManagement>
                 <repository>
                     <id>internal.project.release</id>
@@ -108,6 +138,25 @@
                     <url>http://ctinexus.prod.etat-ge.ch:23000/ctinexus/content/repositories/project_snapshot</url>
                 </snapshotRepository>
             </distributionManagement>
+        </profile>
+        <profile>
+            <!-- Profil pour execution Maven en mode autonome.
+                 Pour les tests JUnit, requiert le lancement prealable de trois petits servers LDAP UnboundID. Voir le
+                 fichier README.md.
+                 Ce profil est recommande pour quelqu'un d'externe au reseau de l'Etat.
+              -->
+            <id>local</id>
+            <properties>
+                <ldap.domain.server>ldap://127.0.0.1:30636</ldap.domain.server>
+                <ldap.domain.user/>
+                <ldap.domain.password/>
+                <ldap.application.server>ldap://127.0.0.1:30637</ldap.application.server>
+                <ldap.application.user/>
+                <ldap.application.password/>
+                <ldap.gestrepo.server>ldap://127.0.0.1:30638</ldap.gestrepo.server>
+                <ldap.gestrepo.user/>
+                <ldap.gestrepo.password/>
+            </properties>
         </profile>
     </profiles>
 
