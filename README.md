@@ -4,8 +4,7 @@ La bibliothèque ct-gina-ldap-client est destinée aux applications Java de l'État
 Elle permet aux applications de se connecter via le protocole LDAP à l'annuaire de l'État et ainsi de récupérer :
 - les utilisateurs
 - les groupes (rôles)
-- l'appartenance des utilisateurs aux groupes
-les droits d'accès des utilisateurs sur les applications.
+- l'appartenance des utilisateurs aux groupes.
 
 Cette bibliothèque ne traite que des droits d'accès, pas de l'authentification.
 
@@ -33,7 +32,6 @@ La bibliothèque peut être assemblée via Maven par la commande
 ```mvn -DskipTest clean install```
 
 Il est cependant utile ne pas sauter les tests unitaires JUnit. 
-
 Ceux-ci peuvent être lancés selon deux modes : "Gina" et "local".
 
 ## Mode "Gina"
@@ -58,7 +56,7 @@ Dans le POM, ce mode correspond au profil ``local`` :
 
 ```mvn -P local,!etat-de-geneve clean install```
 
-Actuellement, certains tests unitaires ne fonctionnent pas dans ce mode.
+Attention : actuellement, certains tests unitaires ne fonctionnent pas dans ce mode.
 
 # 4. Intégration dans une application
 
@@ -103,18 +101,46 @@ Pour un exemple d'utilisation de toutes les méthodes exposées, se référer :
 
 # Annexe 1. Serveur LDAP sur un poste de développeur
 
+## Serveur LDAP 
+
 Pour effectuer les tests unitaires en mode local, c'est-à-dire autonome et sans appel à Gina, on utilise les
 fichiers .ldif fournis. Pour exposer un fichier .ldif, il faut lancer un serveur LDAP sur ce fichier.
+Pour cela, un serveur LDAP [UnboundID](https://ldap.com/unboundid-ldap-sdk-for-java) a été intégré dans 
+les sources de ce projet.
 
 Procédure :
-- Télécharger UnboundID LDAP SDK for Java.
-- Dézipper le livrable
-- Ouvrir une fenêtre DOS et aller dans le répertoire tools
-- Exécuter la commande suivante :
+- Ouvrir une fenêtre DOS et aller dans le répertoire du projet
+- Exécuter les commandes suivantes :
 
 ```
-D:\unboundid-ldapsdk-4.0.3\tools>in-memory-directory-server --baseDN "ou=CSBUGTRACK,o=gina" --port 30636 --ldifFile csbugtrack-full.ldif
+cd src\test\resources
+unboundid-ldapsdk-4.0.8\tools\in-memory-directory-server --baseDN "ou=CSBUGTRACK,o=gina" --port 30636 --ldifFile ldap_csbugtrack_full.ldif
 ```
+
+Ceci doit afficher
+```
+Listening for client connections on port 30636.
+```
+
+Note. A ce jour, seule la classe de test ``GinaLdapDomainTest`` peut ainsi être testée. Les autres classes 
+``GinaLdapApplicationCtiGestrepoTest``, ``GinaLdapApplicationParallelTest`` et ``GinaLdapApplicationTest``
+n'ont pas de fichier .ldif disponible.
+
+## Explorateur LDAP
+
+De façon facultative, on peut lancer un explorateur LDAP sur un serveur LDAP lancé, Gina ou UnboundID.
+L'explorateur, par exemple [ApacheDS](http://directory.apache.org/apacheds/downloads.html)
+ou [JXplorer](http://www.jxplorer.org), permet de parcourir de façon conviviale un répertoire LDAP.
+
+Procédure pour utiliser JXplorer sur Gina :
+- Installer JXplorer
+- Lancer JXplorer
+- Fichier > Se connecter
+- Utiliser les paramètres de connexion fournis dans le POM de ce projet
+
+![connexion LDAP](./doc/jxplorer_1.png)
+
+![exploration LDAP](./doc/jxplorer_2.png)
 
 # Annexe 2. Note sur l'usage d'IntelliJ
 

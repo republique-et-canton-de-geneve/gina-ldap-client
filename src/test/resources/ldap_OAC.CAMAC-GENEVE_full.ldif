@@ -417,3 +417,4 @@ dn: cn=VALIDEUR,ou=Groups,ou=CAMAC-GENEVE,ou=OAC,o=gina
 objectClass: groupOfNames
 objectClass: top
 cn: VALIDEUR
+
