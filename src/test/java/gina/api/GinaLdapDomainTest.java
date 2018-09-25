@@ -2,6 +2,7 @@ package gina.api;
 
 import static gina.api.gina.api.utils.TestTools.expectNotImplemented;
 import static org.assertj.core.api.Assertions.assertThat;
+import static gina.impl.util.GinaLdapConfiguration.Type.DOMAIN;
 
 import gina.api.gina.api.utils.TestConstants;
 import gina.api.gina.api.utils.TestLoggingWatcher;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.naming.NamingException;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -25,7 +27,7 @@ import org.slf4j.LoggerFactory;
 public class GinaLdapDomainTest {
 
     // Logger
-    private static final Logger LOG = LoggerFactory.getLogger(GinaLdapDomainTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GinaLdapDomainTest.class);
 
     // LDAP au niveau du domaine - Domaine Gina
     private static final String LDAP_DOMAIN_TEST_DOMAINE = "CSBUGTRACK";
@@ -55,17 +57,18 @@ public class GinaLdapDomainTest {
     public static void initApi() {
         String base = "ou=CSBUGTRACK,o=gina";
 
-        String server = "ldaps://vldap-dev.ceti.etat-ge.ch:636";
-        String user = "cn=tcnvldap6470devaag,ou=Users,ou=CSBUGTRACK,o=gina";
-        String password = "Xhngmfxp9";
+        String server = System.getProperty("test.domain.server");
+        String user = System.getProperty("test.domain.user");
+        String password = System.getProperty("test.domain.password");
 
-        // String server = "ldap://127.0.0.1:30636";
-        // String user = "";
-        // String password = "";
+        LOGGER.info("Connexion LDAP : server=[{}], user=[{}]", server, user);
+        if (StringUtils.isBlank(password)) {
+            LOGGER.info("le mot de passe au serveur LDAP (necessaire avec Gina, inutile avec UnboundID) est manquant");
+        }
 
         int timeout = GinaLdapUtils.LDAP_DEFAULT_TIMEOUT;
 
-        GinaLdapConfiguration ldapConf = new GinaLdapConfiguration(server, base, user, password, timeout);
+        GinaLdapConfiguration ldapConf = new GinaLdapConfiguration(server, base, user, password, DOMAIN, timeout);
         api = GinaLdapFactory.getInstance(ldapConf);
     }
 
@@ -97,18 +100,19 @@ public class GinaLdapDomainTest {
     public void getUserRolesWithUserAndApplicationTest() throws RemoteException {
         List<String> roles = api.getUserRoles(TestConstants.GENERIC_USERNAME, LDAP_DOMAIN_TEST_DOMAINE_APPLICATION);
         assertThat(roles).isNotEmpty();
-        LOG.info("roles.size() = {}", roles.size());
-        LOG.info("roles = {}", roles);
+        LOGGER.info("roles.size() = {}", roles.size());
+        LOGGER.info("roles = {}", roles);
         assertThat(roles).contains(LDAP_DOMAIN_TEST_ROLE);
         assertThat(TestTools.rolesAreCleaned(roles)).isTrue();
     }
 
     @Test
     public void getUsersWithApplicationAndAttrsTest() throws RemoteException {
+        patience();
         List<Map<String, String>> users = api
                 .getUsers(LDAP_DOMAIN_TEST_DOMAINE_APPLICATION, TestConstants.TEST_ATTRS);
         assertThat(users).isNotEmpty();
-        LOG.info("users.size() = {}", users.size());
+        LOGGER.info("users.size() = {}", users.size());
 
         long nbUsers = users
                 .stream()
@@ -133,10 +137,11 @@ public class GinaLdapDomainTest {
 
     @Test
     public void getUsersTest() throws RemoteException {
+        patience();
         List<Map<String, String>> users = api.getUsers(LDAP_DOMAIN_TEST_DOMAINE_APPLICATION, LDAP_DOMAIN_TEST_ROLE,
                                                        TestConstants.TEST_ATTRS);
         assertThat(users).isNotEmpty();
-        LOG.info("users.size () = {}", users.size());
+        LOGGER.info("users.size () = {}", users.size());
 
         long nbUsers = users
                 .stream()
@@ -152,8 +157,8 @@ public class GinaLdapDomainTest {
     public void getAppRolesTest() throws RemoteException {
         List<String> roles = api.getAppRoles(LDAP_DOMAIN_TEST_DOMAINE_APPLICATION);
         assertThat(roles).isNotEmpty();
-        LOG.info("roles.size() = {}", roles.size());
-        LOG.info("roles = {}", roles);
+        LOGGER.info("roles.size() = {}", roles.size());
+        LOGGER.info("roles = {}", roles);
         assertThat(TestTools.rolesAreCleaned(roles)).isTrue();
         assertThat(roles).contains(LDAP_DOMAIN_TEST_ROLE);
     }
@@ -315,6 +320,10 @@ public class GinaLdapDomainTest {
 
         String[] foo = { "" };
         api.sendMail("", foo, foo, "", "", "");
+    }
+
+    private void patience() {
+        LOGGER.info("Patience... Gina est parfois lent à répondre");
     }
 
 }

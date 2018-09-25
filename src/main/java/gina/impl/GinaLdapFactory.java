@@ -16,10 +16,12 @@ public class GinaLdapFactory {
         try {
             GinaApiLdapBaseAble result;
 
-            if (GinaLdapConfiguration.APPLICATION.equals(ldapConf.getLdapType())) {
+            if (ldapConf.getLdapType() == GinaLdapConfiguration.Type.APPLICATION) {
                 result = new GinaLdapApplication(ldapConf);
-            } else {
+            } else if (ldapConf.getLdapType() == GinaLdapConfiguration.Type.DOMAIN) {
                 result = new GinaLdapDomain(ldapConf);
+            } else {
+                throw new GinaException("Unexpected LDAP type [" + ldapConf.getLdapType() + "]");
             }
 
             return result;
