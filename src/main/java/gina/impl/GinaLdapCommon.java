@@ -138,7 +138,7 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
 
             while (answer.hasMoreElements()) {
                 SearchResult sr = (SearchResult) answer.next();
-                LOGGER.debug("sr=" + sr);
+                LOGGER.debug("sr = {}", sr);
                 Attributes attrs = sr.getAttributes();
                 if (attrs != null) {
                     Attribute cn = attrs.get("cn");
@@ -194,11 +194,11 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
                 while (answer.hasMoreElements()) {
                     SearchResult sr = (SearchResult) answer.next();
                     Attributes attrs = sr.getAttributes();
-                    LOGGER.debug("sr=" + sr);
+                    LOGGER.debug("sr = {}", sr);
                     if (attrs != null) {
                         for (int i = 0; i < paramArrayOfString.length; i++) {
                             String attr = paramArrayOfString[i];
-                            LOGGER.debug("attr=" + attr);
+                            LOGGER.debug("attr = {}", attr);
                             Attribute attribute = attrs.get(attr);
                             if (attribute != null) {
                                 try {
@@ -216,7 +216,7 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
                                                 value = sb.toString();
                                             }
                                         }
-                                        LOGGER.debug("value=" + value);
+                                        LOGGER.debug("value = {}", value);
                                         myMap.put(paramArrayOfString[i], value);
                                     }
                                 } finally {
@@ -267,10 +267,10 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
             if (answer != null) {
                 while (answer.hasMoreElements()) {
                     SearchResult sr = (SearchResult) answer.next();
-                    LOGGER.debug("sr=" + sr);
+                    LOGGER.debug("sr = {}", sr);
                     if (sr != null) {
                         final Attributes attrs = sr.getAttributes();
-                        LOGGER.debug("attrs=" + attrs);
+                        LOGGER.debug("attrs = {}", attrs);
                         if (attrs != null && attrs.get(GinaLdapUtils.ATTRIBUTE_MEMBEROF) != null) {
                             try {
                                 answerAtt = attrs.get(GinaLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
@@ -300,7 +300,7 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
             closeDirContext(ctxtDir);
         }
 
-        LOGGER.debug("roles=" + roles);
+        LOGGER.debug("roles = {}", roles);
 
         return roles;
     }
@@ -332,7 +332,7 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
 
             while (answer.hasMoreElements()) {
                 SearchResult sr = (SearchResult) answer.next();
-                LOGGER.debug("sr=" + sr);
+                LOGGER.debug("sr = {}", sr);
                 Attributes attrs = sr.getAttributes();
                 if (attrs != null && attrs.get(GinaLdapUtils.ATTRIBUTE_MEMBER) != null) {
                     try {

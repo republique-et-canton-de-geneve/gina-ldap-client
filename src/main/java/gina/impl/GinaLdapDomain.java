@@ -65,7 +65,7 @@ public class GinaLdapDomain extends GinaLdapCommon {
                 }
             }
         } catch (NamingException e) {
-            LOGGER.error("Erreur : ", e);
+            logException(e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaLdapUtils.closeQuietly(answer);
@@ -100,7 +100,7 @@ public class GinaLdapDomain extends GinaLdapCommon {
             list = parseAnswer(answer, attrs);
 
         } catch (NamingException e) {
-            LOGGER.error("Erreur : ", e);
+            logException(e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaLdapUtils.closeQuietly(answer);
@@ -135,7 +135,7 @@ public class GinaLdapDomain extends GinaLdapCommon {
 
             list = parseAnswer(answer, attrs);
         } catch (NamingException e) {
-            LOGGER.error("Erreur : ", e);
+            logException(e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaLdapUtils.closeQuietly(answer);
@@ -171,8 +171,8 @@ public class GinaLdapDomain extends GinaLdapCommon {
             List<String> users = new ArrayList<String>();
             while (answer.hasMoreElements()) {
                 SearchResult sr = (SearchResult) answer.next();
-                LOGGER.debug("name = {}", sr.getName().substring(0, sr.getName().indexOf(','))
-                                           .replace("cn=", ""));
+                String name = sr.getName().substring(0, sr.getName().indexOf(',')).replace("cn=", "");
+                LOGGER.debug("name = {}", name);
 
                 Attributes attrsResult = sr.getAttributes();
                 LOGGER.debug("sr = {}", sr);

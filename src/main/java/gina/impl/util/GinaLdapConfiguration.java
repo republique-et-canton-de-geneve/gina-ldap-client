@@ -1,16 +1,8 @@
 package gina.impl.util;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class GinaLdapConfiguration {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(GinaLdapConfiguration.class);
-
-//    public static final String DOMAIN = "domain";
-//    public static final String APPLICATION = "application";
 
     /**
      * Type d'accès au LDAP.
@@ -62,16 +54,6 @@ public class GinaLdapConfiguration {
         this.ldapUser = user;
         this.ldapPassword = password;
         this.ldapTimeLimit = timeLimit;
-
-        /*
-        int count = StringUtils.countMatches(user, ",ou=");
-        LOGGER.debug("count = ", count);
-        if (count > 2) {
-            this.ldapType = Type.APPLICATION;
-        } else {
-            this.ldapType = Type.DOMAIN;
-        }
-        */
         this.ldapType = type;
     }
 
