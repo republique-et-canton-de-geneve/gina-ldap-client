@@ -261,8 +261,4 @@ public class GinaLdapApplication extends GinaLdapCommon {
         return list;
     }
 
-    private void logException(Throwable e) {
-        LOGGER.error("Erreur : ", e);
-    }
-
 }
