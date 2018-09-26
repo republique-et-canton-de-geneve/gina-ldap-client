@@ -480,7 +480,7 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
-    private void logException(Throwable e) {
+    protected void logException(Throwable e) {
         LOGGER.error("Erreur : ", e);
     }
 
