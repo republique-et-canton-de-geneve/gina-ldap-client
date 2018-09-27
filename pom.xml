@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!--
-        Ce projet n'utilise pas Spring. Il herite de spring-boot-dependencies uniquement pour controler les versions
-        des plugins et des dependances.
+        Ce projet n'utilise pas Spring. Il herite de spring-boot-dependencies uniquement pour simplifier la
+        gestion des versions des plugins et des dependances.
       -->
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -21,7 +21,14 @@
     <url>https://prod.etat-ge.ch/wikiadm/x/ZABdPg</url>
 
     <properties>
+        <!-- plugin versions -->
+        <javacoco-maven-plugin.version>0.8.2</javacoco-maven-plugin.version>
+
+        <!-- JAR versions -->
         <assertj.version>3.11.1</assertj.version>
+
+        <!-- other properties -->
+        <sonar.jacoco.reportPaths>target/jacoco.exec</sonar.jacoco.reportPaths>
     </properties>
 
     <ciManagement>
@@ -105,6 +112,30 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${javacoco-maven-plugin.version}</version>
+                <configuration>
+                    <append>true</append>
+                    <destFile>${sonar.jacoco.reportPaths}</destFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>agent-for-unit-tests</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-site</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -140,7 +171,7 @@
             </distributionManagement>
         </profile>
         <profile>
-            <!-- Profil pour execution Maven en mode autonome.
+            <!-- Profil pour execution de Maven en mode autonome, sans acces ni a Nexus, ni a Gina.
                  Pour les tests JUnit, requiert le lancement prealable de trois petits servers LDAP UnboundID. Voir le
                  fichier README.md.
                  Ce profil est recommande pour quelqu'un d'externe au reseau de l'Etat.
