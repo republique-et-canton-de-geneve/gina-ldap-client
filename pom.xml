@@ -14,8 +14,8 @@
     </parent>
 
     <groupId>ch.ge.cti.ct</groupId>
-    <artifactId>ct-gina-ldap-client</artifactId>
-    <name>ct-gina-ldap-client - ${project.version}</name>
+    <artifactId>gina-ldap-client</artifactId>
+    <name>gina-ldap-client</name>
     <version>2.0.1-SNAPSHOT</version>
 
     <url>https://prod.etat-ge.ch/wikiadm/x/ZABdPg</url>
@@ -26,6 +26,7 @@
 
         <!-- JAR versions -->
         <assertj.version>3.11.1</assertj.version>
+        <junit-toolbox.version>1.11</junit-toolbox.version>
 
         <!-- other properties -->
         <sonar.jacoco.reportPaths>target/jacoco.exec</sonar.jacoco.reportPaths>
@@ -42,9 +43,9 @@
     </issueManagement>
 
     <scm>
-        <connection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/ct-gina-ldap-client.git</connection>
-        <developerConnection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/ct-gina-ldap-client.git</developerConnection>
-        <url>https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/ct-gina-ldap-client.git</url>
+        <connection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/gina-ldap-client.git</connection>
+        <developerConnection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/gina-ldap-client.git</developerConnection>
+        <url>https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/gina-ldap-client.git</url>
     </scm>
 
     <dependencies>
@@ -78,7 +79,7 @@
         <dependency>
             <groupId>com.googlecode.junit-toolbox</groupId>
             <artifactId>junit-toolbox</artifactId>
-            <version>1.11</version>
+            <version>${junit-toolbox.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
