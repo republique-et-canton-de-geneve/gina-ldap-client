@@ -1,56 +1,56 @@
 # 1. Propos
 
-La bibliothèque ct-gina-ldap-client est destinée aux applications Java de l'État de Genève.
-Elle permet aux applications de se connecter via le protocole LDAP à l'annuaire de l'État et ainsi de récupérer :
+La bibliothï¿½que gina-ldap-client est destinï¿½e aux applications Java de l'ï¿½tat de Genï¿½ve.
+Elle permet aux applications de se connecter via le protocole LDAP ï¿½ l'annuaire de l'ï¿½tat et ainsi de rï¿½cupï¿½rer :
 - les utilisateurs
-- les groupes (rôles)
+- les groupes (rï¿½les)
 - l'appartenance des utilisateurs aux groupes.
 
-Cette bibliothèque ne traite que des droits d'accès, pas de l'authentification.
+Cette bibliothï¿½que ne traite que des droits d'accï¿½s, pas de l'authentification.
 
 # 2. Description
 
-L'annuaire de l'État de Genève s'appeller Gina. 
-Pour une application Java, la manière la plus utilisée pour obtenir une information d'autorisation est d'utiliser
-un JAR fourni en interne par l'équipe Gina. 
+L'annuaire de l'ï¿½tat de Genï¿½ve s'appeller Gina. 
+Pour une application Java, la maniï¿½re la plus utilisï¿½e pour obtenir une information d'autorisation est d'utiliser
+un JAR fourni en interne par l'ï¿½quipe Gina. 
 Ce JAR Gina interne implique que la communication entre l'application cliente et Gina se fait via EJB.
 
-Ce projet-ci permet d'établir la communication via LDAP plutôt qu'EJB. Ses classes implémentent la même
+Ce projet-ci permet d'ï¿½tablir la communication via LDAP plutï¿½t qu'EJB. Ses classes implï¿½mentent la mï¿½me
 interface ``gina.api.GinaApiLdapBaseAble`` que le JAR Gina interne. 
 On notera cependant que, comme Gina n'expose via LDAP qu'une
-partie de ses données, de nombreuses méthodes renvoient simplement une exception "méthode non implémentée" -
+partie de ses donnï¿½es, de nombreuses mï¿½thodes renvoient simplement une exception "mï¿½thode non implï¿½mentï¿½e" -
 voir la classe ``gina.impl.GinaLdapCommon``.
-Quelques méthodes ont été ajoutées.
+A l'inverse, quelques mï¿½thodes ont ï¿½tï¿½ ajoutï¿½es.
 
-Cette bibliothèque peut être intégrée à toute application tournant sur JRE 1.6+.
-Elle est construite quasiment sans utilisation de librairies spécifiques, dans un souci de faciliter les dépendances.
+Cette bibliothï¿½que peut ï¿½tre intï¿½grï¿½e ï¿½ toute application tournant sur JRE 1.6+.
+Elle est construite quasiment sans utilisation de librairies spï¿½cifiques, dans un souci de limiter les dï¿½pendances.
 
 # 3. Construction
 
-La bibliothèque peut être assemblée via Maven par la commande
+La bibliothï¿½que peut ï¿½tre assemblï¿½e via Maven par la commande
 
 ```mvn -DskipTest clean install```
 
 Il est cependant utile ne pas sauter les tests unitaires JUnit. 
-Ceux-ci peuvent être lancés selon deux modes : "Gina" et "local".
+Ceux-ci peuvent ï¿½tre lancï¿½s selon deux modes : "Gina" et "local".
 
 ## Mode "Gina"
 
-Dans ce mode, les classes de tests se connectent sur l'annuaire Gina. Ce mode nécessite la
+Dans ce mode, les classes de tests se connectent sur l'annuaire Gina. Ce mode nï¿½cessite la
 connaissance de mots de passe de Gina.
 
-Dans le POM, ce mode correspond au profil ``etat-de-geneve`` (le profil par défaut) :
+Dans le POM, ce mode correspond au profil ``etat-de-geneve`` (le profil par dï¿½faut) :
 
 ```mvn -Dldap.domain.password=<MOT DE PASSE 1> -Dldap.application.password=<MOT DE PASSE 2> -Dldap.gestrepo.password=<MOT DE PASSE 3> clean install```
 
-Les mots de passe sont stockés dans le Keypass du SMIL. S'adresser au SMIL pour les obtenir.
+Les mots de passe sont stockï¿½s dans le Keypass du SMIL. S'adresser au SMIL pour les obtenir.
 
 ## Mode "local"
 
 Dans ce mode, les classes de tests utilisent des fichiers .ldif fournis.
-Pour faire fonctionner les tests, il faut créer des serveurs LDAP locaux, qui exposent les fichiers .ldif fournis ;
-cette opération est décrite plus bas, en annexe.
-Aucun mot de passe n'est nécessaire.
+Pour faire fonctionner les tests, il faut crï¿½er des serveurs LDAP locaux, qui exposent les fichiers .ldif fournis ;
+cette opï¿½ration est dï¿½crite plus bas, en annexe.
+Aucun mot de passe n'est nï¿½cessaire.
 
 Dans le POM, ce mode correspond au profil ``local`` :
 
@@ -58,23 +58,23 @@ Dans le POM, ce mode correspond au profil ``local`` :
 
 Attention : actuellement, certains tests unitaires ne fonctionnent pas dans ce mode.
 
-# 4. Intégration dans une application
+# 4. Intï¿½gration dans une application
 
 ## Maven 
 
 ```
 <dependency>
 	<groupId>ch.ge.cti.ct</groupId>
-	<artifactId>ct-gina-ldap-client</artifactId>
-	<version>${ct-gina-ldap-client.version}</version>
+	<artifactId>gina-ldap-client</artifactId>
+	<version>${gina-ldap-client.version}</version>
 </dependency>
 ```
 
 ## Activation du pooling
 
-Pour utilisation dans une application déployée sur Tomcat ou JBoss.
+Pour utilisation dans une application dï¿½ployï¿½e sur Tomcat ou JBoss.
 
-Il faut ajouter et adapter les propriétés suivantes dans le fichier ``catalina.properties`` :
+Il faut ajouter et adapter les propriï¿½tï¿½s suivantes dans le fichier ``catalina.properties`` :
 ```
 com.sun.jndi.ldap.connect.pool.protocol=plain ssl
 com.sun.jndi.ldap.connect.pool.authentication=simple
@@ -85,7 +85,7 @@ com.sun.jndi.ldap.connect.pool.initsize=2
 #com.sun.jndi.ldap.connect.pool.debug=fine
 ```
 
-Définition des propriétés : voir https://docs.oracle.com/javase/jndi/tutorial/ldap/connect/config.html.
+Dï¿½finition des propriï¿½tï¿½s : voir https://docs.oracle.com/javase/jndi/tutorial/ldap/connect/config.html.
 
 ## Exemples d'utilisation
 
@@ -95,22 +95,22 @@ GinaApiLdapBaseAble api = GinaApiLdapBaseFactory.getInstance(ldapConf);
 List<String> roles = api.getUserRoles("LAURENTJ");
 ```
 
-Pour un exemple d'utilisation de toutes les méthodes exposées, se référer :
+Pour un exemple d'utilisation de toutes les mï¿½thodes exposï¿½es, se rï¿½fï¿½rer :
 - aux classes de tests de l'api : ./src/test/java/gina/api
-- aux classes de l'appli de démo : http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client-demo/trunk/ct-gina-ldap-client-demo-war/src/main/java/ch/ge/ael/gina/infos/InfosController.java
+- aux classes de l'appli de dï¿½mo : http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client-demo/trunk/ct-gina-ldap-client-demo-war/src/main/java/ch/ge/ael/gina/infos/InfosController.java
 
-# Annexe 1. Serveur LDAP sur un poste de développeur
+# Annexe 1. Serveur LDAP sur un poste de dï¿½veloppeur
 
 ## Serveur LDAP 
 
-Pour effectuer les tests unitaires en mode local, c'est-à-dire autonome et sans appel à Gina, on utilise les
+Pour effectuer les tests unitaires en mode local, c'est-ï¿½-dire autonome, sans appel ï¿½ Gina, on utilise les
 fichiers .ldif fournis. Pour exposer un fichier .ldif, il faut lancer un serveur LDAP sur ce fichier.
-Pour cela, un serveur LDAP [UnboundID](https://ldap.com/unboundid-ldap-sdk-for-java) a été intégré dans 
+Pour cela, un serveur LDAP [UnboundID](https://ldap.com/unboundid-ldap-sdk-for-java) a ï¿½tï¿½ intï¿½grï¿½ dans 
 les sources de ce projet.
 
-Procédure :
-- Ouvrir une fenêtre DOS et aller dans le répertoire du projet
-- Exécuter les commandes suivantes :
+Procï¿½dure :
+- Ouvrir une fenï¿½tre DOS et aller dans le rï¿½pertoire du projet
+- Exï¿½cuter les commandes suivantes :
 
 ```
 cd src\test\resources
@@ -122,21 +122,21 @@ Ceci doit afficher
 Listening for client connections on port 30636.
 ```
 
-Note. A ce jour, seule la classe de test ``GinaLdapDomainTest`` peut ainsi être testée. Les autres classes 
+Note. A ce jour, seule la classe de test ``GinaLdapDomainTest`` peut ainsi ï¿½tre testï¿½e. Les autres classes 
 ``GinaLdapApplicationCtiGestrepoTest``, ``GinaLdapApplicationParallelTest`` et ``GinaLdapApplicationTest``
 n'ont pas de fichier .ldif disponible.
 
 ## Explorateur LDAP
 
-De façon facultative, on peut lancer un explorateur LDAP sur un serveur LDAP lancé, Gina ou UnboundID.
+De faï¿½on facultative, on peut lancer un explorateur LDAP sur un serveur LDAP lancï¿½ (Gina ou UnboundID).
 L'explorateur, par exemple [ApacheDS](http://directory.apache.org/apacheds/downloads.html)
-ou [JXplorer](http://www.jxplorer.org), permet de parcourir de façon conviviale un répertoire LDAP.
+ou [JXplorer](http://www.jxplorer.org), permet de parcourir de faï¿½on conviviale un rï¿½pertoire LDAP.
 
-Procédure pour utiliser JXplorer sur Gina :
+Procï¿½dure pour brancher JXplorer sur Gina :
 - Installer JXplorer
 - Lancer JXplorer
 - Fichier > Se connecter
-- Utiliser les paramètres de connexion fournis dans le POM de ce projet
+- Utiliser les paramï¿½tres de connexion fournis dans le POM de ce projet
 
 ![connexion LDAP](./doc/jxplorer_1.png)
 
@@ -144,12 +144,12 @@ Procédure pour utiliser JXplorer sur Gina :
 
 # Annexe 2. Note sur l'usage d'IntelliJ
 
-Pour les développeurs : IntelliJ ne sait pas interpréter ``<testSource>`` dans le POM et lève des erreurs
+Pour les dï¿½veloppeurs. IntelliJ ne sait pas interprï¿½ter ``<testSource>`` dans le POM et lï¿½ve des erreurs
 ```
 Error:(198, 48) java: lambda expressions are not supported in -source 1.6 (use -source 8 or higher to enable lambda expressions)
 ```
-sur les classes de test pour qui ``<testSource>`` a pourtant été initialisé à ``1.8``.
-Pour éviter ces erreurs, aller dans ``Project Structure`` (Ctrl+Alt+Shift+S), puis  dans ``Modules``, puis mettre
-``Language level`` à ``8``.
+sur les classes de test, bien que ``<testSource>`` ait Ã©tÃ© initialisï¿½ ï¿½ ``1.8``.
+Pour ï¿½viter ces erreurs, aller dans ``Project Structure`` (Ctrl+Alt+Shift+S), puis  dans ``Modules``, puis mettre
+``Language level`` ï¿½ ``8``.
 
-Ces erreurs sont sans conséquence sur le ``mvn install``.
+Ces erreurs sont sans consï¿½quence sur le ``mvn install``.
