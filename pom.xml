@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <!--
@@ -21,14 +19,14 @@
     <url>https://prod.etat-ge.ch/wikiadm/x/ZABdPg</url>
 
     <properties>
-        <!-- plugin versions -->
+        <!-- versions des plugins -->
         <javacoco-maven-plugin.version>0.8.2</javacoco-maven-plugin.version>
 
-        <!-- JAR versions -->
+        <!-- versions des JAR -->
         <assertj.version>3.11.1</assertj.version>
         <junit-toolbox.version>1.11</junit-toolbox.version>
 
-        <!-- other properties -->
+        <!-- autres proprietes -->
         <sonar.jacoco.reportPaths>target/jacoco.exec</sonar.jacoco.reportPaths>
     </properties>
 
@@ -46,7 +44,8 @@
         <connection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/gina-ldap-client.git</connection>
         <developerConnection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/gina-ldap-client.git</developerConnection>
         <url>https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/gina-ldap-client.git</url>
-    </scm>
+      <tag>HEAD</tag>
+  </scm>
 
     <dependencies>
         <!-- Compile dependencies -->
@@ -97,6 +96,7 @@
                     <testTarget>1.8</testTarget>
                 </configuration>
             </plugin>
+            <!-- Tests : connexion à Gina ou au serveur ldif -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
@@ -113,6 +113,15 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
+            <!-- Java 8 est devenu trop sourcilleux avec la javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                </configuration>
+            </plugin>
+            <!-- Couverture de code par les tests unitaires, pour SonarQube -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -180,14 +189,14 @@
             <id>local</id>
             <properties>
                 <ldap.domain.server>ldap://127.0.0.1:30636</ldap.domain.server>
-                <ldap.domain.user/>
-                <ldap.domain.password/>
+                <ldap.domain.user />
+                <ldap.domain.password />
                 <ldap.application.server>ldap://127.0.0.1:30637</ldap.application.server>
-                <ldap.application.user/>
-                <ldap.application.password/>
+                <ldap.application.user />
+                <ldap.application.password />
                 <ldap.gestrepo.server>ldap://127.0.0.1:30638</ldap.gestrepo.server>
-                <ldap.gestrepo.user/>
-                <ldap.gestrepo.password/>
+                <ldap.gestrepo.user />
+                <ldap.gestrepo.password />
             </properties>
         </profile>
     </profiles>
