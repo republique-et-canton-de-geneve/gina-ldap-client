@@ -31,8 +31,8 @@ public class GinaLdapApplication extends GinaLdapCommon {
     }
 
     /*
-     * (non-Javadoc) Retourne vrai si l'utilisateur donné a le role donné pour
-     * l'application donnée
+     * (non-Javadoc) Retourne vrai si l'utilisateur donnï¿½ a le role donnï¿½ pour
+     * l'application donnï¿½e
      *
      * @see gina.api.GinaApiLdapBaseAble#hasUserRole(java.lang.String,
      * java.lang.String, java.lang.String)
@@ -50,6 +50,7 @@ public class GinaLdapApplication extends GinaLdapCommon {
             SearchControls searchControls = getSearchControls();
             String searchFilter =
                     "(&(objectClass=users)(cn=" + encodedUser + ")&(objectClass=memberOf)(cn=" + encodedRole + "))";
+            LOGGER.warn("searchFilter = {}", searchFilter);
             answer = ctxtDir.search("", searchFilter, searchControls);
             return answer != null && answer.hasMoreElements();
         } catch (NamingException e) {
@@ -62,7 +63,7 @@ public class GinaLdapApplication extends GinaLdapCommon {
     }
 
     /*
-     * (non-Javadoc) Donne tous les rôles de l'utilisateur passé en paramètre
+     * (non-Javadoc) Donne tous les rï¿½les de l'utilisateur passï¿½ en paramï¿½tre
      *
      * @see gina.api.GinaApiLdapBaseAble#getUserRoles(java.lang.String,
      * java.lang.String)
@@ -188,8 +189,8 @@ public class GinaLdapApplication extends GinaLdapCommon {
     }
 
     /*
-     * (non-Javadoc) Donne la liste des utilisateurs ayant accès à l'application
-     * passée en paramètre pour le rôle donné, avec les attributs demandés
+     * (non-Javadoc) Donne la liste des utilisateurs ayant accï¿½s ï¿½ l'application
+     * passï¿½e en paramï¿½tre pour le rï¿½le donnï¿½, avec les attributs demandï¿½s
      *
      * @see gina.api.GinaApiLdapBaseAble#getUsers(java.lang.String,
      * java.lang.String, java.lang.String[])
@@ -210,6 +211,7 @@ public class GinaLdapApplication extends GinaLdapCommon {
             answer = ctxtDir.search(GinaLdapUtils.getLdapFilterOu(ginaApplication),
                     GinaLdapUtils.getLdapFilterCn(encodedRole), searchControls);
 
+            LOGGER.debug("paramArrayOfString = {}", paramArrayOfString);
             list = parseAnswer(answer, paramArrayOfString);
         } catch (NamingException e) {
             logException(e);
@@ -246,6 +248,7 @@ public class GinaLdapApplication extends GinaLdapCommon {
                             if (member != null) {
                                 String username = member.substring(0, member.indexOf(',')).replace("cn=", "")
                                         .toLowerCase();
+                                LOGGER.debug("username = {}", username);
                                 if (StringUtils.isNotBlank(username) && !users.contains(username)) {
                                     users.add(username);
                                     Map<String, String> map = this.getUserAttrs(username, paramArrayOfString, false);
