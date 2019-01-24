@@ -38,11 +38,15 @@ public class GinaLdapUtils {
     }
 
     public static String extractApplication(final String domaineApplication) {
+        LOGGER.debug("domaineApplication = {}", domaineApplication);
         String result = null;
         if (StringUtils.isNotBlank(domaineApplication) && domaineApplication.contains(".")) {
             final String[] splitApplication = StringUtils.split(domaineApplication, ".", 2);
             result = splitApplication[1];
+        } else {
+            result = domaineApplication;
         }
+        LOGGER.debug("result = {}", result);
         return result;
     }
 

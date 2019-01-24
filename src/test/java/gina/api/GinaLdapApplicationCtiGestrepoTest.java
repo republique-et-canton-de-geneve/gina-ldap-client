@@ -1,5 +1,6 @@
 package gina.api;
 
+import static gina.impl.util.GinaLdapConfiguration.Type.DOMAIN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static gina.impl.util.GinaLdapConfiguration.Type.APPLICATION;
 
@@ -42,7 +43,7 @@ public class GinaLdapApplicationCtiGestrepoTest {
     // LDAP au niveau du domaine - User de test
     private static final String LDAP_APPLICATION_TEST_USER = "LAROCHEP";
 
-    // LDAP au niveau du domaine - Rôle de test
+    // LDAP au niveau du domaine - Rï¿½le de test
     private static final String LDAP_APPLICATION_TEST_ROLE = "UTILISATEUR";
 
     private static GinaApiLdapBaseAble api;
@@ -51,7 +52,7 @@ public class GinaLdapApplicationCtiGestrepoTest {
     public ExpectedException thrown = ExpectedException.none();
 
     /**
-     * Affichage du début et de la fin de chaque methode de test.
+     * Affichage du dï¿½but et de la fin de chaque methode de test.
      */
     @Rule
     public TestWatcher watcher = new TestLoggingWatcher();
@@ -151,6 +152,11 @@ public class GinaLdapApplicationCtiGestrepoTest {
         assertThat(TestTools.rolesAreCleaned(roles)).isTrue();
         assertThat(roles.contains("ADMINISTRATEUR")).isTrue();
         assertThat(roles.contains("SVN-READONLY-ALL")).isTrue();
+
+        for (String role : roles) {
+            List<Map<String, String>> users = api.getUsers("GESTREPO", role, new String[] {"cn"});
+            LOGGER.info("users for role {}: list of size {}", role, users.size());
+        }
     }
 
 }

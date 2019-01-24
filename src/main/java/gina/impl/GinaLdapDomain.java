@@ -76,8 +76,8 @@ public class GinaLdapDomain extends GinaLdapCommon {
     }
 
     /*
-     * (non-Javadoc) Donne la liste des utilisateurs ayant accès à l'application
-     * passée en paramètre, avec les attributs demandés
+     * (non-Javadoc) Donne la liste des utilisateurs ayant accï¿½s ï¿½ l'application
+     * passï¿½e en paramï¿½tre, avec les attributs demandï¿½s
      *
      * @see gina.api.GinaApiLdapBaseAble#getUsers(java.lang.String)
      */
@@ -111,8 +111,8 @@ public class GinaLdapDomain extends GinaLdapCommon {
     }
 
     /*
-     * (non-Javadoc) Donne la liste des utilisateurs ayant accès à l'application
-     * passée en paramètre pour le rôle donné, avec les attributs demandés
+     * (non-Javadoc) Donne la liste des utilisateurs ayant accï¿½s ï¿½ l'application
+     * passï¿½e en paramï¿½tre pour le rï¿½le donnï¿½, avec les attributs demandï¿½s
      *
      * @see gina.api.GinaApiLdapBaseAble#getUsers(java.lang.String,
      * java.lang.String, java.lang.String[])
@@ -130,8 +130,10 @@ public class GinaLdapDomain extends GinaLdapCommon {
 
             SearchControls searchControls = getSearchControls();
             ctxtDir = getLdapContext();
-            answer = ctxtDir.search(GinaLdapUtils.getLdapFilterOu(ginaApplication),
-                    GinaLdapUtils.getLdapFilterCn(encodedRole), searchControls);
+            answer = ctxtDir.search(
+                    GinaLdapUtils.getLdapFilterOu(ginaApplication),
+                    GinaLdapUtils.getLdapFilterCn(encodedRole),
+                    searchControls);
 
             list = parseAnswer(answer, attrs);
         } catch (NamingException e) {
