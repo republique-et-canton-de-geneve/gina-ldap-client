@@ -108,7 +108,7 @@ public class GinaLdapApplicationTest {
             LOGGER.info(e.getKey() + " = {}", e.getValue());
             if ("uid".equalsIgnoreCase(e.getKey())) {
                 assertThat(e.getValue().equalsIgnoreCase(TestConstants.DRIVONOL_USERNAME)).isTrue();
-                break;
+    //            break;
             }
         }
         LOGGER.info("user = {}", user);
@@ -117,7 +117,13 @@ public class GinaLdapApplicationTest {
     @Test
     public void hasRoleUserTest() throws RemoteException {
         boolean ret = api.hasUserRole(TestConstants.DRIVONOL_USERNAME, LDAP_APPLICATION_TEST_ROLE);
-        assertThat(ret).isTrue();
+
+        List<String> roles = api.getUserRoles(TestConstants.DRIVONOL_USERNAME, LDAP_APPLICATION_TEST_ROLE);
+        LOGGER.info("roles = {}", roles);
+
+        assertThat(ret)
+                .as("User " + TestConstants.DRIVONOL_USERNAME + " is expected to have role " + LDAP_APPLICATION_TEST_ROLE)
+                .isTrue();
     }
 
     @Test

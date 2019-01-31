@@ -76,8 +76,8 @@ public class GinaLdapDomain extends GinaLdapCommon {
     }
 
     /*
-     * (non-Javadoc) Donne la liste des utilisateurs ayant acc�s � l'application
-     * pass�e en param�tre, avec les attributs demand�s
+     * (non-Javadoc) Donne la liste des utilisateurs ayant acces a l'application
+     * passee en parametre, avec les attributs demandes
      *
      * @see gina.api.GinaApiLdapBaseAble#getUsers(java.lang.String)
      */
@@ -111,8 +111,8 @@ public class GinaLdapDomain extends GinaLdapCommon {
     }
 
     /*
-     * (non-Javadoc) Donne la liste des utilisateurs ayant acc�s � l'application
-     * pass�e en param�tre pour le r�le donn�, avec les attributs demand�s
+     * (non-Javadoc) Donne la liste des utilisateurs ayant acces a l'application
+     * passee en parametre pour le role donne, avec les attributs demandes
      *
      * @see gina.api.GinaApiLdapBaseAble#getUsers(java.lang.String,
      * java.lang.String, java.lang.String[])

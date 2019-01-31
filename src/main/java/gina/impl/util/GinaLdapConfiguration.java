@@ -1,11 +1,13 @@
 package gina.impl.util;
 
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class GinaLdapConfiguration {
 
     /**
-     * Type d'accès au LDAP.
+     * Type d'accï¿½s au LDAP.
      */
     public enum Type {
         DOMAIN,
@@ -103,6 +105,17 @@ public class GinaLdapConfiguration {
 
     public void setLdapType(Type ldapType) {
         this.ldapType = ldapType;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("ldapServerUrl", ldapServerUrl)
+                .append("ldapUser", ldapUser)
+                .append("ldapPassword", "***")
+                .append("ldapBaseDn", ldapBaseDn)
+                .append("ldapType", ldapType)
+                .toString();
     }
 
 }

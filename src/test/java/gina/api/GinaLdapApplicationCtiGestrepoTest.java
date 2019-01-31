@@ -19,6 +19,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -43,16 +44,18 @@ public class GinaLdapApplicationCtiGestrepoTest {
     // LDAP au niveau du domaine - User de test
     private static final String LDAP_APPLICATION_TEST_USER = "LAROCHEP";
 
-    // LDAP au niveau du domaine - R�le de test
+    // LDAP au niveau du domaine - Role de test
     private static final String LDAP_APPLICATION_TEST_ROLE = "UTILISATEUR";
 
     private static GinaApiLdapBaseAble api;
+
+    private static GinaLdapConfiguration ldapConf;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     /**
-     * Affichage du d�but et de la fin de chaque methode de test.
+     * Affichage du debut et de la fin de chaque methode de test.
      */
     @Rule
     public TestWatcher watcher = new TestLoggingWatcher();
@@ -70,7 +73,7 @@ public class GinaLdapApplicationCtiGestrepoTest {
             LOGGER.info("le mot de passe au serveur LDAP (necessaire avec Gina, inutile avec UnboundID) est manquant");
         }
 
-        GinaLdapConfiguration ldapConf = new GinaLdapConfiguration(server, base, user, password, APPLICATION,
+        ldapConf = new GinaLdapConfiguration(server, base, user, password, APPLICATION,
                 GinaLdapUtils.LDAP_DEFAULT_TIMEOUT);
         api = GinaLdapFactory.getInstance(ldapConf);
     }
@@ -128,17 +131,34 @@ public class GinaLdapApplicationCtiGestrepoTest {
 
     @Test
     public void hasRoleUserTest() throws RemoteException {
-        boolean ret = api.hasUserRole(LDAP_APPLICATION_TEST_USER, LDAP_APPLICATION_TEST_ROLE);
-        assertThat(ret).isTrue();
+        String user = LDAP_APPLICATION_TEST_USER;
+        String role = LDAP_APPLICATION_TEST_ROLE;
+        boolean ret = api.hasUserRole(user, role);
+        assertThat(ret)
+                .as(user + " devrait avoir le role " + role + ". Configuration = " + ldapConf.toString())
+                .isTrue();
+    }
+
+    // On ignore ce test pour l'instant, car il rend "ret = true", ce qui aberrant.
+    @Ignore
+    @Test
+    public void hasRoleUserTest2() throws RemoteException {
+        String user = LDAP_APPLICATION_TEST_USER;
+        String role = "ROLE_BIDON_QUI_N_EXISTE_PAS_DANS_GINA";
+        boolean ret = api.hasUserRole(user, role);
+        assertThat(ret)
+                .as(user + " ne devrait avoir le role " + role + ". Configuration = " + ldapConf.toString())
+                .isFalse();
     }
 
     @Test
     public void hasUserRoleWithUserAndApplicationAndRoleTest() throws RemoteException {
-        boolean ret = api.hasUserRole(LDAP_APPLICATION_TEST_USER, LDAP_APPLICATION_TEST_DOMAINE_APPLICATION,
-                LDAP_APPLICATION_TEST_ROLE);
-        assertThat(ret).as(TestConstants.DRIVONOL_USERNAME + " devrait avoir le role "
-                         + LDAP_APPLICATION_TEST_ROLE + " pour l'application "
-                         + LDAP_APPLICATION_TEST_DOMAINE_APPLICATION)
+        String user = LDAP_APPLICATION_TEST_USER;
+        String role = LDAP_APPLICATION_TEST_ROLE;
+        String application = LDAP_APPLICATION_TEST_DOMAINE_APPLICATION;
+        boolean ret = api.hasUserRole(user, application, role);
+        assertThat(ret).as(user + " devrait avoir le role " + role + " pour l'application "
+                           + application + ". Configuration = " + ldapConf.toString())
                        .isTrue();
     }
 
@@ -153,10 +173,13 @@ public class GinaLdapApplicationCtiGestrepoTest {
         assertThat(roles.contains("ADMINISTRATEUR")).isTrue();
         assertThat(roles.contains("SVN-READONLY-ALL")).isTrue();
 
+        // Test supplementaire (commente, car execution assez longue)
+        /*
         for (String role : roles) {
             List<Map<String, String>> users = api.getUsers("GESTREPO", role, new String[] {"cn"});
             LOGGER.info("users for role {}: list of size {}", role, users.size());
         }
+        */
     }
 
 }
