@@ -48,9 +48,8 @@ public class GinaLdapApplication extends GinaLdapCommon {
         try {
             ctxtDir = getLdapContext();
             SearchControls searchControls = getSearchControls();
-            String searchFilter =
-                    "(&(objectClass=users)(cn=" + encodedUser + ")&(objectClass=memberOf)(cn=" + encodedRole + "))";
-            LOGGER.warn("searchFilter = {}", searchFilter);
+            String searchFilter = "(&(objectClass=person)(cn=" + encodedUser + "))";
+            LOGGER.debug("searchFilter = {}", searchFilter);
             answer = ctxtDir.search("", searchFilter, searchControls);
             return answer != null && answer.hasMoreElements();
         } catch (NamingException e) {

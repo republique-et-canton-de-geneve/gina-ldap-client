@@ -186,7 +186,9 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
         LdapContext ctxtDir = null;
         try {
             SearchControls searchControls = getSearchControls(paramArrayOfString);
+            LOGGER.debug("searchControls = {}", searchControls);
             String searchFilter = GinaLdapUtils.getLdapFilterUser(encodedUser);
+            LOGGER.debug("searchFilter = {}", searchFilter);
             ctxtDir = getLdapContext();
             answer = ctxtDir.search("", searchFilter, searchControls);
 
