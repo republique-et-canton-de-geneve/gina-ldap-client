@@ -31,8 +31,8 @@ public class GinaLdapApplication extends GinaLdapCommon {
     }
 
     /*
-     * (non-Javadoc) Retourne vrai si l'utilisateur donn� a le role donn� pour
-     * l'application donn�e
+     * (non-Javadoc) Retourne vrai si l'utilisateur donne a le role donne pour
+     * l'application donnee
      *
      * @see gina.api.GinaApiLdapBaseAble#hasUserRole(java.lang.String,
      * java.lang.String, java.lang.String)
@@ -62,7 +62,7 @@ public class GinaLdapApplication extends GinaLdapCommon {
     }
 
     /*
-     * (non-Javadoc) Donne tous les r�les de l'utilisateur pass� en param�tre
+     * (non-Javadoc) Donne tous les roles de l'utilisateur passe en parametre
      *
      * @see gina.api.GinaApiLdapBaseAble#getUserRoles(java.lang.String,
      * java.lang.String)
@@ -188,8 +188,8 @@ public class GinaLdapApplication extends GinaLdapCommon {
     }
 
     /*
-     * (non-Javadoc) Donne la liste des utilisateurs ayant acc�s � l'application
-     * pass�e en param�tre pour le r�le donn�, avec les attributs demand�s
+     * (non-Javadoc) Donne la liste des utilisateurs ayant acces a l'application
+     * passee en parametre pour le role donne, avec les attributs demandes
      *
      * @see gina.api.GinaApiLdapBaseAble#getUsers(java.lang.String,
      * java.lang.String, java.lang.String[])
