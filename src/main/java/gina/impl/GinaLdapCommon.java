@@ -74,7 +74,9 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
             env.put(Context.SECURITY_CREDENTIALS, ldapConf.getLdapPassword());
         }
 
-        env.put("com.sun.jndi.ldap.read.timeout", String.valueOf(ldapConf.getLdapTimeLimit()));
+        env.put("com.sun.jndi.ldap.connect.timeout", String.valueOf(ldapConf.getLdapConnectionTimeout()));
+
+        env.put("com.sun.jndi.ldap.read.timeout", String.valueOf(ldapConf.getLdapReadTimeout()));
 
         if (ldapConf.getLdapServerUrl().startsWith("ldaps")) {
             env.put(Context.SECURITY_PROTOCOL, "ssl");

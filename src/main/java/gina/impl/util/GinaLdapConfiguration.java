@@ -2,16 +2,17 @@ package gina.impl.util;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import static gina.impl.util.GinaLdapUtils.DEFAULT_LDAP_CONNECTION_TIMEOUT;
+import static gina.impl.util.GinaLdapUtils.DEFAULT_LDAP_READ_TIMEOUT;
 
 public class GinaLdapConfiguration {
 
     /**
-     * Type d'acc�s au LDAP.
+     * Type d'acces au LDAP.
      */
     public enum Type {
         DOMAIN,
-        APPLICATION;
+        APPLICATION
     }
 
     // Configuration du LDAP
@@ -29,22 +30,50 @@ public class GinaLdapConfiguration {
 
     private String ldapPassword;
 
-    private int ldapTimeLimit = GinaLdapUtils.LDAP_DEFAULT_TIMEOUT;
+    private int ldapConnectionTimeout;
+
+    private int ldapReadTimeout;
 
     private Type ldapType;
 
-    /*
-    public GinaLdapConfiguration(final String server, final String base) {
-        this(server, base, null, null, GinaLdapUtils.LDAP_DEFAULT_TIMEOUT);
+    public GinaLdapConfiguration(
+            String server,
+            String base,
+            String user,
+            String password,
+            GinaLdapConfiguration.Type type) {
+        this(
+            server,
+            base,
+            user,
+            password,
+            type, DEFAULT_LDAP_CONNECTION_TIMEOUT, DEFAULT_LDAP_READ_TIMEOUT);
     }
-
-    public GinaLdapConfiguration(final String server, final String base, final String user, final String password) {
-        this(server, base, user, password, GinaLdapUtils.LDAP_DEFAULT_TIMEOUT);
-    }
-    */
 
     public GinaLdapConfiguration(
-            String server, String base, String user, String password, GinaLdapConfiguration.Type type, int timeLimit) {
+            String server,
+            String base,
+            String user,
+            String password,
+            GinaLdapConfiguration.Type type,
+            int ldapReadTimeout) {
+        this(
+            server,
+            base,
+            user,
+            password,
+            type,
+            ldapReadTimeout, DEFAULT_LDAP_READ_TIMEOUT);
+    }
+
+    public GinaLdapConfiguration(
+            String server,
+            String base,
+            String user,
+            String password,
+            GinaLdapConfiguration.Type type,
+            int ldapConnectionTimeout,
+            int ldapReadTimeout) {
         Validate.notEmpty(server, "server");
         Validate.notEmpty(base, "base");
         Validate.notNull(user, "user");
@@ -55,8 +84,9 @@ public class GinaLdapConfiguration {
         this.ldapBaseDn = base;
         this.ldapUser = user;
         this.ldapPassword = password;
-        this.ldapTimeLimit = timeLimit;
         this.ldapType = type;
+        this.ldapConnectionTimeout = ldapConnectionTimeout;
+        this.ldapReadTimeout = ldapReadTimeout;
     }
 
     public String getLdapServerUrl() {
@@ -91,12 +121,28 @@ public class GinaLdapConfiguration {
         this.ldapPassword = ldapPassword;
     }
 
-    public int getLdapTimeLimit() {
-        return ldapTimeLimit;
+    public int getLdapConnectionTimeout() {
+        return ldapConnectionTimeout;
     }
 
-    public void setLdapTimeLimit(int ldapTimeLimit) {
-        this.ldapTimeLimit = ldapTimeLimit;
+    public void setLdapConnectionTimeout(int ldapConnectionTimeout) {
+        this.ldapConnectionTimeout = ldapConnectionTimeout;
+    }
+
+    /**
+     * Depuis janv. 2019, utiliser {@link #getLdapReadTimeout()}.
+     */
+    @Deprecated
+    public int getLdapTimeLimit() {
+        return getLdapReadTimeout();
+    }
+
+    public int getLdapReadTimeout() {
+        return ldapReadTimeout;
+    }
+
+    public void setLdapReadTimeout(int ldapReadTimeout) {
+        this.ldapReadTimeout = ldapReadTimeout;
     }
 
     public Type getLdapType() {
@@ -115,6 +161,8 @@ public class GinaLdapConfiguration {
                 .append("ldapPassword", "***")
                 .append("ldapBaseDn", ldapBaseDn)
                 .append("ldapType", ldapType)
+                .append("ldapConnectionTimeout", ldapConnectionTimeout)
+                .append("ldapReadTimeout", ldapReadTimeout)
                 .toString();
     }
 

@@ -22,9 +22,22 @@ public class GinaLdapUtils {
 
     public static final String ATTRIBUTE_DEPARTMENT_NUMBER = "departmentNumber";
 
-    public static final int LDAP_DEFAULT_TIMEOUT = 3000;
+    /**
+     * Temps maximal en millisecondes pour etablir la connexion au serveur LDAP.
+     */
+    public static final int DEFAULT_LDAP_CONNECTION_TIMEOUT = 2000;
 
-    // Constructeur
+    /**
+     * Temps maximal en millisecondes pour une requete au serveur LDAP.
+     */
+    public static final int DEFAULT_LDAP_READ_TIMEOUT = 3000;
+
+    /**
+     * Depuis janv. 2019, utiliser {@link #DEFAULT_LDAP_READ_TIMEOUT}.
+     */
+    @Deprecated
+    public static final int LDAP_DEFAULT_TIMEOUT = DEFAULT_LDAP_READ_TIMEOUT;
+
     private GinaLdapUtils() {
     }
 
