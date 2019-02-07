@@ -1,21 +1,20 @@
 package gina.api;
 
 import static gina.api.gina.api.utils.TestTools.expectNotImplemented;
-import static org.assertj.core.api.Assertions.assertThat;
+import static gina.api.gina.api.utils.TestTools.getGinaLdapConfiguration;
 import static gina.impl.util.GinaLdapConfiguration.Type.DOMAIN;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import gina.api.gina.api.utils.TestConstants;
 import gina.api.gina.api.utils.TestLoggingWatcher;
 import gina.api.gina.api.utils.TestTools;
-import gina.impl.util.GinaLdapConfiguration;
-import gina.impl.util.GinaLdapUtils;
 import gina.impl.GinaLdapFactory;
+import gina.impl.util.GinaLdapConfiguration;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.naming.NamingException;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,7 +25,6 @@ import org.slf4j.LoggerFactory;
 
 public class GinaLdapDomainTest {
 
-    // Logger
     private static final Logger LOGGER = LoggerFactory.getLogger(GinaLdapDomainTest.class);
 
     // LDAP au niveau du domaine - Domaine Gina
@@ -56,19 +54,11 @@ public class GinaLdapDomainTest {
     @BeforeClass
     public static void initApi() {
         String base = "ou=CSBUGTRACK,o=gina";
-
         String server = System.getProperty("test.domain.server");
         String user = System.getProperty("test.domain.user");
         String password = System.getProperty("test.domain.password");
 
-        LOGGER.info("Connexion LDAP : server=[{}], user=[{}]", server, user);
-        if (StringUtils.isBlank(password)) {
-            LOGGER.info("le mot de passe au serveur LDAP (necessaire avec Gina, inutile avec UnboundID) est manquant");
-        }
-
-        int timeout = GinaLdapUtils.LDAP_DEFAULT_TIMEOUT;
-
-        GinaLdapConfiguration ldapConf = new GinaLdapConfiguration(server, base, user, password, DOMAIN, timeout);
+        GinaLdapConfiguration ldapConf = getGinaLdapConfiguration(server, base, user, password, DOMAIN);
         api = GinaLdapFactory.getInstance(ldapConf);
     }
 

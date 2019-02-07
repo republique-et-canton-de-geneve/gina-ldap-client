@@ -1,22 +1,20 @@
 package gina.api;
 
-import static gina.impl.util.GinaLdapConfiguration.Type.DOMAIN;
-import static org.assertj.core.api.Assertions.assertThat;
+import static gina.api.gina.api.utils.TestTools.getGinaLdapConfiguration;
 import static gina.impl.util.GinaLdapConfiguration.Type.APPLICATION;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import gina.api.gina.api.utils.TestConstants;
 import gina.api.gina.api.utils.TestLoggingWatcher;
 import gina.api.gina.api.utils.TestTools;
-import gina.impl.util.GinaLdapConfiguration;
-import gina.impl.util.GinaLdapUtils;
+import gina.impl.GinaException;
 import gina.impl.GinaLdapCommon;
 import gina.impl.GinaLdapFactory;
-import gina.impl.GinaException;
+import gina.impl.util.GinaLdapConfiguration;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -63,18 +61,11 @@ public class GinaLdapApplicationCtiGestrepoTest {
     @BeforeClass
     public static void initApi() {
         String base = "ou=CTI,o=gina";
-
         String server = System.getProperty("test.gestrepo.server");
         String user = System.getProperty("test.gestrepo.user");
         String password = System.getProperty("test.gestrepo.password");
 
-        LOGGER.info("Connexion LDAP : server=[{}], user=[{}]", server, user);
-        if (StringUtils.isBlank(password)) {
-            LOGGER.info("le mot de passe au serveur LDAP (necessaire avec Gina, inutile avec UnboundID) est manquant");
-        }
-
-        ldapConf = new GinaLdapConfiguration(server, base, user, password, APPLICATION,
-                GinaLdapUtils.LDAP_DEFAULT_TIMEOUT);
+        ldapConf = getGinaLdapConfiguration(server, base, user, password, APPLICATION);
         api = GinaLdapFactory.getInstance(ldapConf);
     }
 
