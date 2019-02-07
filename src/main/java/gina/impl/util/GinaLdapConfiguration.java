@@ -158,7 +158,7 @@ public class GinaLdapConfiguration {
         return new ToStringBuilder(this)
                 .append("ldapServerUrl", ldapServerUrl)
                 .append("ldapUser", ldapUser)
-                .append("ldapPassword", "***")
+                .append("ldapPassword", ldapPassword == null ? null : "***")
                 .append("ldapBaseDn", ldapBaseDn)
                 .append("ldapType", ldapType)
                 .append("ldapConnectionTimeout", ldapConnectionTimeout)
