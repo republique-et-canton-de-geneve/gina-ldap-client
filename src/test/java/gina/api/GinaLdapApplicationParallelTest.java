@@ -1,17 +1,16 @@
 package gina.api;
 
-import static gina.api.gina.api.utils.TestTools.getGinaLdapConfiguration;
+import static gina.api.utils.TestTools.getGinaLdapConfiguration;
 import static gina.impl.util.GinaLdapConfiguration.Type.APPLICATION;
 
 import com.googlecode.junittoolbox.ParallelRunner;
-import gina.api.gina.api.utils.TestConstants;
+import gina.api.utils.TestConstants;
 import gina.impl.GinaLdapFactory;
 import gina.impl.util.GinaLdapConfiguration;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 @RunWith(ParallelRunner.class)
 public class GinaLdapApplicationParallelTest extends GinaLdapApplicationTest {

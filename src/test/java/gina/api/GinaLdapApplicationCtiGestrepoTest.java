@@ -1,12 +1,12 @@
 package gina.api;
 
-import static gina.api.gina.api.utils.TestTools.getGinaLdapConfiguration;
+import static gina.api.utils.TestTools.getGinaLdapConfiguration;
 import static gina.impl.util.GinaLdapConfiguration.Type.APPLICATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import gina.api.gina.api.utils.TestConstants;
-import gina.api.gina.api.utils.TestLoggingWatcher;
-import gina.api.gina.api.utils.TestTools;
+import gina.api.utils.TestConstants;
+import gina.api.utils.TestLoggingWatcher;
+import gina.api.utils.TestTools;
 import gina.impl.GinaException;
 import gina.impl.GinaLdapCommon;
 import gina.impl.GinaLdapFactory;
