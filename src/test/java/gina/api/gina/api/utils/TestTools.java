@@ -40,15 +40,31 @@ public class TestTools {
             String password,
             GinaLdapConfiguration.Type type) {
 
+        return getGinaLdapConfiguration(
+                server,
+                base,
+                user,
+                password,
+                type,
+                GinaLdapUtils.DEFAULT_LDAP_CONNECTION_TIMEOUT,
+                GinaLdapUtils.DEFAULT_LDAP_READ_TIMEOUT);
+    }
+
+    public static GinaLdapConfiguration getGinaLdapConfiguration(
+            String server,
+            String base,
+            String user,
+            String password,
+            GinaLdapConfiguration.Type type,
+            int connexionTimeout,
+            int readTimeout) {
+
         if (StringUtils.isBlank(password)) {
             LOGGER.info("le mot de passe au serveur LDAP (qui est necessaire avec Gina, mais inutile avec UnboundID) est manquant");
         }
 
-        int ldapConnexionTimeout = GinaLdapUtils.DEFAULT_LDAP_CONNECTION_TIMEOUT;
-        int readTimeout = GinaLdapUtils.DEFAULT_LDAP_READ_TIMEOUT;
-
         GinaLdapConfiguration ldapConf = new GinaLdapConfiguration(
-                server, base, user, password, type, ldapConnexionTimeout, readTimeout);
+                server, base, user, password, type, connexionTimeout, readTimeout);
         LOGGER.info("Connexion LDAP : {}", ldapConf);
 
         return ldapConf;
