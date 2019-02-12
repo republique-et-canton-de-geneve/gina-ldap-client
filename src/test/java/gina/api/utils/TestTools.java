@@ -1,17 +1,16 @@
-package gina.api.gina.api.utils;
+package gina.api.utils;
 
-import static gina.impl.util.GinaLdapConfiguration.Type.APPLICATION;
-
-import gina.impl.GinaLdapCommon;
 import gina.impl.GinaException;
+import gina.impl.GinaLdapCommon;
 import gina.impl.util.GinaLdapConfiguration;
 import gina.impl.util.GinaLdapUtils;
-import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class TestTools {
 

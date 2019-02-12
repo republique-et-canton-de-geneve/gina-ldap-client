@@ -25,7 +25,7 @@ public class GinaLdapUtils {
     /**
      * Temps maximal en millisecondes pour etablir la connexion au serveur LDAP.
      */
-    public static final int DEFAULT_LDAP_CONNECTION_TIMEOUT = 2000;
+    public static final int DEFAULT_LDAP_CONNECTION_TIMEOUT = 5000;
 
     /**
      * Temps maximal en millisecondes pour une requete au serveur LDAP.

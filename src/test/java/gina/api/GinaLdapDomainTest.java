@@ -1,13 +1,13 @@
 package gina.api;
 
-import static gina.api.gina.api.utils.TestTools.expectNotImplemented;
-import static gina.api.gina.api.utils.TestTools.getGinaLdapConfiguration;
+import static gina.api.utils.TestTools.expectNotImplemented;
+import static gina.api.utils.TestTools.getGinaLdapConfiguration;
 import static gina.impl.util.GinaLdapConfiguration.Type.DOMAIN;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import gina.api.gina.api.utils.TestConstants;
-import gina.api.gina.api.utils.TestLoggingWatcher;
-import gina.api.gina.api.utils.TestTools;
+import gina.api.utils.TestConstants;
+import gina.api.utils.TestLoggingWatcher;
+import gina.api.utils.TestTools;
 import gina.impl.GinaLdapFactory;
 import gina.impl.util.GinaLdapConfiguration;
 import java.rmi.RemoteException;
@@ -37,7 +37,7 @@ public class GinaLdapDomainTest {
     private static final String LDAP_DOMAIN_TEST_DOMAINE_APPLICATION =
             LDAP_DOMAIN_TEST_DOMAINE + "." + LDAP_DOMAIN_TEST_APPLICATION;
 
-    // LDAP au niveau du domaine - Rôle de test
+    // LDAP au niveau du domaine - Rï¿½le de test
     private static final String LDAP_DOMAIN_TEST_ROLE = "ACCESS-CONTROL-USERS";
 
     private static GinaApiLdapBaseAble api;
@@ -46,7 +46,7 @@ public class GinaLdapDomainTest {
     public ExpectedException thrown = ExpectedException.none();
 
     /**
-     * Affichage du début et de la fin de chaque methode de test.
+     * Affichage du dï¿½but et de la fin de chaque methode de test.
      */
     @Rule
     public TestWatcher watcher = new TestLoggingWatcher();
@@ -66,7 +66,7 @@ public class GinaLdapDomainTest {
     public void isValidUserTest() throws RemoteException {
         boolean result = api.isValidUser(TestConstants.GENERIC_USERNAME);
         assertThat(result)
-                .as("L'utilisateur " + TestConstants.GENERIC_USERNAME + " est censé être valide !")
+                .as("L'utilisateur " + TestConstants.GENERIC_USERNAME + " est censï¿½ ï¿½tre valide !")
                 .isTrue();
     }
 
@@ -313,7 +313,7 @@ public class GinaLdapDomainTest {
     }
 
     private void patience() {
-        LOGGER.info("Patience... Gina est parfois lent à répondre");
+        LOGGER.info("Patience... Gina est parfois lent a repondre");
     }
 
 }

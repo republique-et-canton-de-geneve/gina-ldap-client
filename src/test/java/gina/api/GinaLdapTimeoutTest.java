@@ -1,7 +1,7 @@
 package gina.api;
 
-import gina.api.gina.api.utils.TestConstants;
-import gina.api.gina.api.utils.TestLoggingWatcher;
+import gina.api.utils.TestConstants;
+import gina.api.utils.TestLoggingWatcher;
 import gina.impl.GinaException;
 import gina.impl.GinaLdapFactory;
 import gina.impl.util.GinaLdapConfiguration;
@@ -18,7 +18,7 @@ import javax.naming.CommunicationException;
 import java.net.SocketTimeoutException;
 import java.rmi.RemoteException;
 
-import static gina.api.gina.api.utils.TestTools.getGinaLdapConfiguration;
+import static gina.api.utils.TestTools.getGinaLdapConfiguration;
 import static gina.impl.util.GinaLdapConfiguration.Type.DOMAIN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -37,7 +37,7 @@ public class GinaLdapTimeoutTest {
     private static final String LDAP_DOMAIN_TEST_DOMAINE_APPLICATION =
             LDAP_DOMAIN_TEST_DOMAINE + "." + LDAP_DOMAIN_TEST_APPLICATION;
 
-    // LDAP au niveau du domaine - Rôle de test
+    // LDAP au niveau du domaine - Rï¿½le de test
     private static final String LDAP_DOMAIN_TEST_ROLE = "ACCESS-CONTROL-USERS";
 
     private static GinaApiLdapBaseAble api;
@@ -46,7 +46,7 @@ public class GinaLdapTimeoutTest {
     public ExpectedException thrown = ExpectedException.none();
 
     /**
-     * Affichage du début et de la fin de chaque methode de test.
+     * Affichage du dï¿½but et de la fin de chaque methode de test.
      */
     @Rule
     public TestWatcher watcher = new TestLoggingWatcher();

@@ -1,13 +1,13 @@
 package gina.api;
 
-import static gina.api.gina.api.utils.TestTools.expectNotImplemented;
-import static gina.api.gina.api.utils.TestTools.getGinaLdapConfiguration;
+import static gina.api.utils.TestTools.expectNotImplemented;
+import static gina.api.utils.TestTools.getGinaLdapConfiguration;
 import static gina.impl.util.GinaLdapConfiguration.Type.APPLICATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import gina.api.gina.api.utils.TestConstants;
-import gina.api.gina.api.utils.TestLoggingWatcher;
-import gina.api.gina.api.utils.TestTools;
+import gina.api.utils.TestConstants;
+import gina.api.utils.TestLoggingWatcher;
+import gina.api.utils.TestTools;
 import gina.impl.GinaLdapFactory;
 import gina.impl.util.GinaLdapConfiguration;
 import java.rmi.RemoteException;
@@ -37,7 +37,7 @@ public class GinaLdapApplicationTest {
     private static final String LDAP_APPLICATION_TEST_DOMAINE_APPLICATION =
             LDAP_APPLICATION_TEST_DOMAINE + "." + LDAP_APPLICATION_TEST_APPLICATION;
 
-    // LDAP au niveau du domaine - Rôle de test
+    // LDAP au niveau du domaine - Rï¿½le de test
     private static final String LDAP_APPLICATION_TEST_ROLE = "UTILISATEUR";
 
     static GinaApiLdapBaseAble api;
@@ -45,7 +45,7 @@ public class GinaLdapApplicationTest {
     @Rule public ExpectedException thrown = ExpectedException.none();
 
     /**
-     * Affichage du début et de la fin de chaque methode de test.
+     * Affichage du dï¿½but et de la fin de chaque methode de test.
      */
     @Rule public TestWatcher watcher = new TestLoggingWatcher();
 

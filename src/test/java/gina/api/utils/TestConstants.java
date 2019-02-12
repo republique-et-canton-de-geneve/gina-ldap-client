@@ -1,4 +1,4 @@
-package gina.api.gina.api.utils;
+package gina.api.utils;
 
 public class TestConstants {
 

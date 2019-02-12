@@ -1,4 +1,4 @@
-package gina.api.gina.api.utils;
+package gina.api.utils;
 
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TestWatcher JUnit pour afficher les evenements (début, fin, etc.) de chaque methode de test.
+ * TestWatcher JUnit pour afficher les evenements (dï¿½but, fin, etc.) de chaque methode de test.
  */
 public class TestLoggingWatcher extends TestWatcher {
 
