@@ -70,6 +70,26 @@ Attention : actuellement, certains tests unitaires ne fonctionnent pas dans ce m
 </dependency>
 ```
 
+## Usage
+
+L'API s'utilise en créant une ``GinaLdapConfiguration``, puis en obtenant un objet de type ``GinaApiLdapBaseAble``.
+Par exemple :
+```
+String server = "ldaps://vldap-dev.ceti.etat-ge.ch:636";
+String base = "ou=OAC,o=gina";
+String user = "cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina";
+String password = <mot de passe>
+GinaLdapConfiguration.Type type = APPLICATION; 
+int connectionTimeout = 5000;
+int readTimeout = 3000;
+GinaLdapConfiguration ldapConf = new GinaLdapConfiguration(
+                server, base, user, password, type, connectionTimeout, readTimeout);
+GinaApiLdapBaseAble api = GinaLdapFactory.getInstance(ldapConf);
+List<String> roles = api.getUserRoles(<nom d'utilisateur>);
+```
+
+Pour davantage d'exemples, se référer aux tests unitaires.
+
 ## Activation du pooling
 
 Pour utilisation dans une application déployée sur Tomcat ou JBoss.
