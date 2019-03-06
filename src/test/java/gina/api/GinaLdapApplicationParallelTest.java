@@ -7,10 +7,13 @@ import com.googlecode.junittoolbox.ParallelRunner;
 import gina.api.utils.TestConstants;
 import gina.impl.GinaLdapFactory;
 import gina.impl.util.GinaLdapConfiguration;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 @RunWith(ParallelRunner.class)
 public class GinaLdapApplicationParallelTest extends GinaLdapApplicationTest {
@@ -38,6 +41,11 @@ public class GinaLdapApplicationParallelTest extends GinaLdapApplicationTest {
         api = GinaLdapFactory.getInstance(ldapConf);
 
         LOGGER.info(TestConstants.END_METHOD);
+    }
+
+    @AfterClass
+    public static void releaseResources() throws IOException {
+        api.close();
     }
 
 }

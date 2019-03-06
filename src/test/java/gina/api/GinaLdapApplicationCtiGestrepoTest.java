@@ -11,15 +11,14 @@ import gina.impl.GinaException;
 import gina.impl.GinaLdapCommon;
 import gina.impl.GinaLdapFactory;
 import gina.impl.util.GinaLdapConfiguration;
+
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.hamcrest.CoreMatchers;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TestWatcher;
 import org.slf4j.Logger;
@@ -67,6 +66,11 @@ public class GinaLdapApplicationCtiGestrepoTest {
 
         ldapConf = getGinaLdapConfiguration(server, base, user, password, APPLICATION);
         api = GinaLdapFactory.getInstance(ldapConf);
+    }
+
+    @AfterClass
+    public static void releaseResources() throws IOException {
+        api.close();
     }
 
     @Test

@@ -1,11 +1,11 @@
 package gina.api;
 
 import gina.impl.GinaException;
+
+import javax.naming.NamingException;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
-
-import javax.naming.NamingException;
 
 public interface GinaApiBaseAble {
 
@@ -17,6 +17,8 @@ public interface GinaApiBaseAble {
     String getUser() throws RemoteException;
 
     /**
+     * Indique si l'utilisateur est valide ou non.
+     *
      * @param username nom de l'utilisateur
      * @return true si l'utilisateur existe, false sinon
      */
@@ -74,7 +76,7 @@ public interface GinaApiBaseAble {
     boolean hasRole(String application, String role) throws RemoteException;
 
     /**
-     * Indique si l'utilisateur courant a un role
+     * Indique si l'utilisateur donne' a le role donne' pour l'application donnée.
      *
      * @param user nom de l'utilisateur.
      * @param application nom de l'application (ex: CTI.COMPOSANTSECURITE)
@@ -92,7 +94,7 @@ public interface GinaApiBaseAble {
     List<String> getRoles(String application) throws RemoteException;
 
     /**
-     * Donne tous les roles de l'utilisateur courant, pour l'application donnee
+     * Donne tous les roles de l'utilisateur donne', pour l'application donnee.
      *
      * @param user nom de l'utilisateur.
      * @param application nom de l'application (ex: CTI.COMPOSANTSECURITE)
@@ -118,7 +120,7 @@ public interface GinaApiBaseAble {
     List<String> getIntegrationUserAttributes(String domain, String application) throws RemoteException;
 
     /**
-     * Donne tous les roles d'une application
+     * Donne tous les roles de l'application donnee.
      *
      * @param application nom long de l'application (ex: CTI.COMPOSANTSECURITE)
      * @return liste des noms des roles metier
@@ -134,7 +136,7 @@ public interface GinaApiBaseAble {
      List<String> getBusinessRoles(String application) throws RemoteException;
 
     /**
-     * Donne la liste des utilisateurs ayants acces a une application donnée
+     * Donne la liste des utilisateurs ayant acces a une application donnee.
      *
      * @param application nom de l'application (ex: CTI.COMPOSANTSECURITE)
      * @param attrs tableau des noms des attributs, ou null pour obtenir tous les attributs disponibles
@@ -146,13 +148,13 @@ public interface GinaApiBaseAble {
     List<Map<String, String>> getUsers(String application, String[] attrs) throws RemoteException;
 
     /**
-     * Donne la liste des utilisateurs ayants un role donne
+     * Donne la liste des utilisateurs ayant acces a l'application donnee, pour le role donne, avec les attributs
+     * donnes.
      *
      * @param application nom de l'application (ex: CTI.COMPOSANTSECURITE)
      * @param role nom du role
      * @param attrs tableau des noms des attributs, ou null pour obtenir tous les attributs disponibles
-     * @return liste de Maps contenant les attributs demandes pour chaque
-     *         utilisateur ayant le role
+     * @return liste de Maps contenant les attributs demandes pour chaque utilisateur ayant le role
      */
     List<Map<String, String>> getUsers(String application, String role, String[] attrs) throws RemoteException;
 

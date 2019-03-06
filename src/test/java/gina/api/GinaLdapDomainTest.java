@@ -10,11 +10,15 @@ import gina.api.utils.TestLoggingWatcher;
 import gina.api.utils.TestTools;
 import gina.impl.GinaLdapFactory;
 import gina.impl.util.GinaLdapConfiguration;
+
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.naming.NamingException;
+
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,7 +41,7 @@ public class GinaLdapDomainTest {
     private static final String LDAP_DOMAIN_TEST_DOMAINE_APPLICATION =
             LDAP_DOMAIN_TEST_DOMAINE + "." + LDAP_DOMAIN_TEST_APPLICATION;
 
-    // LDAP au niveau du domaine - R�le de test
+    // LDAP au niveau du domaine - Role de test
     private static final String LDAP_DOMAIN_TEST_ROLE = "ACCESS-CONTROL-USERS";
 
     private static GinaApiLdapBaseAble api;
@@ -46,7 +50,7 @@ public class GinaLdapDomainTest {
     public ExpectedException thrown = ExpectedException.none();
 
     /**
-     * Affichage du d�but et de la fin de chaque methode de test.
+     * Affichage du debut et de la fin de chaque methode de test.
      */
     @Rule
     public TestWatcher watcher = new TestLoggingWatcher();
@@ -60,6 +64,11 @@ public class GinaLdapDomainTest {
 
         GinaLdapConfiguration ldapConf = getGinaLdapConfiguration(server, base, user, password, DOMAIN);
         api = GinaLdapFactory.getInstance(ldapConf);
+    }
+
+    @AfterClass
+    public static void releaseResources() throws IOException {
+        api.close();
     }
 
     @Test

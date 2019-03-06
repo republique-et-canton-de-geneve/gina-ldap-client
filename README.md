@@ -1,4 +1,4 @@
-﻿# 1. Propos
+# 1. Propos
 
 La bibliothèque gina-ldap-client est destinée aux applications Java de l'État de Genève.
 Elle permet aux applications de se connecter via le protocole LDAP à l'annuaire de l'État et ainsi de récupérer :
@@ -118,6 +118,21 @@ List<String> roles = api.getUserRoles("LAURENTJ");
 Pour un exemple d'utilisation de toutes les méthodes exposées, se référer :
 - aux classes de tests de l'api : ./src/test/java/gina/api
 - aux classes de l'appli de démo : http://scm.etat-ge.ch:21080/cti.composant/ct-gina-ldap-client-demo/trunk/ct-gina-ldap-client-demo-war/src/main/java/ch/ge/ael/gina/infos/InfosController.java
+
+# Notes de la version
+
+Chaque item annonce s'il respecte ou s'il rompt la compatibilité avec la version précédente.
+
+## Version 2.0.3
+- (compatible) ajout d'un paramètre `ldapConnexionTimeout` dans `GinaLdapConfiguration`.
+
+## Version 3.0.0
+- (incompatible) La version 2.0.3 nécessitait Java 6+. Désormais il faut Java 7+.
+- (incompatible) L'objet `GinaLdapApplication`ou `GinaLdapDomain` de connexion au serveur LDAP précédemment recréait la
+  connexion LDAP à chaque requête.
+  Désormais la connexion LDAP reste ouverte.
+  C'est à l'utilisateur d'appeler la méthode `close` en fin d'utilisation de l'objet, par exemple avec un
+  "try with resource".
 
 # Annexe 1. Serveur LDAP sur un poste de développeur
 

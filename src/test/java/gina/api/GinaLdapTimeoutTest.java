@@ -15,8 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.naming.CommunicationException;
+import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.rmi.RemoteException;
 
 import static gina.api.utils.TestTools.getGinaLdapConfiguration;
 import static gina.impl.util.GinaLdapConfiguration.Type.DOMAIN;
@@ -34,19 +34,17 @@ public class GinaLdapTimeoutTest {
     private static final String LDAP_DOMAIN_TEST_APPLICATION = "ACCESS-CONTROL";
 
     // LDAP au niveau du domaine - Domaine + Application Gina
-    private static final String LDAP_DOMAIN_TEST_DOMAINE_APPLICATION =
-            LDAP_DOMAIN_TEST_DOMAINE + "." + LDAP_DOMAIN_TEST_APPLICATION;
+//    private static final String LDAP_DOMAIN_TEST_DOMAINE_APPLICATION =
+//            LDAP_DOMAIN_TEST_DOMAINE + "." + LDAP_DOMAIN_TEST_APPLICATION;
 
-    // LDAP au niveau du domaine - R�le de test
+    // LDAP au niveau du domaine - Role de test
     private static final String LDAP_DOMAIN_TEST_ROLE = "ACCESS-CONTROL-USERS";
-
-    private static GinaApiLdapBaseAble api;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     /**
-     * Affichage du d�but et de la fin de chaque methode de test.
+     * Affichage du debut et de la fin de chaque methode de test.
      */
     @Rule
     public TestWatcher watcher = new TestLoggingWatcher();
@@ -65,46 +63,47 @@ public class GinaLdapTimeoutTest {
     }
 
     @Test
-    public void de_bons_timeouts_doivent_assurer_une_bonne_lecture() throws RemoteException {
+    public void de_bons_timeouts_doivent_assurer_une_bonne_lecture() throws IOException {
         int connectionTimeout = 3000;
         int readTimeout = 4000;
         GinaLdapConfiguration ldapConf = getGinaLdapConfiguration(server, base, user, password, DOMAIN, connectionTimeout, readTimeout);
-        api = GinaLdapFactory.getInstance(ldapConf);
 
-        assertThat(api).isNotNull();
+        try (GinaApiLdapBaseAble api = GinaLdapFactory.getInstance(ldapConf)) {
+          assertThat(api).isNotNull();
+        }
     }
 
     @Test
     @Ignore  // pas fiable : l'exception lancee varie
-    public void connection_timeout_trop_court_doit_faire_planter_la_connexion() throws RemoteException {
+    public void connection_timeout_trop_court_doit_faire_planter_la_connexion() throws IOException {
         int connectionTimeout = 1;
         int readTimeout = 4000;
         GinaLdapConfiguration ldapConf = getGinaLdapConfiguration(server, base, user, password, DOMAIN, connectionTimeout, readTimeout);
         LOGGER.info("Une pile d'appel est attendue dans la ligne suivante");
-        api = GinaLdapFactory.getInstance(ldapConf);
-
-        Throwable thrown = catchThrowable(() -> api.isValidUser(TestConstants.GENERIC_USERNAME));
-        LOGGER.info("cause : " + thrown.getCause());
-        assertThat(thrown)
-                .isInstanceOf(GinaException.class)
-                .hasCauseInstanceOf(CommunicationException.class)
-                .hasRootCauseExactlyInstanceOf(SocketTimeoutException.class);
-        LOGGER.info("Test OK");
+        try (GinaApiLdapBaseAble api = GinaLdapFactory.getInstance(ldapConf)) {
+            Throwable thrown = catchThrowable(() -> api.isValidUser(TestConstants.GENERIC_USERNAME));
+            LOGGER.info("cause : " + thrown.getCause());
+            assertThat(thrown)
+                    .isInstanceOf(GinaException.class)
+                    .hasCauseInstanceOf(CommunicationException.class)
+                    .hasRootCauseExactlyInstanceOf(SocketTimeoutException.class);
+            LOGGER.info("Test OK");
+        }
     }
 
     @Test
-    public void read_timeout_trop_court_doit_faire_planter_la_lecture() throws RemoteException {
+    public void read_timeout_trop_court_doit_faire_planter_la_lecture() throws IOException {
         int connexionTimeout = 5000;
         int readTimeout = 1;
         GinaLdapConfiguration ldapConf = getGinaLdapConfiguration(server, base, user, password, DOMAIN, connexionTimeout, readTimeout);
         LOGGER.info("Une pile d'appel est attendue dans la ligne suivante");
-        api = GinaLdapFactory.getInstance(ldapConf);
-
-        Throwable thrown = catchThrowable(() -> api.isValidUser(TestConstants.GENERIC_USERNAME));
-        assertThat(thrown)
-                .isInstanceOf(GinaException.class)
-                .hasMessage("LDAP response read timed out, timeout used:1ms.");
-        LOGGER.info("Test OK");
+        try (GinaApiLdapBaseAble api = GinaLdapFactory.getInstance(ldapConf)) {
+            Throwable thrown = catchThrowable(() -> api.isValidUser(TestConstants.GENERIC_USERNAME));
+            assertThat(thrown)
+                    .isInstanceOf(GinaException.class)
+                    .hasMessage("LDAP response read timed out, timeout used:1ms.");
+            LOGGER.info("Test OK");
+        }
     }
 
 }

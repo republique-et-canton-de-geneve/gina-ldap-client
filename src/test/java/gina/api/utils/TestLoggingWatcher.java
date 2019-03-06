@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TestWatcher JUnit pour afficher les evenements (d�but, fin, etc.) de chaque methode de test.
+ * TestWatcher JUnit pour afficher les evenements (debut, fin, etc.) de chaque methode de test.
  */
 public class TestLoggingWatcher extends TestWatcher {
 
