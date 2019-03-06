@@ -110,10 +110,15 @@ Définition des propriétés : voir https://docs.oracle.com/javase/jndi/tutorial
 ## Exemples d'utilisation
 
 ```
-GinaApiLdapConfiguration ldapConf = new GinaApiLdapConfiguration(server, base, user, password, DOMAIN, timeout);
-GinaApiLdapBaseAble api = GinaApiLdapBaseFactory.getInstance(ldapConf);
-List<String> roles = api.getUserRoles("LAURENTJ");
+GinaApiLdapConfiguration ldapConf = new GinaApiLdapConfiguration(server, base, user, password, DOMAIN, timeout);  // 1
+try (GinaApiLdapBaseAble api = GinaApiLdapBaseFactory.getInstance(ldapConf)) {                                    // 2
+   List<String> roles = api.getUserRoles("LAURENTJ");                                                             // 3
+}
 ```
+Légende :
+1. Paramétrisation du serveur LDAP
+2. Création de l'object de connexion au serveur LDAP
+3. Récupération d'informations (les rôles d'un utilisateur) sur le serveur LDAP
 
 Pour un exemple d'utilisation de toutes les méthodes exposées, se référer :
 - aux classes de tests de l'api : ./src/test/java/gina/api
