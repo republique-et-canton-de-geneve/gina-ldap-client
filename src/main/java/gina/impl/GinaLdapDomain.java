@@ -3,49 +3,39 @@ package gina.impl;
 import gina.impl.util.GinaLdapConfiguration;
 import gina.impl.util.GinaLdapEncoder;
 import gina.impl.util.GinaLdapUtils;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-import javax.naming.ldap.LdapContext;
-import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class GinaLdapDomain extends GinaLdapCommon {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GinaLdapDomain.class);
 
     public GinaLdapDomain(GinaLdapConfiguration ldapConf) {
-        Validate.notNull(ldapConf);
-        this.ldapConf = ldapConf;
+        super(ldapConf);
     }
 
-    /*
-     * (non-Javadoc) retoune les roles d'une application
-     *
-     * @see gina.api.GinaApiLdapBaseAble#getAppRoles(java.lang.String)
-     */
     @Override
     public List<String> getAppRoles(String application) {
         final String encodedApplication = GinaLdapEncoder.filterEncode(application);
 
         NamingEnumeration<?> answer = null;
         NamingEnumeration<?> att = null;
-
-        LdapContext ctxtDir = null;
         List<String> roles = new ArrayList<String>();
         try {
             String ginaApplication = GinaLdapUtils.extractApplication(encodedApplication);
 
             SearchControls searchControls = getSearchControls(new String[] { GinaLdapUtils.ATTRIBUTE_CN });
-            ctxtDir = getLdapContext();
-            answer = ctxtDir
+            answer = getLdapContext()
                     .search(GinaLdapUtils.getLdapFilterOu(ginaApplication), GinaLdapUtils.getLdapFilterCn("*"),
                             searchControls);
 
@@ -69,31 +59,22 @@ public class GinaLdapDomain extends GinaLdapCommon {
             throw new GinaException(e.getMessage());
         } finally {
             GinaLdapUtils.closeQuietly(answer);
-            closeDirContext(ctxtDir);
         }
 
         return roles;
     }
 
-    /*
-     * (non-Javadoc) Donne la liste des utilisateurs ayant acces a l'application
-     * passee en parametre, avec les attributs demandes
-     *
-     * @see gina.api.GinaApiLdapBaseAble#getUsers(java.lang.String)
-     */
     @Override
     public List<Map<String, String>> getUsers(String application, String[] attrs) {
         final String encodedApplication = GinaLdapEncoder.filterEncode(application);
 
-        LdapContext ctxtDir = null;
         List<Map<String, String>> list;
         NamingEnumeration<?> answer = null;
         try {
             String ginaApplication = GinaLdapUtils.extractApplication(encodedApplication);
 
             SearchControls searchControls = getSearchControls();
-            ctxtDir = getLdapContext();
-            answer = ctxtDir
+            answer = getLdapContext()
                     .search(GinaLdapUtils.getLdapFilterOu(ginaApplication), GinaLdapUtils.getLdapFilterCn("*"),
                             searchControls);
 
@@ -104,44 +85,31 @@ public class GinaLdapDomain extends GinaLdapCommon {
             throw new GinaException(e.getMessage());
         } finally {
             GinaLdapUtils.closeQuietly(answer);
-            closeDirContext(ctxtDir);
         }
 
         return list;
     }
 
-    /*
-     * (non-Javadoc) Donne la liste des utilisateurs ayant acces a l'application
-     * passee en parametre pour le role donne, avec les attributs demandes
-     *
-     * @see gina.api.GinaApiLdapBaseAble#getUsers(java.lang.String,
-     * java.lang.String, java.lang.String[])
-     */
     @Override
     public List<Map<String, String>> getUsers(String application, String role, String[] attrs) {
         final String encodedApplication = GinaLdapEncoder.filterEncode(application);
         final String encodedRole = GinaLdapEncoder.filterEncode(role);
 
-        LdapContext ctxtDir = null;
         List<Map<String, String>> list;
         NamingEnumeration<?> answer = null;
         try {
             String ginaApplication = GinaLdapUtils.extractApplication(encodedApplication);
-
             SearchControls searchControls = getSearchControls();
-            ctxtDir = getLdapContext();
-            answer = ctxtDir.search(
+            answer = getLdapContext().search(
                     GinaLdapUtils.getLdapFilterOu(ginaApplication),
                     GinaLdapUtils.getLdapFilterCn(encodedRole),
                     searchControls);
-
             list = parseAnswer(answer, attrs);
         } catch (NamingException e) {
             logException(e);
             throw new GinaException(e.getMessage());
         } finally {
             GinaLdapUtils.closeQuietly(answer);
-            closeDirContext(ctxtDir);
         }
 
         return list;
@@ -190,7 +158,7 @@ public class GinaLdapDomain extends GinaLdapCommon {
                                         .toLowerCase();
                                 if (!users.contains(username)) {
                                     users.add(username);
-                                    Map<String, String> map = getUserAttrs(username, attrs, false);
+                                    Map<String, String> map = getUserAttrs(username, attrs);
                                     list.add(map);
                                 }
                             }

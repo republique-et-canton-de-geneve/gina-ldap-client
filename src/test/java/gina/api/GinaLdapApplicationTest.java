@@ -1,20 +1,11 @@
 package gina.api;
 
-import static gina.api.utils.TestTools.expectNotImplemented;
-import static gina.api.utils.TestTools.getGinaLdapConfiguration;
-import static gina.impl.util.GinaLdapConfiguration.Type.APPLICATION;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import gina.api.utils.TestConstants;
 import gina.api.utils.TestLoggingWatcher;
 import gina.api.utils.TestTools;
 import gina.impl.GinaLdapFactory;
 import gina.impl.util.GinaLdapConfiguration;
-import java.rmi.RemoteException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import javax.naming.NamingException;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,6 +13,18 @@ import org.junit.rules.ExpectedException;
 import org.junit.rules.TestWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.naming.NamingException;
+import java.io.IOException;
+import java.rmi.RemoteException;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import static gina.api.utils.TestTools.expectNotImplemented;
+import static gina.api.utils.TestTools.getGinaLdapConfiguration;
+import static gina.impl.util.GinaLdapConfiguration.Type.APPLICATION;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class GinaLdapApplicationTest {
 
@@ -37,17 +40,19 @@ public class GinaLdapApplicationTest {
     private static final String LDAP_APPLICATION_TEST_DOMAINE_APPLICATION =
             LDAP_APPLICATION_TEST_DOMAINE + "." + LDAP_APPLICATION_TEST_APPLICATION;
 
-    // LDAP au niveau du domaine - R�le de test
+    // LDAP au niveau du domaine - Role de test
     private static final String LDAP_APPLICATION_TEST_ROLE = "UTILISATEUR";
 
     static GinaApiLdapBaseAble api;
 
-    @Rule public ExpectedException thrown = ExpectedException.none();
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     /**
-     * Affichage du d�but et de la fin de chaque methode de test.
+     * Affichage du debut et de la fin de chaque methode de test.
      */
-    @Rule public TestWatcher watcher = new TestLoggingWatcher();
+    @Rule
+    public TestWatcher watcher = new TestLoggingWatcher();
 
     @BeforeClass
     public static void initApi() {
@@ -58,6 +63,11 @@ public class GinaLdapApplicationTest {
 
         GinaLdapConfiguration ldapConf = getGinaLdapConfiguration(server, base, user, password, APPLICATION);
         api = GinaLdapFactory.getInstance(ldapConf);
+    }
+
+    @AfterClass
+    public static void releaseResources() throws IOException {
+        api.close();
     }
 
     @Test
@@ -120,7 +130,9 @@ public class GinaLdapApplicationTest {
     public void hasUserRoleWithUserAndApplicationAndRoleTest() throws RemoteException {
         boolean ret = api.hasUserRole(TestConstants.DRIVONOL_USERNAME, LDAP_APPLICATION_TEST_DOMAINE_APPLICATION,
                 LDAP_APPLICATION_TEST_ROLE);
-        assertThat(ret).as(TestConstants.DRIVONOL_USERNAME + " devrait avoir le role " + LDAP_APPLICATION_TEST_ROLE + " pour l'application " + LDAP_APPLICATION_TEST_DOMAINE_APPLICATION).isTrue();
+        assertThat(ret)
+                .as(TestConstants.DRIVONOL_USERNAME + " devrait avoir le role " + LDAP_APPLICATION_TEST_ROLE + " pour l'application " + LDAP_APPLICATION_TEST_DOMAINE_APPLICATION)
+                .isTrue();
     }
 
     @Test
@@ -201,7 +213,8 @@ public class GinaLdapApplicationTest {
                 .filter(Objects::nonNull)
                 .filter(uid -> uid.contains(TestConstants.DRIVONOL_USERNAME))
                 .count();
-        assertThat(nbUsers).as("L'utilisateur " + TestConstants.DRIVONOL_USERNAME + " devrait faire partie de la liste")
+        assertThat(nbUsers)
+                .as("L'utilisateur " + TestConstants.DRIVONOL_USERNAME + " devrait faire partie de la liste")
                 .isEqualTo(1);
     }
 
@@ -214,7 +227,11 @@ public class GinaLdapApplicationTest {
         LOGGER.info("users.size() = {}", users.size());
         LOGGER.info("users = {}", users);
 
-        long nbUsers = users.stream().map(user -> user.get("uid")).filter(uid -> uid.contains(TestConstants.DRIVONOL_USERNAME)).count();
+        long nbUsers = users
+                .stream()
+                .map(user -> user.get("uid"))
+                .filter(uid -> uid.contains(TestConstants.DRIVONOL_USERNAME))
+                .count();
         assertThat(nbUsers).isEqualTo(1);
     }
 

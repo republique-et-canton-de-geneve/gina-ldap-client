@@ -1,6 +1,9 @@
 package gina.impl;
 
 import gina.api.GinaApiLdapBaseAble;
+
+import java.io.Closeable;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,35 +29,46 @@ import org.apache.commons.lang3.StringUtils;
 import gina.impl.util.GinaLdapConfiguration;
 import gina.impl.util.GinaLdapEncoder;
 import gina.impl.util.GinaLdapUtils;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
 
-    // Message d'erreur pour les méthodes non implémentées
+    /**
+     * Message d'erreur pour les methodes non implementees.
+     */
     public static final String NOT_IMPLEMENTED = "Not implemented";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GinaLdapCommon.class);
 
-    protected GinaLdapConfiguration ldapConf = null;
+    protected GinaLdapConfiguration ldapConf;
 
-    protected void closeDirContext(LdapContext ctxtDir, boolean closeConnection) {
-        if (closeConnection) {
-            closeDirContext(ctxtDir);
-        }
+    private LdapContext ldapContext;
+
+    public GinaLdapCommon(GinaLdapConfiguration ldapConf) {
+        Validate.notNull(ldapConf);
+        this.ldapConf = ldapConf;
+        this.ldapContext = createDirContext();
     }
 
-    protected void closeDirContext(LdapContext ctxtDir) {
-        if (ctxtDir != null) {
+    @Override
+    public void close() {
+        closeDirContext();
+    }
+
+    private void closeDirContext() {
+        if (ldapContext != null) {
             try {
-                ctxtDir.close();
+                LOGGER.info("Fermeture du contexte LDAP");
+                ldapContext.close();
             } catch (NamingException e) {
                 logException(e);
             }
         }
     }
 
-    protected InitialLdapContext createDirContext() {
+    private InitialLdapContext createDirContext() {
         Hashtable<String, String> env = new Hashtable<String, String>();
 
         env.put(Context.INITIAL_CONTEXT_FACTORY, GinaLdapConfiguration.LDAP_CONTEXT_FACTORY);
@@ -84,6 +98,7 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
 
         InitialLdapContext result;
         try {
+            LOGGER.info("Creation du contexte LDAP");
             result = new InitialLdapContext(env, null);
         } catch (NamingException e) {
             logException(e);
@@ -112,31 +127,23 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
     }
 
     protected LdapContext getLdapContext() {
-        LdapContext ctxtDir = createDirContext();
-        if (ctxtDir == null) {
-            throw new GinaException("initialisation impossible");
+        if (ldapContext == null) {
+            throw new GinaException("Pas de context LDAP. Il a probablement deja ete detruit par un appel a close()");
         }
-        return ctxtDir;
+        return ldapContext;
     }
 
-    /*
-     * (non-Javadoc) retourne boolean pour savoir si le user est valide
-     *
-     * @see gina.api.GinaApiLdapBaseAble#isValidUser(java.lang.String)
-     */
     @Override
     public boolean isValidUser(String user) {
         final String encodedUser = GinaLdapEncoder.filterEncode(user);
 
-        LdapContext ctxtDir = null;
         NamingEnumeration<?> answer = null;
         try {
             SearchControls searchControls = getSearchControls();
             Attributes matchAttrs = new BasicAttributes(true);
             matchAttrs.put(new BasicAttribute("cn", encodedUser));
             String searchFilter = GinaLdapUtils.getLdapFilterUser(encodedUser);
-            ctxtDir = getLdapContext();
-            answer = ctxtDir.search("", searchFilter, searchControls);
+            answer = getLdapContext().search("", searchFilter, searchControls);
 
             while (answer.hasMoreElements()) {
                 SearchResult sr = (SearchResult) answer.next();
@@ -159,40 +166,26 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
             throw new GinaException(e.getMessage());
         } finally {
             GinaLdapUtils.closeQuietly(answer);
-            closeDirContext(ctxtDir);
         }
 
         return false;
     }
 
-    /*
-     * (non-Javadoc) Donne les valeurs des attributs passé en paramètre pour
-     * l'utilisateur passé en paramètre
-     *
-     * @see gina.api.GinaApiLdapBaseAble#getUserAttrs(java.lang.String,
-     * java.lang.String[])
-     */
     @Override
     public Map<String, String> getUserAttrs(String user, String[] paramArrayOfString) {
-        return this.getUserAttrs(user, paramArrayOfString, true);
-    }
-
-    public Map<String, String> getUserAttrs(String user, String[] paramArrayOfString, boolean closeConnection) {
         final String encodedUser = GinaLdapEncoder.filterEncode(user);
 
-        Arrays.asList(paramArrayOfString).contains("param");
+//        Arrays.asList(paramArrayOfString).contains("param");
         Map<String, String> myMap = new HashMap<String, String>();
         NamingEnumeration<?> answer = null;
         NamingEnumeration<?> nameEnum = null;
 
-        LdapContext ctxtDir = null;
         try {
             SearchControls searchControls = getSearchControls(paramArrayOfString);
             LOGGER.debug("searchControls = {}", searchControls);
             String searchFilter = GinaLdapUtils.getLdapFilterUser(encodedUser);
             LOGGER.debug("searchFilter = {}", searchFilter);
-            ctxtDir = getLdapContext();
-            answer = ctxtDir.search("", searchFilter, searchControls);
+            answer = getLdapContext().search("", searchFilter, searchControls);
 
             if (answer != null) {
                 while (answer.hasMoreElements()) {
@@ -236,25 +229,16 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
             throw new GinaException(e.getMessage());
         } finally {
             GinaLdapUtils.closeQuietly(answer);
-            closeDirContext(ctxtDir, closeConnection);
         }
 
         return myMap;
     }
 
-    /*
-     * (non-Javadoc) Donne tous les rôles de l'utilisateur passé en paramètre
-     * pour l'application passée en paramètre.
-     *
-     * @see gina.api.GinaApiLdapBaseAble#getUserRoles(java.lang.String,
-     * java.lang.String)
-     */
     @Override
     public List<String> getUserRoles(String user, String application) {
         final String encodedUser = GinaLdapEncoder.filterEncode(user);
         final String encodedApplication = GinaLdapEncoder.filterEncode(application);
 
-        LdapContext ctxtDir = null;
         List<String> roles = new ArrayList<String>();
         NamingEnumeration<?> answer = null;
         NamingEnumeration<?> answerAtt = null;
@@ -265,8 +249,7 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
 
             SearchControls searchControls = getSearchControls(new String[] { GinaLdapUtils.ATTRIBUTE_MEMBEROF });
             String searchFilter = GinaLdapUtils.getLdapFilterUser(encodedUser);
-            ctxtDir = getLdapContext();
-            answer = ctxtDir.search("", searchFilter, searchControls);
+            answer = getLdapContext().search("", searchFilter, searchControls);
 
             if (answer != null) {
                 while (answer.hasMoreElements()) {
@@ -301,7 +284,6 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
             throw new GinaException(e.getMessage());
         } finally {
             GinaLdapUtils.closeQuietly(answer);
-            closeDirContext(ctxtDir);
         }
 
         LOGGER.debug("roles = {}", roles);
@@ -309,20 +291,12 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
         return roles;
     }
 
-    /*
-     * (non-Javadoc) Retourne vrai si l'utilisateur donné à le role donné pour
-     * l'application donnée
-     *
-     * @see gina.api.GinaApiLdapBaseAble#hasUserRole(java.lang.String,
-     * java.lang.String, java.lang.String)
-     */
     @Override
     public boolean hasUserRole(String user, String application, String role) {
         final String encodedUser = GinaLdapEncoder.filterEncode(user);
         final String encodedApplication = GinaLdapEncoder.filterEncode(application);
         final String encodedRole = GinaLdapEncoder.filterEncode(role);
 
-        LdapContext ctxtDir = null;
         NamingEnumeration<?> answer = null;
         NamingEnumeration<?> answerAtt = null;
 
@@ -330,8 +304,7 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
             String ginaApplication = GinaLdapUtils.extractApplication(encodedApplication);
 
             SearchControls searchControls = getSearchControls(new String[] { GinaLdapUtils.ATTRIBUTE_MEMBER });
-            ctxtDir = getLdapContext();
-            answer = ctxtDir.search(GinaLdapUtils.getLdapFilterOu(ginaApplication),
+            answer = getLdapContext().search(GinaLdapUtils.getLdapFilterOu(ginaApplication),
                     GinaLdapUtils.getLdapFilterCn(encodedRole), searchControls);
 
             while (answer.hasMoreElements()) {
@@ -357,7 +330,6 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
             throw new GinaException(e.getMessage());
         } finally {
             GinaLdapUtils.closeQuietly(answer);
-            closeDirContext(ctxtDir);
         }
 
         return false;
@@ -486,6 +458,15 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
 
     protected void logException(Throwable e) {
         LOGGER.error("Erreur : ", e);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        if (ldapContext != null) {
+            LOGGER.warn("Appel au finaliseur pour fermer le contexte LDAP : mauvaise pratique. Le contexte LDAP "
+                      + "aurait deja du etre ferme par un appel a close()");
+        }
+        super.finalize();
     }
 
 }

@@ -14,7 +14,7 @@
     <groupId>ch.ge.cti.ct</groupId>
     <artifactId>gina-ldap-client</artifactId>
     <name>gina-ldap-client</name>
-    <version>2.0.4-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
 
     <url>https://prod.etat-ge.ch/wikiadm/x/ZABdPg</url>
 
@@ -89,8 +89,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <encoding>ISO-8859-1</encoding>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                     <!-- le JAR final doit etre en Java 6, mais dans les tests on veut pouvoir utiliser des lambdas -->
                     <testSource>1.8</testSource>
                     <testTarget>1.8</testTarget>
