@@ -1,5 +1,6 @@
 package gina.impl.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import static gina.impl.util.GinaLdapUtils.DEFAULT_LDAP_CONNECTION_TIMEOUT;
@@ -47,7 +48,9 @@ public class GinaLdapConfiguration {
             base,
             user,
             password,
-            type, DEFAULT_LDAP_CONNECTION_TIMEOUT, DEFAULT_LDAP_READ_TIMEOUT);
+            type,
+            DEFAULT_LDAP_CONNECTION_TIMEOUT,
+            DEFAULT_LDAP_READ_TIMEOUT);
     }
 
     public GinaLdapConfiguration(
@@ -63,7 +66,8 @@ public class GinaLdapConfiguration {
             user,
             password,
             type,
-            ldapReadTimeout, DEFAULT_LDAP_READ_TIMEOUT);
+            DEFAULT_LDAP_CONNECTION_TIMEOUT,
+            ldapReadTimeout);
     }
 
     public GinaLdapConfiguration(
@@ -158,7 +162,7 @@ public class GinaLdapConfiguration {
         return new ToStringBuilder(this)
                 .append("ldapServerUrl", ldapServerUrl)
                 .append("ldapUser", ldapUser)
-                .append("ldapPassword", ldapPassword == null ? null : "***")
+                .append("ldapPassword", StringUtils.isBlank(ldapPassword) ? "<MISSING>" : "***")
                 .append("ldapBaseDn", ldapBaseDn)
                 .append("ldapType", ldapType)
                 .append("ldapConnectionTimeout", ldapConnectionTimeout)
