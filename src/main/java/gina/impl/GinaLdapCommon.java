@@ -59,12 +59,13 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
 
     private void closeDirContext() {
         if (ldapContext != null) {
+            LOGGER.info("Fermeture du contexte LDAP");
             try {
-                LOGGER.info("Fermeture du contexte LDAP");
                 ldapContext.close();
             } catch (NamingException e) {
                 logException(e);
             }
+            ldapContext = null;
         }
     }
 
