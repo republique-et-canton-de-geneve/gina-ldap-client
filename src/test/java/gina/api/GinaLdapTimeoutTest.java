@@ -96,8 +96,8 @@ public class GinaLdapTimeoutTest {
         int connexionTimeout = 5000;
         int readTimeout = 1;
         GinaLdapConfiguration ldapConf = getGinaLdapConfiguration(server, base, user, password, DOMAIN, connexionTimeout, readTimeout);
-        LOGGER.info("Une pile d'appel est attendue dans la ligne suivante");
         try (GinaApiLdapBaseAble api = GinaLdapFactory.getInstance(ldapConf)) {
+            LOGGER.info("Une NamingException est attendue dans la ligne suivante");
             Throwable thrown = catchThrowable(() -> api.isValidUser(TestConstants.GENERIC_USERNAME));
             assertThat(thrown)
                     .isInstanceOf(GinaException.class)
