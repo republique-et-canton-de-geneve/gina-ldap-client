@@ -96,7 +96,9 @@
                     <testTarget>1.8</testTarget>
                 </configuration>
             </plugin>
-            <!-- Tests : connexion à Gina ou au serveur ldif -->
+            <!-- Tests : connexion à Gina ou au serveur ldif. Les valeurs à fournir sont indiquées dans les profils
+                 en bas de ce fichier.
+              -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
@@ -159,14 +161,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <ldap.domain.server>ldaps://vldap-dev.ceti.etat-ge.ch:636</ldap.domain.server>
-                <ldap.domain.user>cn=tcnvldap6470devaag,ou=Users,ou=CSBUGTRACK,o=gina</ldap.domain.user>
-                <ldap.application.server>ldaps://vldap-dev.ceti.etat-ge.ch:636</ldap.application.server>
-                <ldap.application.user>cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina</ldap.application.user>
-                <ldap.gestrepo.server>ldaps://vldap-dev.ceti.etat-ge.ch:636</ldap.gestrepo.server>
-                <ldap.gestrepo.user>cn=TCNVLDAP4363DEVAAG,ou=Users,ou=gestrepo,ou=cti,o=gina</ldap.gestrepo.user>
-                <!-- les trois mots de passe doivent etre fournis en ligne de commande, par exemple :
-                     mvn -Dldap.domain.password=XXX -Dldap.application.password=YYY -Dldap.gestrepo.password=ZZZ clean install
+                <!-- Les valeurs des propriétés listées plus haut doivent être fournies.
+                     Elles sont à trouver dans le wiki.
                   -->
             </properties>
             <distributionManagement>
