@@ -75,9 +75,9 @@ Attention : actuellement, certains tests unitaires ne fonctionnent pas dans ce m
 L'API s'utilise en créant une ``GinaLdapConfiguration``, puis en obtenant un objet de type ``GinaApiLdapBaseAble``.
 Par exemple :
 ```
-String server = "ldaps://vldap-dev.ceti.etat-ge.ch:636";
+String server = "ldaps://...";
 String base = "ou=OAC,o=gina";
-String user = "cn=TCNVLDAP9523DEVAAG,ou=Users,ou=CAMAC-GENEVE,ou=OAC,o=gina";
+String user = "cn=...";
 String password = <mot de passe>
 GinaLdapConfiguration.Type type = APPLICATION; 
 int connectionTimeout = 5000;
