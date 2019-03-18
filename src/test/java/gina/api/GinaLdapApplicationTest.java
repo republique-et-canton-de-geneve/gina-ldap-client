@@ -5,6 +5,7 @@ import gina.api.utils.TestLoggingWatcher;
 import gina.api.utils.TestTools;
 import gina.impl.GinaLdapFactory;
 import gina.impl.util.GinaLdapConfiguration;
+import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -15,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.naming.NamingException;
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
@@ -66,8 +66,8 @@ public class GinaLdapApplicationTest {
     }
 
     @AfterClass
-    public static void releaseResources() throws IOException {
-        api.close();
+    public static void releaseResources() {
+        IOUtils.closeQuietly(api);
     }
 
     @Test

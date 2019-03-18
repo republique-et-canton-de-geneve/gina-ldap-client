@@ -1,23 +1,11 @@
 package gina.api;
 
-import static gina.api.utils.TestTools.expectNotImplemented;
-import static gina.api.utils.TestTools.getGinaLdapConfiguration;
-import static gina.impl.util.GinaLdapConfiguration.Type.DOMAIN;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import gina.api.utils.TestConstants;
 import gina.api.utils.TestLoggingWatcher;
 import gina.api.utils.TestTools;
 import gina.impl.GinaLdapFactory;
 import gina.impl.util.GinaLdapConfiguration;
-
-import java.io.IOException;
-import java.rmi.RemoteException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import javax.naming.NamingException;
-
+import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -26,6 +14,17 @@ import org.junit.rules.ExpectedException;
 import org.junit.rules.TestWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.naming.NamingException;
+import java.rmi.RemoteException;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import static gina.api.utils.TestTools.expectNotImplemented;
+import static gina.api.utils.TestTools.getGinaLdapConfiguration;
+import static gina.impl.util.GinaLdapConfiguration.Type.DOMAIN;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class GinaLdapDomainTest {
 
@@ -67,8 +66,8 @@ public class GinaLdapDomainTest {
     }
 
     @AfterClass
-    public static void releaseResources() throws IOException {
-        api.close();
+    public static void releaseResources() {
+        IOUtils.closeQuietly(api);
     }
 
     @Test
