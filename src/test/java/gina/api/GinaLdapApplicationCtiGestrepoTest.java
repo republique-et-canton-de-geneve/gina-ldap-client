@@ -1,9 +1,5 @@
 package gina.api;
 
-import static gina.api.utils.TestTools.getGinaLdapConfiguration;
-import static gina.impl.util.GinaLdapConfiguration.Type.APPLICATION;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import gina.api.utils.TestConstants;
 import gina.api.utils.TestLoggingWatcher;
 import gina.api.utils.TestTools;
@@ -11,18 +7,22 @@ import gina.impl.GinaException;
 import gina.impl.GinaLdapCommon;
 import gina.impl.GinaLdapFactory;
 import gina.impl.util.GinaLdapConfiguration;
-
-import java.io.IOException;
-import java.rmi.RemoteException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import org.apache.commons.io.IOUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TestWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.rmi.RemoteException;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static gina.api.utils.TestTools.getGinaLdapConfiguration;
+import static gina.impl.util.GinaLdapConfiguration.Type.APPLICATION;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class GinaLdapApplicationCtiGestrepoTest {
 
@@ -69,8 +69,8 @@ public class GinaLdapApplicationCtiGestrepoTest {
     }
 
     @AfterClass
-    public static void releaseResources() throws IOException {
-        api.close();
+    public static void releaseResources() {
+        IOUtils.closeQuietly(api);
     }
 
     @Test
