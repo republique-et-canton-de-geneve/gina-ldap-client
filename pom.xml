@@ -11,10 +11,10 @@
         <version>2.1.2.RELEASE</version>
     </parent>
 
-    <groupId>ch.ge.cti.ct</groupId>
+    <groupId>ch.ge.etat.securite</groupId>
     <artifactId>gina-ldap-client</artifactId>
     <name>gina-ldap-client</name>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>3.0.1.4-SNAPSHOT</version>
 
     <url>https://prod.etat-ge.ch/wikiadm/x/ZABdPg</url>
 
@@ -161,7 +161,8 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <!-- Les valeurs des propriétés listées plus haut doivent être fournies.
+                <!-- Les valeurs des propriétés listées plus haut doivent être fournies de façon
+                     externe, par exemple par des options -D dans la ligne de commande mvn.
                      Elles sont à trouver dans le wiki.
                   -->
             </properties>
@@ -194,6 +195,69 @@
                 <ldap.gestrepo.user />
                 <ldap.gestrepo.password />
             </properties>
+        </profile>
+        <profile>
+            <!-- Profil special, pour deployer les JAR sur Maven Central, via OSSRH -->
+            <id>maven-central</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <!-- Deployer egalement un JAR contenant les sources (exige par Sonatype) -->
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Deployer egalement un JAR contenant la javadoc (exige par Sonatype) -->
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Signer les livrables via GPG (exige par Sonatype)
+                         Ne fonctionne pas en local, uniquement depuis le serveur Jenkins.
+                         La valeur de "gpg.keyname" est fournie dans le fichier settings.xml du serveur Jenkins.
+                      -->
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <keyname>${gpg.keyname}</keyname>
+                                    <passphraseServerId>${gpg.keyname}</passphraseServerId>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 
