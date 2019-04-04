@@ -74,7 +74,7 @@ public class GinaLdapDomainTest {
     public void isValidUserTest() throws RemoteException {
         boolean result = api.isValidUser(TestConstants.GENERIC_USERNAME);
         assertThat(result)
-                .as("L'utilisateur " + TestConstants.GENERIC_USERNAME + " est cens� �tre valide !")
+                .as("L'utilisateur " + TestConstants.GENERIC_USERNAME + " est cense etre valide !")
                 .isTrue();
     }
 
@@ -147,7 +147,7 @@ public class GinaLdapDomainTest {
                 .filter(uid -> uid.contains(TestConstants.GENERIC_USERNAME))
                 .count();
         assertThat(nbUsers)
-                .as("Le user " + TestConstants.GENERIC_USERNAME + " devrait faire partie de la liste")
+                .as("L'utilisateur " + TestConstants.GENERIC_USERNAME + " devrait faire partie de la liste")
                 .isEqualTo(1);
     }
 
