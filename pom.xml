@@ -14,7 +14,7 @@
     <groupId>ch.ge.etat.securite</groupId>
     <artifactId>gina-ldap-client</artifactId>
     <name>gina-ldap-client</name>
-    <version>3.0.1.8-SNAPSHOT</version>
+    <version>3.0.2-SNAPSHOT</version>
 
     <url>https://prod.etat-ge.ch/wikiadm/x/ZABdPg</url>
 
