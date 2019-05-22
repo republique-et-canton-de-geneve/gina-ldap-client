@@ -8,6 +8,9 @@ Elle permet aux applications de se connecter via le protocole LDAP à l'annuaire
 
 Cette bibliothèque ne traite que des droits d'accès, pas de l'authentification.
 
+Cette bibliothèque est disponible sur
+[Maven Central](http://central.maven.org/maven2/ch/ge/etat/securite/gina-ldap-client).
+
 # 2. Description
 
 L'annuaire de l'État de Genève s'appelle Gina. 
