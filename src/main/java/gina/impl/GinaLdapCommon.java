@@ -1,39 +1,50 @@
+/*
+ * GINA LDAP client
+ *
+ * Copyright 2016-2019 Republique et canton de Genève
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package gina.impl;
 
 import gina.api.GinaApiLdapBaseAble;
-
-import java.io.Closeable;
-import java.io.IOException;
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-
-import javax.naming.Context;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttribute;
-import javax.naming.directory.BasicAttributes;
-import javax.naming.directory.SearchControls;
-import javax.naming.directory.SearchResult;
-import javax.naming.ldap.InitialLdapContext;
-import javax.naming.ldap.LdapContext;
-
-import org.apache.commons.lang3.StringUtils;
-
+import gina.impl.jndi.GinaLdapContext;
+import gina.impl.jndi.GinaLdapQuery;
+import gina.impl.util.DnPart;
 import gina.impl.util.GinaLdapConfiguration;
 import gina.impl.util.GinaLdapEncoder;
 import gina.impl.util.GinaLdapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
+import javax.naming.Context;
+import javax.naming.NamingException;
+import javax.naming.directory.Attributes;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+/**
+ * TODO renommer cette classe. Exemple : GinaLdapAccess.
+ */
+public class GinaLdapCommon implements GinaApiLdapBaseAble {
 
     /**
      * Message d'erreur pour les methodes non implementees.
@@ -42,14 +53,55 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GinaLdapCommon.class);
 
-    protected GinaLdapConfiguration ldapConf;
+    private static final String DEFAULT_LANG = "FR";
 
-    private LdapContext ldapContext;
+    private static final String CLASS_PROPERTY_VALUES = "propertyValues";
+
+    private static final String ROLE_USER = "UTILISATEUR";
+
+    private static final String APP_PREFIX_PATTERN = "^[A-Za-z0-9][A-Za-z0-9-]*$";
+
+    /**
+     * Relative distinguished names.
+     */
+    private enum Rdn {
+        APPLICATION_BASE("o=gina"),
+        PROPERTY_BASE("o=gina-property"),
+        ROLE("ou=Groups"),
+        USER("ou=Users");
+
+        public String value;
+
+        Rdn(String value) {
+            this.value = value;
+        }
+    }
+
+    private enum AttributeName {
+        ENVIRONMENT("environment"),
+        OWN_VALUE("ownValue"),
+        VALUE("value"),
+        PROPERTY_NAME("propertyName"),
+        SURNAME("sn"),
+        LOGIN_DISABLED("loginDisabled"),
+        PHONE_NUMBER("phoneNumber"),
+        EMPLOYEE_NUMBER("employeeNumber");
+
+        public String value;
+
+        AttributeName(String value) {
+            this.value = value;
+        }
+    }
+
+    private GinaLdapConfiguration ldapConf;
+
+    private GinaLdapContext ldapContext;
 
     public GinaLdapCommon(GinaLdapConfiguration ldapConf) {
         Validate.notNull(ldapConf);
         this.ldapConf = ldapConf;
-        this.ldapContext = createDirContext();
+        this.ldapContext = createLdapContext();
     }
 
     @Override
@@ -60,47 +112,45 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
     private void closeDirContext() {
         if (ldapContext != null) {
             LOGGER.info("Fermeture du contexte LDAP");
-            try {
-                ldapContext.close();
-            } catch (NamingException e) {
-                logException(e);
-            }
+            ldapContext.close();
             ldapContext = null;
         }
     }
 
-    private InitialLdapContext createDirContext() {
-        Hashtable<String, String> env = new Hashtable<String, String>();
+    private GinaLdapContext createLdapContext() {
+        Properties env = new Properties();
 
         env.put(Context.INITIAL_CONTEXT_FACTORY, GinaLdapConfiguration.LDAP_CONTEXT_FACTORY);
         env.put(Context.SECURITY_AUTHENTICATION, GinaLdapConfiguration.LDAP_AUTHENTICATION_MODE);
         env.put(Context.REFERRAL, GinaLdapConfiguration.LDAP_REFERRAL_MODE);
         env.put("java.naming.ldap.version", "3");
-
         env.put("com.sun.jndi.ldap.connect.pool", "true");
+        env.put("com.sun.jndi.ldap.connect.timeout", String.valueOf(ldapConf.getLdapConnectionTimeout()));
+        env.put("com.sun.jndi.ldap.read.timeout", String.valueOf(ldapConf.getLdapReadTimeout()));
 
-        env.put(Context.PROVIDER_URL, ldapConf.getLdapServerUrl() + "/" + ldapConf.getLdapBaseDn());
+        // URL
+        String url = ldapConf.getLdapServerUrl();
+        if (url.startsWith("ldaps")) {
+            env.put(Context.SECURITY_PROTOCOL, "ssl");
+            url = url.replaceFirst("ldaps", "ldap");
+        }
+        env.put(Context.PROVIDER_URL, url);
 
-        if (StringUtils.isNotEmpty(ldapConf.getLdapUser())) {
-            env.put(Context.SECURITY_PRINCIPAL, ldapConf.getLdapUser());
+        // user
+        String user = ldapConf.getLdapUser();
+        if (StringUtils.isNotBlank(user)) {
+            env.put(Context.SECURITY_PRINCIPAL, user);
         }
 
-        if (StringUtils.isNotEmpty(ldapConf.getLdapPassword())) {
+        // password
+        if (StringUtils.isNotBlank(ldapConf.getLdapPassword())) {
             env.put(Context.SECURITY_CREDENTIALS, ldapConf.getLdapPassword());
         }
 
-        env.put("com.sun.jndi.ldap.connect.timeout", String.valueOf(ldapConf.getLdapConnectionTimeout()));
-
-        env.put("com.sun.jndi.ldap.read.timeout", String.valueOf(ldapConf.getLdapReadTimeout()));
-
-        if (ldapConf.getLdapServerUrl().startsWith("ldaps")) {
-            env.put(Context.SECURITY_PROTOCOL, "ssl");
-        }
-
-        InitialLdapContext result;
+        GinaLdapContext result;
         try {
             LOGGER.info("Creation du contexte LDAP");
-            result = new InitialLdapContext(env, null);
+            result = new GinaLdapContext(env);
         } catch (NamingException e) {
             logException(e);
             throw new GinaException(e.getMessage());
@@ -109,6 +159,64 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
         return result;
     }
 
+    private static String makeDn(String baseDn, String rdn) {
+        return StringUtils.isBlank(baseDn) ? rdn : rdn + "," + baseDn;
+    }
+
+    protected String getUserBaseDn() {
+        String dom = ldapConf.getGinaDomain();
+        String app = ldapConf.getGinaApplication();
+        String baseDN = StringUtils.isBlank(app) ? getDomainDn(dom) : getApplicationDn(dom, app);
+        return makeDn(baseDN, Rdn.USER.value);
+    }
+
+    protected String getUserDn(String user) {
+        return makeDn(getUserBaseDn(), DnPart.toString("cn", user));
+    }
+
+    protected String getApplicationBaseDn() {
+        return Rdn.APPLICATION_BASE.value;
+    }
+
+    protected String getPropertyBaseDn() {
+        return Rdn.PROPERTY_BASE.value;
+    }
+
+    protected String getUserPropertyBaseDn(String prestation, String type) {
+        String dn = getPropertyBaseDn();
+        dn = makeDn(dn, DnPart.toString("ou", type));
+        dn = makeDn(dn, DnPart.toString("ou", getUser()));
+        dn = makeDn(dn, DnPart.toString("cn", prestation));
+        return dn;
+    }
+
+    protected String getDomainDn(String domain) {
+        return makeDn(getApplicationBaseDn(), DnPart.toString("ou", domain));
+    }
+
+    protected String getApplicationDn(String domain, String application) {
+        return makeDn(getDomainDn(domain), DnPart.toString("ou", application));
+    }
+
+    protected String getApplicationDn(String domApp) {
+        int pos = domApp.indexOf('.');
+        if (pos < 0) {
+            throw new IllegalArgumentException("Malformed application name [" + domApp + "]");
+        }
+        String domain = domApp.substring(0, pos);
+        String app = domApp.substring(pos + 1);
+        return getApplicationDn(domain, app);
+    }
+
+    protected String getRoleBaseDn(String domApp) {
+        return makeDn(getApplicationDn(domApp), Rdn.ROLE.value);
+    }
+
+    protected String getRoleDn(String application, String role) {
+        return makeDn(getRoleBaseDn(application), DnPart.toString("cn", role));
+    }
+
+/*
     protected SearchControls getSearchControls() {
         SearchControls searchControls = new SearchControls();
         searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
@@ -126,14 +234,16 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
 
         return searchControls;
     }
+*/
 
-    protected LdapContext getLdapContext() {
+    private GinaLdapContext getLdapContext() {
         if (ldapContext == null) {
             throw new GinaException("Pas de context LDAP. Il a probablement deja ete detruit par un appel a close()");
         }
         return ldapContext;
     }
 
+    /*
     @Override
     public boolean isValidUser(String user) {
         final String encodedUser = GinaLdapEncoder.filterEncode(user);
@@ -171,70 +281,50 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
 
         return false;
     }
+     */
 
     @Override
-    public Map<String, String> getUserAttrs(String user, String[] paramArrayOfString) {
-        final String encodedUser = GinaLdapEncoder.filterEncode(user);
-
-//        Arrays.asList(paramArrayOfString).contains("param");
-        Map<String, String> myMap = new HashMap<String, String>();
-        NamingEnumeration<?> answer = null;
-        NamingEnumeration<?> nameEnum = null;
-
-        try {
-            SearchControls searchControls = getSearchControls(paramArrayOfString);
-            LOGGER.debug("searchControls = {}", searchControls);
-            String searchFilter = GinaLdapUtils.getLdapFilterUser(encodedUser);
-            LOGGER.debug("searchFilter = {}", searchFilter);
-            answer = getLdapContext().search("", searchFilter, searchControls);
-
-            if (answer != null) {
-                while (answer.hasMoreElements()) {
-                    SearchResult sr = (SearchResult) answer.next();
-                    Attributes attrs = sr.getAttributes();
-                    LOGGER.debug("sr = {}", sr);
-                    if (attrs != null) {
-                        for (int i = 0; i < paramArrayOfString.length; i++) {
-                            String attr = paramArrayOfString[i];
-                            LOGGER.debug("attr = {}", attr);
-                            Attribute attribute = attrs.get(attr);
-                            if (attribute != null) {
-                                try {
-                                    nameEnum = attribute.getAll();
-                                    if (nameEnum != null) {
-                                        String value = "";
-                                        while (nameEnum.hasMoreElements()) {
-                                            if (value.isEmpty()) {
-                                                value = (String) nameEnum.next();
-                                            } else {
-                                                StringBuilder sb = new StringBuilder();
-                                                sb.append(value);
-                                                sb.append(":");
-                                                sb.append((String) nameEnum.next());
-                                                value = sb.toString();
-                                            }
-                                        }
-                                        LOGGER.debug("value = {}", value);
-                                        myMap.put(paramArrayOfString[i], value);
-                                    }
-                                } finally {
-                                    GinaLdapUtils.closeQuietly(nameEnum);
-                                }
-                            }
-                        }
-                    }
+    public boolean isValidUser(String user) {
+        long tm = System.currentTimeMillis();
+        GinaLdapQuery qry = getLdapContext().newQuery()
+                    .setBaseDn(getUserBaseDn())
+                    .setFilter(GinaLdapUtils.getLdapFilterUser(user))
+                    .setScope(GinaLdapQuery.Scope.ONELEVEL);
+        Boolean result = qry.unique(new GinaLdapQuery.Consumer<Boolean>() {
+                @Override
+                public Boolean consume(String dn, Attributes attrs) throws NamingException {
+                    return true;
                 }
-            }
-        } catch (NamingException e) {
-            logException(e);
-            throw new GinaException(e.getMessage());
-        } finally {
-            GinaLdapUtils.closeQuietly(answer);
-        }
-
-        return myMap;
+            });
+        logExecutionTime("isValidUser(" + user + ")", tm);
+        return result != null ? result : false;
     }
 
+    @Override
+    public Map<String, String> getUserAttrs(String user, String[] attrs) {
+        long tm = System.currentTimeMillis();
+        Map<String, String> result = getUserDnAttrs(getUserDn(user), attrs);
+        logExecutionTime("getUserAttrs(" + user + "," + Arrays.toString(attrs) + ")", tm);
+        return result;
+    }
+
+    private Map<String, String> getUserDnAttrs(String userDn, String[] attrs) {
+        GinaLdapQuery qry = getLdapContext().newQuery()
+                .setFilter(GinaLdapUtils.getLdapFilterUser())
+                .setAttributes(GinaLdapUtils.ginaToAttributeNames(attrs))
+//                .setAttributes(attrs)
+                .setScope(GinaLdapQuery.Scope.OBJECT)
+                .setBaseDn(userDn);
+        return qry.unique(new GinaLdapQuery.Consumer<Map<String, String>>() {
+            @Override
+            public Map<String, String> consume(String dn, Attributes names) {
+                LOGGER.debug("consume dn = {}, names = {}  ->  {}", dn, names, GinaLdapUtils.attributesToUser(dn, names, attrs));
+                return GinaLdapUtils.attributesToUser(dn, names, attrs);
+            }
+        });
+    }
+
+    /*
     @Override
     public List<String> getUserRoles(String user, String application) {
         final String encodedUser = GinaLdapEncoder.filterEncode(user);
@@ -291,7 +381,85 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
 
         return roles;
     }
+     */
 
+    @Override
+    public List<String> getUserRoles(String user, String domApp) {
+        long tm = System.currentTimeMillis();
+        List<String> result = getRoles(user, domApp);
+        logExecutionTime("getUserRoles(" + user + "," + domApp + ")", tm);
+        return result;
+    }
+
+    private List<String> getRoles(String user, String domApp) {
+        final String suffix = "," + getRoleBaseDn(domApp);
+        GinaLdapQuery qry = getLdapContext().newQuery()
+                .setBaseDn(getUserDn(user))
+                .setFilter(GinaLdapUtils.getLdapFilterUser()).setScope(GinaLdapQuery.Scope.OBJECT)
+                .setAttributes(GinaLdapUtils.ATTRIBUTE_MEMBEROF);
+        List<String> roles = qry.unique(new GinaLdapQuery.Consumer<List<String>>() {
+            @Override
+            public List<String> consume(String dn, Attributes attrs) {
+                List<String> result = new ArrayList<>();
+                List<String> groups = GinaLdapUtils.allValues(attrs, GinaLdapUtils.ATTRIBUTE_MEMBEROF);
+                for (String group : groups) {
+                    if (!group.endsWith(suffix)) {
+                        continue;
+                    }
+                    DnPart[] parts = DnPart.parse(group.substring(0, group.length() - suffix.length()));
+                    if (parts == null
+                            || parts.length != 1
+                            || !parts[0].getAttr().equalsIgnoreCase(GinaLdapUtils.ATTRIBUTE_CN)) {
+                        continue;
+                    }
+                    result.add(parts[0].getValue());
+                }
+                return result;
+            }
+        });
+        return roles == null ? Collections.<String>emptyList() : roles;
+    }
+
+    @Override
+    public List<String> getUserRoles(String user) {
+        long tm = System.currentTimeMillis();
+        GinaLdapQuery qry = getLdapContext().newQuery()
+                .setBaseDn(getUserDn(user))
+                .setFilter(GinaLdapUtils.getLdapFilterUser()).setScope(GinaLdapQuery.Scope.OBJECT)
+                .setAttributes(GinaLdapUtils.ATTRIBUTE_MEMBEROF);
+        List<String> roles = qry.unique(new GinaLdapQuery.Consumer<List<String>>() {
+            @Override
+            public List<String> consume(String dn, Attributes attrs) {
+                final List<String> result = new ArrayList<String>();
+                List<String> groups = GinaLdapUtils.allValues(attrs, GinaLdapUtils.ATTRIBUTE_MEMBEROF);
+                for (String group : groups) {
+                    result.add(GinaLdapUtils.roleDnToString(group));
+                }
+                return result;
+            }
+        });
+        logExecutionTime("getUserRoles(" + user + ")", tm);
+        return roles == null ? Collections.<String>emptyList() : roles;
+    }
+
+    @Override
+    public boolean hasUserRole(String username, String role) {
+        return getUserRoles(username).contains(role);
+        /*
+        long tm = System.currentTimeMillis();
+        int ix = role.lastIndexOf('.');
+        if (ix < 0) {
+            return false;
+        }
+        String application = role.substring(0, ix);
+        String approle = role.substring(ix + 1);
+        Boolean result = hasUserDnRole(getUserDn(username), application, approle);
+        logExecutionTime("hasUserRole(" + username + "," + role + ")", tm);
+        return result != null ? result : false;
+         */
+    }
+
+    /*
     @Override
     public boolean hasUserRole(String user, String application, String role) {
         final String encodedUser = GinaLdapEncoder.filterEncode(user);
@@ -335,12 +503,56 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
 
         return false;
     }
+     */
+
+    @Override
+    public boolean hasUserRole(String user, String application, String role) {
+        long tm = System.currentTimeMillis();
+        Boolean result = hasUserDnRole(getUserDn(user), application, role);
+        logExecutionTime("hasUserRole(" + user + "," + application + "," + role + ")", tm);
+        return result != null ? result : false;
+    }
+
+    private boolean hasUserDnRole(String userDn, String application, String role) {
+        String filter = GinaLdapUtils.ldapFilterAnd(
+                GinaLdapUtils.getLdapFilterUser(),
+                GinaLdapUtils.ldapFilterEquals(GinaLdapUtils.ATTRIBUTE_MEMBEROF, getRoleDn(application, role)));
+        GinaLdapQuery qry = getLdapContext().newQuery()
+                .setBaseDn(userDn)
+                .setFilter(filter)
+                .setScope(GinaLdapQuery.Scope.OBJECT);
+        Boolean result = qry.first(new GinaLdapQuery.Consumer<Boolean>() {
+            @Override
+            public Boolean consume(String dn, Attributes attrs) {
+                return true;
+            }
+        });
+        return result != null ? result : false;
+    }
+
+    @Override
+    public List<String> getAppRoles(String domApp) {
+        long tm = System.currentTimeMillis();
+        GinaLdapQuery qry = getLdapContext().newQuery()
+                .setBaseDn(getRoleBaseDn(domApp))
+                .setFilter(GinaLdapUtils.getLdapFilterGroup())
+                .setScope(GinaLdapQuery.Scope.ONELEVEL)
+                .setAttributes(GinaLdapUtils.ATTRIBUTE_CN);
+        List<String> result = qry.forEach(new GinaLdapQuery.Consumer<String>() {
+            @Override
+            public String consume(String dn, Attributes attrs) {
+                return GinaLdapUtils.firstValue(attrs, GinaLdapUtils.ATTRIBUTE_CN);
+            }
+        });
+        logExecutionTime("getAppRoles(" + domApp + ")", tm);
+        return result;
+    }
 
     @Override
     public List<String> getBusinessRoles(String application) throws RemoteException {
         final String encodedApplication = GinaLdapEncoder.filterEncode(application);
 
-        List<String> roles = this.getAppRoles(encodedApplication);
+        List<String> roles = getAppRoles(encodedApplication);
 
         List<String> result = new ArrayList<String>();
 
@@ -354,9 +566,38 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
         return result;
     }
 
-    /**
-     * @deprecated
-     */
+    @Override
+    public List<Map<String, String>> getUsers(String application, String[] attrs) {
+        return getUsers(application, ROLE_USER, attrs);
+    }
+
+    @Override
+    public List<Map<String, String>> getUsers(String application, String role, final String[] attrs) {
+        long tm = System.currentTimeMillis();
+        String filter = GinaLdapUtils.ldapFilterEquals(GinaLdapUtils.ATTRIBUTE_MEMBEROF, getRoleDn(application, role));
+        List<Map<String, String>> result = queryUsers(filter, attrs);
+        logExecutionTime("getUsers(" + application + "," + role + "," + Arrays.toString(attrs) + ")", tm);
+        return result;
+    }
+
+    private List<Map<String, String>> queryUsers(String cond, final String[] attrs) {
+        String filter = GinaLdapUtils.getLdapFilterUser();
+        if (cond != null) {
+            filter = GinaLdapUtils.ldapFilterAnd(filter, cond);
+        }
+        GinaLdapQuery qry = getLdapContext().newQuery()
+                .setBaseDn(getUserBaseDn())
+                .setFilter(filter)
+                .setAttributes(GinaLdapUtils.ginaToAttributeNames(attrs))
+                .setScope(GinaLdapQuery.Scope.ONELEVEL);
+        return qry.forEach(new GinaLdapQuery.Consumer<Map<String, String>>() {
+            @Override
+            public Map<String, String> consume(String dn, Attributes names) {
+                return GinaLdapUtils.attributesToUser(dn, names, attrs);
+            }
+        });
+    }
+
     @Override
     @Deprecated
     public void sendMail(String from, String[] to, String[] cc, String subject, String text,
@@ -385,11 +626,13 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
     }
 
     @Override
+    @Deprecated
     public List<String> getIntegrationUserAttributes(String paramString1, String paramString2) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 
     @Override
+    @Deprecated
     public List<String> getInheritingRoles(String paramString1, String paramString2) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
@@ -400,6 +643,7 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
     }
 
     @Override
+    @Deprecated
     public String getOwnIDUniqueForPPorPseudo() {
         throw new GinaException(NOT_IMPLEMENTED);
     }
@@ -455,6 +699,11 @@ public abstract class GinaLdapCommon implements GinaApiLdapBaseAble {
     @Override
     public Map<String, String> getUserAttrs(String[] attrs) {
         throw new GinaException(NOT_IMPLEMENTED);
+    }
+
+    private void logExecutionTime(String operationDescription, long startTime) {
+        long duration = System.currentTimeMillis() - startTime;
+        LOGGER.debug(operationDescription + " effectue' en " + duration + "ms");
     }
 
     protected void logException(Throwable e) {

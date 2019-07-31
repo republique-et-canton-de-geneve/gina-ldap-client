@@ -1,13 +1,40 @@
+/*
+ * GINA LDAP client
+ *
+ * Copyright 2016-2019 Republique et canton de Genève
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package gina.impl.util;
 
-import java.util.List;
-
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-
+import gina.impl.GinaException;
+import gina.impl.attribute.GinaAttribute;
+import gina.impl.attribute.AttributeMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class GinaLdapUtils {
 
@@ -20,7 +47,9 @@ public class GinaLdapUtils {
 
     public static final String ATTRIBUTE_CN = "cn";
 
-    public static final String ATTRIBUTE_DEPARTMENT_NUMBER = "departmentNumber";
+    public static final String ATTRIBUTE_OU = "ou";
+
+//    public static final String ATTRIBUTE_DEPARTMENT_NUMBER = "departmentNumber";
 
     /**
      * Temps maximal en millisecondes pour etablir la connexion au serveur LDAP.
@@ -80,10 +109,19 @@ public class GinaLdapUtils {
         return "ou=" + ou;
     }
 
+    public static String getLdapFilterGroup() {
+        return "(objectClass=groupOfNames)";
+    }
+
+/*
     public static String getLdapFilterGroup(String role) {
         return "ou=Groups,ou=" + role;
     }
+ */
 
+    public static String getLdapFilterUser() {
+        return "(objectClass=person)";
+    }
     public static String getLdapFilterUser(String user) {
         return "(&(objectClass=person)(cn=" + user + "))";
     }
@@ -92,12 +130,122 @@ public class GinaLdapUtils {
         return "(&(cn=" + cn + "))";
     }
 
+    public static String roleDnToString(String dn) {
+        DnPart[] parts = DnPart.parse(dn);
+        if (parts.length >= 4
+                && parts[0].getAttr().equalsIgnoreCase(ATTRIBUTE_CN)
+                && parts[1].getAttr().equalsIgnoreCase(ATTRIBUTE_OU)
+                && parts[1].getValue().equalsIgnoreCase("Groups")
+                && parts[2].getAttr().equalsIgnoreCase(ATTRIBUTE_OU)
+                && parts[3].getAttr().equalsIgnoreCase(ATTRIBUTE_OU)) {
+            /*
+            return parts[3].getValue()
+                    + "." + parts[2].getValue()
+                    + "." + parts[0].getValue();
+             */
+            return parts[0].getValue();
+        }
+        return null;
+    }
+
+    public static String[] ginaToAttributeNames(String... names) {
+        if (names == null) {
+            return null;
+        }
+        Set<String> result = new TreeSet<>();
+        for (String name: names) {
+            String ldap = AttributeMapper.ginaToLdap(name);
+            if (ldap != null) {
+                result.add(ldap);
+            }
+        }
+        return result.toArray(new String[result.size()]);
+    }
+
+    public static Map<String,String> attributesToUser(String dn, Attributes attrs, String... names) {
+        if (names == null) {
+            return attributesToUser(dn, attrs);
+        }
+        Map<String,String> result = new HashMap<>();
+        result.put(GinaAttribute.DN.value, dn);
+        for (String gina: names) {
+            String ldap = AttributeMapper.ginaToLdap(gina);
+            if (ldap != null) {
+                String value = firstValue(attrs, ldap);
+                if (value != null) {
+                    result.put(gina, value);
+                }
+            }
+        }
+        return result;
+    }
+
+    public static String firstValue(Attribute attr) {
+        try {
+            if (attr == null || attr.size() == 0) {
+                return null;
+            }
+            return attr.get(0).toString();
+        } catch (NamingException e) {
+            return handle(e);
+        }
+    }
+
+    public static String firstValue(Attributes attrs, String name) {
+        return firstValue(attrs.get(name));
+    }
+
+    public static List<String> allValues(Attribute attr) {
+        try {
+            List<String> result = new ArrayList<String>();
+            if (attr != null) {
+                for (int i = 0; i < attr.size(); ++i) {
+                    result.add((String)attr.get(i));
+                }
+            }
+            return result;
+        } catch (NamingException e) {
+            return handle(e);
+        }
+    }
+
+    public static List<String> allValues(Attributes attrs, String name) {
+        return allValues(attrs.get(name));
+    }
+
+    public static String ldapFilterEquals(String attr, String value) {
+        return "(" + attr + "=" + GinaLdapEncoder.filterEncode(value) + ")";
+    }
+
+    public static String ldapFilterAnd(String... subfilters) {
+        return ldapFilterOp('&', subfilters);
+    }
+
+    private static String ldapFilterOp(char op, String... subfilters) {
+        if (subfilters == null || subfilters.length == 0) {
+            return null;
+        }
+        StringBuilder buf = new StringBuilder();
+        buf.append('(');
+        buf.append(op);
+        for (String sub: subfilters) {
+            buf.append(sub);
+        }
+        buf.append(')');
+        return buf.toString();
+    }
+
+    public static <T> T handle(NamingException e) {
+        LOGGER.error("Erreur : ", e);
+        throw new GinaException(e.getMessage());
+    }
+
     public static void closeQuietly(NamingEnumeration<?> obj) {
         if (obj != null) {
             try {
                 obj.close();
             } catch (NamingException e) {
-                LOGGER.error("Erreur : ", e);
+                LOGGER.error("Erreur lors de la fermeture d'une NamingEnumeration : ", e);
             }
         }
     }

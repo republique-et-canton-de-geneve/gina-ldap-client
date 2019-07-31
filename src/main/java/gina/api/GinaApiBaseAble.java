@@ -1,3 +1,21 @@
+/*
+ * GINA LDAP client
+ *
+ * Copyright 2016-2019 Republique et canton de Genève
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package gina.api;
 
 import gina.impl.GinaException;
@@ -76,7 +94,7 @@ public interface GinaApiBaseAble {
     boolean hasRole(String application, String role) throws RemoteException;
 
     /**
-     * Indique si l'utilisateur donne' a le role donne' pour l'application donnée.
+     * Indique si l'utilisateur donne' a le role donne' pour l'application donnee.
      *
      * @param user nom de l'utilisateur.
      * @param application nom de l'application (ex: CTI.COMPOSANTSECURITE)
@@ -105,7 +123,7 @@ public interface GinaApiBaseAble {
     /**
      * Retourne les roles d'un utilisateur dans un domaine donne
      * @param domain : Domaine de recherche des roles
-     * @param applicationPrefix filtre sur les applications (filtre) minimum 3 caractères
+     * @param applicationPrefix filtre sur les applications (filtre) minimum 3 caracteres
      * @return Une liste de roles en notation longue
      */
     List<String> getIntegrationUserRoles(String domain, String applicationPrefix) throws RemoteException;
@@ -117,6 +135,7 @@ public interface GinaApiBaseAble {
      * @return Liste d'attributs sous forme [nom attribut]=[valuer attribut]:
      * 		Si utilisateur n'est pas dans le role UTILISATEUR de l'application, ne retourne que "validUser=false"
      */
+    @Deprecated
     List<String> getIntegrationUserAttributes(String domain, String application) throws RemoteException;
 
     /**
@@ -194,6 +213,7 @@ public interface GinaApiBaseAble {
      * @param role
      * @return liste des roles
      */
+    @Deprecated
     List<String> getInheritingRoles(String application, String role) throws RemoteException;
 
     /**
@@ -225,6 +245,7 @@ public interface GinaApiBaseAble {
      * @param name nom de la propriete
      * @return liste des valeurs de la propriete
      */
+    @Deprecated
     List<String> getPPProprieteMetier(String name) throws RemoteException;
 
     /**
@@ -236,14 +257,14 @@ public interface GinaApiBaseAble {
     List<String> getOwnPPProprieteMetier(String name) throws RemoteException;
 
     /**
-     * Envoie un e-mail (!!!)
+     * Envoie un e-mail.
      * @param from adresse de l'expediteur
      * @param to adresse(s) du(des) destinataire(s)
      * @param cc adresse(s) du(des) personne(s) en copie
      * @param subject sujet
      * @param text texte (corps) du message
      * @param mimeType type mime du texte (text/plain ou text/html)
-     * @deprecated Cette methode ne doit plus être utilisee
+     * @deprecated Cette methode ne doit plus etre utilisee
      */
     @Deprecated
     void sendMail(String from, String[] to, String[] cc, String subject, String text, String mimeType)

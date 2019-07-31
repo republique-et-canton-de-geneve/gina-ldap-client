@@ -14,7 +14,7 @@
     <groupId>ch.ge.etat.securite</groupId>
     <artifactId>gina-ldap-client</artifactId>
     <name>gina-ldap-client</name>
-    <version>3.0.3-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
 
     <url>https://prod.etat-ge.ch/wikiadm/x/ZABdPg</url>
 
@@ -89,14 +89,15 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <encoding>ISO-8859-1</encoding>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <!-- NE PAS COMMITTER CE CHANGEMENT !!!!! RESTER EN 1.7 !!! -->
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <!-- le JAR final doit etre en Java 6, mais dans les tests on veut pouvoir utiliser des lambdas -->
                     <testSource>1.8</testSource>
                     <testTarget>1.8</testTarget>
                 </configuration>
             </plugin>
-            <!-- Tests : connexion à Gina ou au serveur ldif. Les valeurs à fournir sont indiquées dans les profils
+            <!-- Tests : connexion à Gina ou au serveur ldif. Les valeurs à fournir sont indiquees dans les profils
                  en bas de ce fichier.
               -->
             <plugin>
@@ -161,9 +162,9 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <!-- Les valeurs des propriétés listées plus haut doivent être fournies de façon
-                     externe, par exemple par des options -D dans la ligne de commande mvn.
-                     Elles sont à trouver dans le wiki.
+                <!-- Les valeurs des proprietes listees plus haut dans la section <systemPropertyVariables> doivent
+                     etre fournies de facon externe, par exemple par des options -D dans la ligne de commande mvn.
+                     Elles sont a trouver dans le wiki.
                   -->
             </properties>
             <distributionManagement>

@@ -1,3 +1,21 @@
+/*
+ * GINA LDAP client
+ *
+ * Copyright 2016-2019 Republique et canton de Genève
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package gina.api.utils;
 
 import gina.impl.GinaException;
@@ -34,36 +52,36 @@ public class TestTools {
 
     public static GinaLdapConfiguration getGinaLdapConfiguration(
             String server,
-            String base,
             String user,
             String password,
-            GinaLdapConfiguration.Type type) {
+            String domain,
+            String application) {
 
         return getGinaLdapConfiguration(
                 server,
-                base,
                 user,
                 password,
-                type,
+                domain,
+                application,
                 GinaLdapUtils.DEFAULT_LDAP_CONNECTION_TIMEOUT,
                 GinaLdapUtils.DEFAULT_LDAP_READ_TIMEOUT);
     }
 
     public static GinaLdapConfiguration getGinaLdapConfiguration(
             String server,
-            String base,
             String user,
             String password,
-            GinaLdapConfiguration.Type type,
+            String domain,
+            String application,
             int connexionTimeout,
             int readTimeout) {
 
         if (StringUtils.isBlank(password)) {
-            LOGGER.info("le mot de passe au serveur LDAP (qui est necessaire avec Gina, mais inutile avec UnboundID) est manquant");
+            LOGGER.info("le mot de passe au serveur LDAP (il est necessaire avec Gina, mais inutile avec UnboundID) est manquant");
         }
 
         GinaLdapConfiguration ldapConf = new GinaLdapConfiguration(
-                server, base, user, password, type, connexionTimeout, readTimeout);
+                server, user, password, domain, application, connexionTimeout, readTimeout);
         LOGGER.info("Connexion LDAP : {}", ldapConf);
 
         return ldapConf;

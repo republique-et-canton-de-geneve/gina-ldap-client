@@ -1,3 +1,21 @@
+/*
+ * GINA LDAP client
+ *
+ * Copyright 2016-2019 Republique et canton de Genève
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package gina.impl;
 
 import gina.api.GinaApiLdapBaseAble;
@@ -5,6 +23,9 @@ import gina.impl.util.GinaLdapConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * TODO supprimer cette classe
+ */
 public class GinaLdapFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GinaLdapFactory.class);
@@ -12,28 +33,8 @@ public class GinaLdapFactory {
     private GinaLdapFactory() {
     }
 
-    public static GinaApiLdapBaseAble getInstance(GinaLdapConfiguration ldapConf) {
-        try {
-            GinaApiLdapBaseAble result;
-
-            if (ldapConf.getLdapType() == GinaLdapConfiguration.Type.APPLICATION) {
-                result = new GinaLdapApplication(ldapConf);
-            } else if (ldapConf.getLdapType() == GinaLdapConfiguration.Type.DOMAIN) {
-                result = new GinaLdapDomain(ldapConf);
-            } else {
-                throw new GinaException("Unexpected LDAP type [" + ldapConf.getLdapType() + "]");
-            }
-
-            return result;
-        } catch (RuntimeException e) {
-            LOGGER.error("Erreur : ", e);
-            throw e;
-        } catch (Exception e) {
-            LOGGER.error("Erreur : ", e);
-            GinaException ge = new GinaException(e.getMessage());
-            ge.initCause(e);
-            throw ge;
-        }
+    public static GinaApiLdapBaseAble getNewInstance(GinaLdapConfiguration ldapConf) {
+        return new GinaLdapCommon(ldapConf);
     }
 
 }

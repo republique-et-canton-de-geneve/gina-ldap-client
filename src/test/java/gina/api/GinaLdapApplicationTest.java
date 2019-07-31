@@ -1,3 +1,21 @@
+/*
+ * GINA LDAP client
+ *
+ * Copyright 2016-2019 Republique et canton de Genève
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package gina.api;
 
 import gina.api.utils.TestConstants;
@@ -23,25 +41,24 @@ import java.util.Objects;
 
 import static gina.api.utils.TestTools.expectNotImplemented;
 import static gina.api.utils.TestTools.getGinaLdapConfiguration;
-import static gina.impl.util.GinaLdapConfiguration.Type.APPLICATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GinaLdapApplicationTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GinaLdapApplicationTest.class);
 
-    // LDAP au niveau de l'application - Domaine Gina
-    private static final String LDAP_APPLICATION_TEST_DOMAINE = "OAC";
+    // LDAP : domaine Gina
+    protected static final String DOMAIN = "OAC";
 
-    // LDAP au niveau de l'application - Application Gina
-    private static final String LDAP_APPLICATION_TEST_APPLICATION = "CAMAC-GENEVE";
+    // LDAP : application Gina
+    protected static final String APPLICATION = "CAMAC-GENEVE";
 
-    // LDAP au niveau de l'application - Domaine + Application Gina
-    private static final String LDAP_APPLICATION_TEST_DOMAINE_APPLICATION =
-            LDAP_APPLICATION_TEST_DOMAINE + "." + LDAP_APPLICATION_TEST_APPLICATION;
+    // LDAP : domaine Gina + application Gina
+    private static final String DOMAIN_APPLICATION = DOMAIN + "." + APPLICATION;
 
-    // LDAP au niveau du domaine - Role de test
-    private static final String LDAP_APPLICATION_TEST_ROLE = "UTILISATEUR";
+    // LDAP : role de test
+//    private static final String ROLE = DOMAIN_APPLICATION + "." + "UTILISATEUR";
+    private static final String ROLE = "UTILISATEUR";
 
     static GinaApiLdapBaseAble api;
 
@@ -49,20 +66,19 @@ public class GinaLdapApplicationTest {
     public ExpectedException thrown = ExpectedException.none();
 
     /**
-     * Affichage du debut et de la fin de chaque methode de test.
+     * Trace de debut d'execution et de fin d'execution de chaque methode de test.
      */
     @Rule
     public TestWatcher watcher = new TestLoggingWatcher();
 
     @BeforeClass
     public static void initApi() {
-        String base = "ou=OAC,o=gina";
         String server = System.getProperty("test.application.server");
         String user = System.getProperty("test.application.user");
         String password = System.getProperty("test.application.password");
 
-        GinaLdapConfiguration ldapConf = getGinaLdapConfiguration(server, base, user, password, APPLICATION);
-        api = GinaLdapFactory.getInstance(ldapConf);
+        GinaLdapConfiguration ldapConf = getGinaLdapConfiguration(server, user, password, DOMAIN, APPLICATION);
+        api = GinaLdapFactory.getNewInstance(ldapConf);
     }
 
     @AfterClass
@@ -116,22 +132,22 @@ public class GinaLdapApplicationTest {
 
     @Test
     public void hasRoleUserTest() throws RemoteException {
-        boolean ret = api.hasUserRole(TestConstants.DRIVONOL_USERNAME, LDAP_APPLICATION_TEST_ROLE);
+        boolean ret = api.hasUserRole(TestConstants.DRIVONOL_USERNAME, ROLE);
 
-        List<String> roles = api.getUserRoles(TestConstants.DRIVONOL_USERNAME, LDAP_APPLICATION_TEST_ROLE);
+        List<String> roles = api.getUserRoles(TestConstants.DRIVONOL_USERNAME, ROLE);
         LOGGER.info("roles = {}", roles);
 
         assertThat(ret)
-                .as("User " + TestConstants.DRIVONOL_USERNAME + " is expected to have role " + LDAP_APPLICATION_TEST_ROLE)
+                .as("User " + TestConstants.DRIVONOL_USERNAME + " is expected to have role " + ROLE)
                 .isTrue();
     }
 
     @Test
     public void hasUserRoleWithUserAndApplicationAndRoleTest() throws RemoteException {
-        boolean ret = api.hasUserRole(TestConstants.DRIVONOL_USERNAME, LDAP_APPLICATION_TEST_DOMAINE_APPLICATION,
-                LDAP_APPLICATION_TEST_ROLE);
+        boolean ret = api.hasUserRole(TestConstants.DRIVONOL_USERNAME, DOMAIN_APPLICATION, ROLE);
+//        boolean ret = api.hasUserRole(TestConstants.DRIVONOL_USERNAME, DOMAIN_APPLICATION, "UTILISATEUR");
         assertThat(ret)
-                .as(TestConstants.DRIVONOL_USERNAME + " devrait avoir le role " + LDAP_APPLICATION_TEST_ROLE + " pour l'application " + LDAP_APPLICATION_TEST_DOMAINE_APPLICATION)
+                .as(TestConstants.DRIVONOL_USERNAME + " devrait avoir le role " + ROLE + " pour l'application " + DOMAIN_APPLICATION)
                 .isTrue();
     }
 
@@ -178,30 +194,30 @@ public class GinaLdapApplicationTest {
     public void hasRoleWithApplicationAndRoleTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.hasRole(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, LDAP_APPLICATION_TEST_ROLE);
+        api.hasRole(DOMAIN_APPLICATION, ROLE);
     }
 
     @Test
     public void getRolesWithApplicationTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getRoles(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION);
+        api.getRoles(DOMAIN_APPLICATION);
     }
 
     @Test
     public void getUserRolesWithUserAndApplicationTest() throws RemoteException {
-        List<String> roles = api.getUserRoles(TestConstants.DRIVONOL_USERNAME, LDAP_APPLICATION_TEST_DOMAINE_APPLICATION);
+        List<String> roles = api.getUserRoles(TestConstants.DRIVONOL_USERNAME, DOMAIN_APPLICATION);
 
         assertThat(roles).isNotEmpty();
         LOGGER.info("roles.size() = {}", roles.size());
         LOGGER.info("roles = {}", roles);
         assertThat(TestTools.rolesAreCleaned(roles)).isTrue();
-        assertThat(roles.contains(LDAP_APPLICATION_TEST_ROLE)).isTrue();
+        assertThat(roles.contains(ROLE)).isTrue();
     }
 
     @Test
     public void getUsersWithApplicationAndAttrsTest() throws RemoteException {
-        List<Map<String, String>> users = api.getUsers(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, TestConstants.TEST_ATTRS);
+        List<Map<String, String>> users = api.getUsers(DOMAIN_APPLICATION, TestConstants.TEST_ATTRS);
 
         assertThat(users).isNotEmpty();
         LOGGER.info("users.size() = {}", users.size());
@@ -220,8 +236,7 @@ public class GinaLdapApplicationTest {
 
     @Test
     public void getUsersTest() throws RemoteException {
-        List<Map<String, String>> users = api
-                .getUsers(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, LDAP_APPLICATION_TEST_ROLE, TestConstants.TEST_ATTRS);
+        List<Map<String, String>> users = api.getUsers(DOMAIN_APPLICATION, ROLE, null /*TestConstants.TEST_ATTRS*/);
 
         assertThat(users).isNotEmpty();
         LOGGER.info("users.size() = {}", users.size());
@@ -229,7 +244,9 @@ public class GinaLdapApplicationTest {
 
         long nbUsers = users
                 .stream()
-                .map(user -> user.get("uid"))
+                .map(user -> user.get("uid"))    // NE MARCHE PLUS
+//                .map(user -> user.get("dn"))    // MARCHE
+                .peek(u -> LOGGER.info("user = {}", u))
                 .filter(uid -> uid.contains(TestConstants.DRIVONOL_USERNAME))
                 .count();
         assertThat(nbUsers).isEqualTo(1);
@@ -237,7 +254,7 @@ public class GinaLdapApplicationTest {
 
     @Test
     public void getBusinessRolesTest() throws RemoteException {
-        List<String> roles = api.getBusinessRoles(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION);
+        List<String> roles = api.getBusinessRoles(DOMAIN_APPLICATION);
         assertThat(roles).isNotNull();
         assertThat(roles).isEmpty();
     }
@@ -250,14 +267,14 @@ public class GinaLdapApplicationTest {
     public void getIntegrationUserRolesTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getIntegrationUserRoles(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, "ABC");
+        api.getIntegrationUserRoles(DOMAIN_APPLICATION, "ABC");
     }
 
     @Test
     public void getIntegrationUserAttributesTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getIntegrationUserAttributes(LDAP_APPLICATION_TEST_DOMAINE, LDAP_APPLICATION_TEST_DOMAINE_APPLICATION);
+        api.getIntegrationUserAttributes(DOMAIN, DOMAIN_APPLICATION);
     }
 
     @Test
@@ -285,14 +302,14 @@ public class GinaLdapApplicationTest {
     public void getInheritingRolesTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getInheritingRoles(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION, LDAP_APPLICATION_TEST_ROLE);
+        api.getInheritingRoles(DOMAIN_APPLICATION, ROLE);
     }
 
     @Test
     public void getPMProprieteMetierTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getPMProprieteMetier(LDAP_APPLICATION_TEST_DOMAINE_APPLICATION);
+        api.getPMProprieteMetier(DOMAIN_APPLICATION);
     }
 
     @Test

@@ -46,6 +46,7 @@ Dans le POM, ce mode correspond au profil ``etat-de-geneve`` (le profil par déf
 
 ```mvn -Dldap.domain.password=<MOT DE PASSE 1> -Dldap.application.password=<MOT DE PASSE 2> -Dldap.gestrepo.password=<MOT DE PASSE 3> clean install```
 
+
 Les mots de passe sont stockés dans le Keypass du SMIL. S'adresser au SMIL pour les obtenir.
 
 ## Mode "local"
@@ -172,8 +173,8 @@ n'ont pas de fichier .ldif disponible.
 ## Explorateur LDAP
 
 De façon facultative, on peut lancer un explorateur LDAP sur un serveur LDAP lancé (Gina ou UnboundID).
-L'explorateur, par exemple [ApacheDS](http://directory.apache.org/apacheds/downloads.html)
-ou [JXplorer](http://www.jxplorer.org), permet de parcourir de façon conviviale un répertoire LDAP.
+L'explorateur, par exemple [Apache Directory Studio](https://directory.apache.org/studio)
+ou [JXplorer](http://www.jxplorer.org), permet de parcourir de façon conviviale un annuaire LDAP.
 
 Procédure pour brancher JXplorer sur Gina :
 - Installer JXplorer
