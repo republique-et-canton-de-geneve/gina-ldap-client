@@ -16,69 +16,66 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package gina.impl.attribute;
-
-import gina.api.GinaApiBaseAble;
+package gina.api;
 
 /**
- * Noms des attributs des utilisateurs dans Gina.
+ * Noms des attributs des utilisateurs dans le VLDAP.
+ *
  * Un attribut dans Gina (par exemple firstname) n'a pas forcement le meme nom dans le VLDAP (par exemple givenName).
- * <p/>
- * Les attributs Gina n'ont pas d'interet pour le developpeur, ils ne servent qu'a la cuisine interne de cette
- * bibliotheque, pour transcrire en termes Gina les appels au VLDAP.
- * Les appels aux methodes de {@link GinaApiBaseAble} prennent en parametres et rendent en resultat uniquement des
- * attributs VLDAP.
  */
-public enum GinaAttribute {
+public enum LdapAttribute {
 
-    /** Indicateur de desactivation. */
-    DISABLED("disabled"),
+    /** Nom d'utilisateur, par ex. "LAROCHEP". */
+    CN("cn"),
 
-    /** Nom unique de l'utilisateur. */
+    /** Service, par ex. "UO5751". */
+    DEPARTMENT_NUMBER("departmentNumber"),
+
+    /** Nom complet, par ex. "Laroche Pierre (DI)". */
+    DISPLAY_NAME("displayName"),
+
+    /** Nom unique de l'utilisateur, par ex. "cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina". */
     DN("dn"),
 
-    /** Adresse electronique. */
-    EMAIL("email"),
+    /** Numero d'employe, par ex. "40109194". */
+    EMPLOYEE_NUMBER("employeeNumber"),
+
+    /** Type d'employe, par ex. "internal-ge". */
+    EMPLOYEE_TYPE("employeeType"),
 
     /** Prenom. */
-    FIRSTNAME("firstname"),
+    GIVEN_NAME("givenName"),
 
-    /** Nom complet. */
-    FULLNAME("fullname"),
-
-    /** Matricule SIRH. */
-    HRID("hrid"),
-
-    /** Initiales. */
+    /** Initiales, par ex. "PL". */
     INITIALS("initials"),
 
-    /** Langue. */
+    /** Langue, par ex. "FR". */
     LANGUAGE("lang"),
+
+    /** Indicateur de desactivation, par ex. "FALSE". */
+    LOGIN_DISABLED("loginDisabled"),
+
+    /** Adresse electronique. */
+    MAIL("mail"),
 
     /** Numero de telephone mobile. */
     MOBILE("mobile"),
 
     /** Nom de famille. */
-    NAME("name"),
-
-    /** OU (Organisation Unit) de l'utilisateur (Admin/Police/Justice). */
-    OU("ou"),
+    SN("sn"),
 
     /** Numero de telephone. */
-    PHONE("phone"),
+    TELEPHONE_NUMBER("telephoneNumber"),
 
-    /** Service. */
-    SERVICE("service"),
-
-    /** Titre. */
+    /** Titre, par ex. "Gestionnaire de service". */
     TITLE("title"),
 
-    /** Nom d'utilisateur (login). */
-    USER("user");
+    /** Identifiant, par ex. "LAROCHEP". */
+    UID("uid");
 
     public final String value;
 
-    GinaAttribute(String value) {
+    LdapAttribute(String value) {
         this.value = value;
     }
 

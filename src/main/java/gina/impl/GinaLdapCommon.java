@@ -308,11 +308,10 @@ public class GinaLdapCommon implements GinaApiLdapBaseAble {
         return result;
     }
 
-    private Map<String, String> getUserDnAttrs(String userDn, String[] attrs) {
+    private Map<String, String> getUserDnAttrs(String userDn, final String[] attrs) {
         GinaLdapQuery qry = getLdapContext().newQuery()
                 .setFilter(GinaLdapUtils.getLdapFilterUser())
-                .setAttributes(GinaLdapUtils.ginaToAttributeNames(attrs))
-//                .setAttributes(attrs)
+                .setAttributes(attrs)
                 .setScope(GinaLdapQuery.Scope.OBJECT)
                 .setBaseDn(userDn);
         return qry.unique(new GinaLdapQuery.Consumer<Map<String, String>>() {
@@ -430,7 +429,7 @@ public class GinaLdapCommon implements GinaApiLdapBaseAble {
         List<String> roles = qry.unique(new GinaLdapQuery.Consumer<List<String>>() {
             @Override
             public List<String> consume(String dn, Attributes attrs) {
-                final List<String> result = new ArrayList<String>();
+                List<String> result = new ArrayList<String>();
                 List<String> groups = GinaLdapUtils.allValues(attrs, GinaLdapUtils.ATTRIBUTE_MEMBEROF);
                 for (String group : groups) {
                     result.add(GinaLdapUtils.roleDnToString(group));
@@ -550,7 +549,7 @@ public class GinaLdapCommon implements GinaApiLdapBaseAble {
 
     @Override
     public List<String> getBusinessRoles(String application) throws RemoteException {
-        final String encodedApplication = GinaLdapEncoder.filterEncode(application);
+        String encodedApplication = GinaLdapEncoder.filterEncode(application);
 
         List<String> roles = getAppRoles(encodedApplication);
 
@@ -572,7 +571,7 @@ public class GinaLdapCommon implements GinaApiLdapBaseAble {
     }
 
     @Override
-    public List<Map<String, String>> getUsers(String application, String role, final String[] attrs) {
+    public List<Map<String, String>> getUsers(String application, String role, String[] attrs) {
         long tm = System.currentTimeMillis();
         String filter = GinaLdapUtils.ldapFilterEquals(GinaLdapUtils.ATTRIBUTE_MEMBEROF, getRoleDn(application, role));
         List<Map<String, String>> result = queryUsers(filter, attrs);
@@ -588,7 +587,7 @@ public class GinaLdapCommon implements GinaApiLdapBaseAble {
         GinaLdapQuery qry = getLdapContext().newQuery()
                 .setBaseDn(getUserBaseDn())
                 .setFilter(filter)
-                .setAttributes(GinaLdapUtils.ginaToAttributeNames(attrs))
+                .setAttributes(attrs)
                 .setScope(GinaLdapQuery.Scope.ONELEVEL);
         return qry.forEach(new GinaLdapQuery.Consumer<Map<String, String>>() {
             @Override
@@ -600,8 +599,7 @@ public class GinaLdapCommon implements GinaApiLdapBaseAble {
 
     @Override
     @Deprecated
-    public void sendMail(String from, String[] to, String[] cc, String subject, String text,
-            String mimeType) {
+    public void sendMail(String from, String[] to, String[] cc, String subject, String text, String mimeType) {
         throw new GinaException(NOT_IMPLEMENTED);
     }
 

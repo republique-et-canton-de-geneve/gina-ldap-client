@@ -28,7 +28,7 @@ import java.util.Map;
 public interface GinaApiBaseAble {
 
     /**
-     * Donne le nom de l'utilisateur courant
+     * Donne le nom de l'utilisateur courant.
      *
      * @return nom de l'utilisateur courant
      */
@@ -43,9 +43,9 @@ public interface GinaApiBaseAble {
     boolean isValidUser(String username) throws RemoteException;
 
     /**
-     * Donne la liste de tous les utilisateurs dans l'annuaire, avec les attributs demandés.
+     * Donne la liste de tous les utilisateurs dans l'annuaire, avec les attributs demandes.
      *
-     * @param filter début du nom de l'utilisateur (min. 3 caractères)
+     * @param filter debut du nom de l'utilisateur (min. 3 caractères)
      * @param attrs tableau des attributs, ou null pour obtenir tous les attributs disponibles
      * @return liste de Maps contenant les attributs demandés pour chaque utilisateur
      */
@@ -56,8 +56,8 @@ public interface GinaApiBaseAble {
      *
      * @param username nom de l'utilisateur
      * @param attrs tableau des noms des attributs, ou null pour obtenir tous les attributs disponibles
-     * @return Attributs sous la forme d'une Map <cle, valeur>. Les cles sont les
-     *         noms des attributs, ou null si l'utilisateur n'existe pas.
+     * @return attributs sous la forme d'une Map <cle, valeur> (les cles sont les
+     *         noms des attributs) ou null si l'utilisateur n'existe pas
      */
     Map<String, String> getUserAttrs(String username, String[] attrs) throws RemoteException;
 
@@ -66,37 +66,37 @@ public interface GinaApiBaseAble {
      * Equivaut a : getUserAttrs(getUser(), attrs)
      *
      * @param attrs tableau des noms des attributs, ou null pour obtenir tous les attributs disponibles
-     * @return Attributs demandés sous la forme d'une Map. Les cles sont les noms des attributs
+     * @return attributs demandes sous la forme d'une Map. Les cles sont les noms des attributs
      */
     Map<String,String> getUserAttrs(String[] attrs) throws RemoteException;
 
     /**
-     * Donne la langue de l'utilisateur courant
+     * Donne la langue de l'utilisateur courant.
      *
      * @return langue au format ISO (2 char majuscules)
      */
     String getLanguage() throws RemoteException;
 
     /**
-     * Donne l'environnement courant
+     * Donne l'environnement courant.
      *
      * @return environnement courant (DEV/REC/PROD)
      */
     String getEnvironment() throws RemoteException;
 
     /**
-     * Indique si l'utilisateur courant a un role
+     * Indique si l'utilisateur courant a le role donne' pour l'application donnee.
      *
      * @param application nom de l'application (ex: CTI.COMPOSANTSECURITE)
-     * @param role nom du rôle
-     * @return true si l'utilisateur courant a le rôle, false sinon
+     * @param role nom du role
+     * @return true si l'utilisateur courant a le role, false sinon
      */
     boolean hasRole(String application, String role) throws RemoteException;
 
     /**
      * Indique si l'utilisateur donne' a le role donne' pour l'application donnee.
      *
-     * @param user nom de l'utilisateur.
+     * @param user nom de l'utilisateur
      * @param application nom de l'application (ex: CTI.COMPOSANTSECURITE)
      * @param role nom du role
      * @return true si l'utilisateur courant a le role, false sinon
@@ -104,7 +104,7 @@ public interface GinaApiBaseAble {
     boolean hasUserRole(String user, String application, String role) throws RemoteException;
 
     /**
-     * Donne tous les roles de l'utilisateur courant, pour l'application donnee
+     * Donne tous les roles de l'utilisateur courant, pour l'application donnee.
      *
      * @param application nom de l'application (ex: CTI.COMPOSANTSECURITE)
      * @return liste des noms des roles
@@ -121,17 +121,17 @@ public interface GinaApiBaseAble {
     List<String> getUserRoles(String user, String application) throws RemoteException;
 
     /**
-     * Retourne les roles d'un utilisateur dans un domaine donne
-     * @param domain : Domaine de recherche des roles
-     * @param applicationPrefix filtre sur les applications (filtre) minimum 3 caracteres
-     * @return Une liste de roles en notation longue
+     * Donne les roles d'un utilisateur dans un domaine donne'.
+     * @param domain domaine de recherche des roles
+     * @param applicationPrefix filtre sur les applications (filtre), minimum 3 caracteres
+     * @return liste de roles en notation longue
      */
     List<String> getIntegrationUserRoles(String domain, String applicationPrefix) throws RemoteException;
 
     /**
      *
-     * @param domain : nom du domaine
-     * @param application  : nom court de l'application
+     * @param domain nom du domaine
+     * @param application nom court de l'application
      * @return Liste d'attributs sous forme [nom attribut]=[valuer attribut]:
      * 		Si utilisateur n'est pas dans le role UTILISATEUR de l'application, ne retourne que "validUser=false"
      */
@@ -178,7 +178,7 @@ public interface GinaApiBaseAble {
     List<Map<String, String>> getUsers(String application, String role, String[] attrs) throws RemoteException;
 
     /**
-     * Donne la liste des utilisateurs par numéro de telephone
+     * Donne la liste des utilisateurs par numéro de telephone.
      *
      * @param phoneNumber numero de telephone
      * @param activUser Status du compte utilisateur (actif/inactif)
@@ -188,20 +188,20 @@ public interface GinaApiBaseAble {
    			throws RemoteException;
 
    /**
-    * Donne la liste des utilisateurs par numero SIRH
+    * Donne la liste des utilisateurs par numero SIRH.
     *
     * @param sirhNumber numero SIRH
-    * @param activUser Status du compte utilisateur (actif/inactif)
+    * @param activUser etat du compte utilisateur (actif/inactif)
     * @return liste des utilisateurs
     */
    List<Map<String,String>> getUsersBySIRHNumber(String sirhNumber, Boolean activUser, String[] attrs)
   			throws RemoteException;
 
    /**
-    * Donne la liste des utilisateurs par nom de famille
+    * Donne la liste des utilisateurs par nom de famille.
     *
     * @param name nom de famille
-    * @param activUser Status du compte utilisateur (actif/inactif)
+    * @param activUser etat du compte utilisateur (actif/inactif)
     * @return liste des utilisateurs
     */
    List<Map<String, String>> getUsersByName(String name, Boolean activUser, String[] attrs)
@@ -217,10 +217,10 @@ public interface GinaApiBaseAble {
     List<String> getInheritingRoles(String application, String role) throws RemoteException;
 
     /**
-     * Donne les proprietes metier associees aux UOs
+     * Donne les proprietes metier associees aux UO.
      * @param name nom de la propriete
-     * @return Map dont les cles sont les chemins des UOs et les valeurs les listes des
-     * valeurs de la propriete pour l'UO correspondante.
+     * @return Map dont les cles sont les chemins des UOs et les valeurs sont les listes des
+     * valeurs de la propriete pour l'UO correspondante
      */
      List<String> getPMProprieteMetier(String name) throws RemoteException;
 
@@ -233,15 +233,15 @@ public interface GinaApiBaseAble {
     String getOwnIDUniqueForPPorPseudo()	throws RemoteException, NamingException;
 
     /**
-     * Donne les proprietes metier associees à l'UO de l'utilisateur courant
+     * Donne les proprietes metier associees à l'UO de l'utilisateur courant.
      * @param name nom de la propriete
      * @return Map dont les cles sont les chemins des UOs et les valeurs les listes des
-     * valeurs de la propriete pour l'UO correspondante.
+     * valeurs de la propriete pour l'UO correspondante
      */
     List<String> getOwnPMProprieteMetier(String name) throws RemoteException;
 
     /**
-     * Donne les proprietes metier associees a l'utilisateur courant
+     * Donne les proprietes metier associees a l'utilisateur courant.
      * @param name nom de la propriete
      * @return liste des valeurs de la propriete
      */
@@ -249,10 +249,10 @@ public interface GinaApiBaseAble {
     List<String> getPPProprieteMetier(String name) throws RemoteException;
 
     /**
-     * Donne les proprietes metier associees à l'UO de l'utilisateur courant
+     * Donne les proprietes metier associees à l'UO de l'utilisateur courant.
      * @param name nom de la propriete
      * @return Map dont les cles sont les chemins des UOs et les valeurs les listes des
-     * valeurs de la propriete pour l'UO correspondante.
+     * valeurs de la propriete pour l'UO correspondante
      */
     List<String> getOwnPPProprieteMetier(String name) throws RemoteException;
 

@@ -55,11 +55,14 @@ public class GinaLdapQuery {
 
         private final int value;
 
-        private Scope(int value) {
+        Scope(int value) {
             this.value = value;
         }
     }
 
+    /**
+     * TODO remplacer par un lambda
+     */
     public interface Consumer<T> {
         T consume(String dn, Attributes attrs) throws NamingException;
     }
@@ -87,13 +90,15 @@ public class GinaLdapQuery {
 
     public GinaLdapQuery setAttributes(String... attrs) {
         constraints.setReturningAttributes(attrs);
-        constraints.setReturningObjFlag(true);
+//        constraints.setReturningObjFlag(true);
+        constraints.setReturningObjFlag(false);
         return this;
     }
 
     public GinaLdapQuery setAllAttributes() {
         constraints.setReturningAttributes(null);
-        constraints.setReturningObjFlag(true);
+//        constraints.setReturningObjFlag(true);
+        constraints.setReturningObjFlag(false);
         return this;
     }
 

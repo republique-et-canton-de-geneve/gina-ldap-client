@@ -18,9 +18,8 @@
  */
 package gina.impl.util;
 
+import gina.api.LdapAttribute;
 import gina.impl.GinaException;
-import gina.impl.attribute.GinaAttribute;
-import gina.impl.attribute.AttributeMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,11 +29,10 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class GinaLdapUtils {
 
@@ -148,41 +146,30 @@ public class GinaLdapUtils {
         return null;
     }
 
-    public static String[] ginaToAttributeNames(String... names) {
-        if (names == null) {
-            return null;
-        }
-        Set<String> result = new TreeSet<>();
-        for (String name: names) {
-            String ldap = AttributeMapper.ginaToLdap(name);
-            if (ldap != null) {
-                result.add(ldap);
-            }
-        }
-        return result.toArray(new String[result.size()]);
-    }
-
+    /**
+     * Traduit une liste d'attributs, du format javax.naming.directory vers un format Map.
+     * @param names noms des attributs a traduire. Si null, tous les attributs sont traduits
+     */
     public static Map<String,String> attributesToUser(String dn, Attributes attrs, String... names) {
-        if (names == null) {
-            return attributesToUser(dn, attrs);
-        }
         Map<String,String> result = new HashMap<>();
-        result.put(GinaAttribute.DN.value, dn);
-        for (String gina: names) {
-            String ldap = AttributeMapper.ginaToLdap(gina);
-            if (ldap != null) {
-                String value = firstValue(attrs, ldap);
-                if (value != null) {
-                    result.put(gina, value);
-                }
+
+        result.put(LdapAttribute.DN.value, dn);
+
+        NamingEnumeration<? extends Attribute> attributesEnum = attrs.getAll();
+        while (attributesEnum.hasMoreElements()) {
+            Attribute attribute = attributesEnum.nextElement();
+            String name = attribute.getID();
+            if (names == null || Arrays.asList(names).contains(name)) {
+                result.put(name, firstValue(attribute));
             }
         }
+
         return result;
     }
 
     public static String firstValue(Attribute attr) {
         try {
-            if (attr == null || attr.size() == 0) {
+            if (/*attr == null ||*/ attr.size() == 0) {
                 return null;
             }
             return attr.get(0).toString();
@@ -198,10 +185,8 @@ public class GinaLdapUtils {
     public static List<String> allValues(Attribute attr) {
         try {
             List<String> result = new ArrayList<String>();
-            if (attr != null) {
-                for (int i = 0; i < attr.size(); ++i) {
-                    result.add((String)attr.get(i));
-                }
+            for (int i = 0; i < attr.size(); ++i) {
+                result.add((String)attr.get(i));
             }
             return result;
         } catch (NamingException e) {

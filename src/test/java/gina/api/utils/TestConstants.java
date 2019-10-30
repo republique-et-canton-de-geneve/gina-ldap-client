@@ -18,8 +18,7 @@
  */
 package gina.api.utils;
 
-import gina.impl.attribute.GinaAttribute;
-import gina.impl.attribute.LdapAttribute;
+import gina.api.LdapAttribute;
 
 public class TestConstants {
 
@@ -38,14 +37,17 @@ public class TestConstants {
     /**
      * Proprietes de l'utilisateur.
      */
-//    public static String[] TEST_ATTRS = { "initials", "givenName", "sn", "username", "uid" };
-    public static String[] TEST_ATTRS = { GinaAttribute.INITIALS.value, GinaAttribute.FIRSTNAME.value, GinaAttribute.NAME.value };
-//    public static String[] TEST_ATTRS = {LdapAttribute.INITIALS.value, LdapAttribute.GIVEN_NAME.value, LdapAttribute.SN.value };
+    public static String[] TEST_ATTRS = {
+            LdapAttribute.CN.value,
+            LdapAttribute.GIVEN_NAME.value,
+            LdapAttribute.SN.value,
+            LdapAttribute.UID.value,
+    };
 
-    // String indiquant le début d'un test
+    // Chaine indiquant le début d'un test, pour les traces
     public static final String START_METHOD = "START";
 
-    // String indiquant la fin d'un test
+    // Chaine indiquant la fin d'un test, pour les traces
     public static final String END_METHOD = "END";
 
 }

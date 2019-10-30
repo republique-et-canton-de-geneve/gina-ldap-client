@@ -89,12 +89,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <encoding>ISO-8859-1</encoding>
-                    <!-- NE PAS COMMITTER CE CHANGEMENT !!!!! RESTER EN 1.7 !!! -->
                     <source>1.8</source>
                     <target>1.8</target>
-                    <!-- le JAR final doit etre en Java 6, mais dans les tests on veut pouvoir utiliser des lambdas -->
-                    <testSource>1.8</testSource>
-                    <testTarget>1.8</testTarget>
                 </configuration>
             </plugin>
             <!-- Tests : connexion à Gina ou au serveur ldif. Les valeurs à fournir sont indiquees dans les profils

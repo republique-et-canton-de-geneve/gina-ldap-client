@@ -25,7 +25,7 @@ partie de ses données, de nombreuses méthodes renvoient simplement une excepti
 voir la classe ``gina.impl.GinaLdapCommon``.
 A l'inverse, quelques méthodes ont été ajoutées.
 
-Cette bibliothèque peut être intégrée à toute application tournant sur JRE 1.6+.
+Cette bibliothèque peut être intégrée à toute application tournant sur JRE 8+.
 Elle est construite quasiment sans utilisation de librairies spécifiques, dans un souci de limiter les dépendances.
 
 # 3. Construction
@@ -185,15 +185,3 @@ Procédure pour brancher JXplorer sur Gina :
 ![connexion LDAP](./doc/jxplorer_1.png)
 
 ![exploration LDAP](./doc/jxplorer_2.png)
-
-# Annexe 2. Note sur l'usage d'IntelliJ
-
-Pour les développeurs. IntelliJ ne sait pas interpréter ``<testSource>`` dans le POM et lève des erreurs
-```
-Error:(198, 48) java: lambda expressions are not supported in -source 1.6 (use -source 8 or higher to enable lambda expressions)
-```
-sur les classes de test, bien que ``<testSource>`` ait été initialisé à ``1.8``.
-Pour éviter ces erreurs, aller dans ``Project Structure`` (Ctrl+Alt+Shift+S), puis  dans ``Modules``, puis mettre
-``Language level`` à ``8``.
-
-Ces erreurs sont sans conséquence sur le ``mvn install``.

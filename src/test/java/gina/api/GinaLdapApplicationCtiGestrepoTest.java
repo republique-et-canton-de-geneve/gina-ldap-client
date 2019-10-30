@@ -24,8 +24,6 @@ import gina.api.utils.TestTools;
 import gina.impl.GinaException;
 import gina.impl.GinaLdapCommon;
 import gina.impl.GinaLdapFactory;
-import gina.impl.attribute.GinaAttribute;
-import gina.impl.attribute.LdapAttribute;
 import gina.impl.util.GinaLdapConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.CoreMatchers;
@@ -92,7 +90,7 @@ public class GinaLdapApplicationCtiGestrepoTest {
     }
 
     @Test
-    public void getAllUsersTest() throws RemoteException {
+    public void getAllUsers() throws RemoteException {
         thrown.expect(GinaException.class);
         thrown.expectMessage(CoreMatchers.containsString(GinaLdapCommon.NOT_IMPLEMENTED));
 
@@ -100,7 +98,7 @@ public class GinaLdapApplicationCtiGestrepoTest {
     }
 
     @Test
-    public void getUserRolesTest() throws RemoteException {
+    public void getUserRoles() throws RemoteException {
         List<String> roles = api.getUserRoles(USER);
 
         assertThat(roles).isNotNull();
@@ -113,7 +111,7 @@ public class GinaLdapApplicationCtiGestrepoTest {
     }
 
     @Test
-    public void isValidUserTest() throws RemoteException {
+    public void isValidUser() throws RemoteException {
         // Utilisateur valide
         boolean result = api.isValidUser(USER);
         assertThat(result).isTrue();
@@ -124,28 +122,36 @@ public class GinaLdapApplicationCtiGestrepoTest {
     }
 
     @Test
-    public void getUserAttrsTest() throws RemoteException {
-        String[] attrs = TestConstants.TEST_ATTRS;
-        Map<String, String> attributes = api.getUserAttrs(USER, attrs);
+    public void getUserAttrs() throws RemoteException {
+        String[] requestedAttributes = TestConstants.TEST_ATTRS;
+        Map<String, String> attributes = api.getUserAttrs(USER, requestedAttributes);
 
         LOGGER.info("Attributs obtenus : {}", attributes.keySet());
 
         assertThat(attributes.size())
                 .as("Le nombre attendu d'attributs n'a pas a ete obtenu")
-                .isEqualTo(attrs.length + 1);    // l'appel rend l'attribut "dn" en plus
+                .isEqualTo(requestedAttributes.length + 1);    // l'appel rend l'attribut "dn" en plus
 
-        String attribute = GinaAttribute.FIRSTNAME.value;
-        Optional<Map.Entry<String, String>> entry = attributes.entrySet()
-                .stream()
-                .filter(e -> attribute.equalsIgnoreCase(e.getKey()))
-                .findAny();
-        assertThat(entry)
-                .as("L'attribut '" + attribute + "' est manquant")
-                .isPresent()
-                .hasValueSatisfying(e ->
-                        assertThat(e.getValue())
-                                .as("L'attribut '" + attribute + "' obtenu est incorrect")
-                                .isEqualTo("Pierre"));
+        checkAttribute(attributes, LdapAttribute.DN, "cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina");
+        checkAttribute(attributes, LdapAttribute.CN, "LAROCHEP");
+        checkAttribute(attributes, LdapAttribute.GIVEN_NAME, "Pierre");
+        checkAttribute(attributes, LdapAttribute.INITIALS, "PL");
+        checkAttribute(attributes, LdapAttribute.SN, "Laroche");
+    }
+
+    @Test
+    public void getUserAllAttrs() throws RemoteException {
+        Map<String, String> attributes = api.getUserAttrs(USER, null);
+
+        LOGGER.info("Attributs obtenus : {}", attributes.keySet());
+
+        assertThat(attributes.size())
+                .as("Le nombre attendu d'attributs n'a pas a ete obtenu")
+                .isEqualTo(16);
+
+        checkAttribute(attributes, LdapAttribute.DN, "cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina");
+        checkAttribute(attributes, LdapAttribute.DEPARTMENT_NUMBER, "UO5751");
+        checkAttribute(attributes, LdapAttribute.DISPLAY_NAME, "Laroche Pierre (DI)");
     }
 
     @Test
@@ -159,7 +165,7 @@ public class GinaLdapApplicationCtiGestrepoTest {
     }
 
     @Test
-    public void hasRoleUserTest2() throws RemoteException {
+    public void hasRoleUser2() throws RemoteException {
         String user = USER;
         String role = "ROLE_BIDON_QUI_N_EXISTE_PAS_DANS_GINA";
         boolean ret = api.hasUserRole(user, role);
@@ -169,7 +175,7 @@ public class GinaLdapApplicationCtiGestrepoTest {
     }
 
     @Test
-    public void hasUserRoleWithUserAndApplicationAndRoleTest() throws RemoteException {
+    public void hasUserRoleWithUserAndApplicationAndRole() throws RemoteException {
         String user = USER;
         String application = DOMAIN_APPLICATION;
         String role = ROLE;
@@ -180,8 +186,7 @@ public class GinaLdapApplicationCtiGestrepoTest {
     }
 
     @Test
-    public void getAppRolesTest() throws RemoteException {
-//        List<String> roles = api.getAppRoles(APPLICATION);
+    public void getAppRoles() throws RemoteException {
         List<String> roles = api.getAppRoles(DOMAIN_APPLICATION);
         assertThat(roles).isNotNull();
         assertThat(roles.size()).isGreaterThan(0);
@@ -198,6 +203,24 @@ public class GinaLdapApplicationCtiGestrepoTest {
             LOGGER.info("users for role {}: list of size {}", role, users.size());
         }
         */
+    }
+
+    /**
+     * Verifie que "attributes" contient une entree avec "name" pour nom d'attribut et "value" comme valeur
+     * d'attribut.
+     */
+    private void checkAttribute(Map<String, String> attributes, LdapAttribute attr, String value) {
+        String name = attr.value;
+        Optional<Map.Entry<String, String>> entry = attributes.entrySet().stream()
+                .filter(e -> name.equalsIgnoreCase(e.getKey()))
+                .findAny();
+        assertThat(entry)
+                .as("L'attribut '" + name + "' est manquant")
+                .isPresent()
+                .hasValueSatisfying(e ->
+                        assertThat(e.getValue())
+                                .as("La valeur de l'attribut '" + name + "' est incorrecte")
+                                .isEqualTo(value));
     }
 
 }

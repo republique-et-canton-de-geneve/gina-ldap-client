@@ -48,10 +48,10 @@ public class GinaLdapApplicationTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(GinaLdapApplicationTest.class);
 
     // LDAP : domaine Gina
-    protected static final String DOMAIN = "OAC";
+    static final String DOMAIN = "OAC";
 
     // LDAP : application Gina
-    protected static final String APPLICATION = "CAMAC-GENEVE";
+    static final String APPLICATION = "CAMAC-GENEVE";
 
     // LDAP : domaine Gina + application Gina
     private static final String DOMAIN_APPLICATION = DOMAIN + "." + APPLICATION;
@@ -131,10 +131,10 @@ public class GinaLdapApplicationTest {
     }
 
     @Test
-    public void hasRoleUserTest() throws RemoteException {
+    public void hasUserRoleUserTest() throws RemoteException {
         boolean ret = api.hasUserRole(TestConstants.DRIVONOL_USERNAME, ROLE);
 
-        List<String> roles = api.getUserRoles(TestConstants.DRIVONOL_USERNAME, ROLE);
+        List<String> roles = api.getUserRoles(TestConstants.DRIVONOL_USERNAME, DOMAIN_APPLICATION);
         LOGGER.info("roles = {}", roles);
 
         assertThat(ret)
@@ -145,7 +145,6 @@ public class GinaLdapApplicationTest {
     @Test
     public void hasUserRoleWithUserAndApplicationAndRoleTest() throws RemoteException {
         boolean ret = api.hasUserRole(TestConstants.DRIVONOL_USERNAME, DOMAIN_APPLICATION, ROLE);
-//        boolean ret = api.hasUserRole(TestConstants.DRIVONOL_USERNAME, DOMAIN_APPLICATION, "UTILISATEUR");
         assertThat(ret)
                 .as(TestConstants.DRIVONOL_USERNAME + " devrait avoir le role " + ROLE + " pour l'application " + DOMAIN_APPLICATION)
                 .isTrue();
@@ -153,7 +152,7 @@ public class GinaLdapApplicationTest {
 
     @Test
     public void getAppRolesTest() throws RemoteException {
-        List<String> roles = api.getAppRoles("CAMAC-GENEVE");
+        List<String> roles = api.getAppRoles(DOMAIN_APPLICATION);
 
         assertThat(roles).isNotEmpty();
         LOGGER.info("roles.size() = {}", roles.size());
@@ -244,8 +243,7 @@ public class GinaLdapApplicationTest {
 
         long nbUsers = users
                 .stream()
-                .map(user -> user.get("uid"))    // NE MARCHE PLUS
-//                .map(user -> user.get("dn"))    // MARCHE
+                .map(user -> user.get("uid"))
                 .peek(u -> LOGGER.info("user = {}", u))
                 .filter(uid -> uid.contains(TestConstants.DRIVONOL_USERNAME))
                 .count();
