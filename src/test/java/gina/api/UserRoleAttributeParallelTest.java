@@ -29,12 +29,10 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static gina.api.utils.TestTools.getGinaLdapConfiguration;
-
 @RunWith(ParallelRunner.class)
-public class GinaLdapApplicationParallelTest extends GinaLdapApplicationTest {
+public class UserRoleAttributeParallelTest extends UserRoleAttributeTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GinaLdapApplicationParallelTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserRoleAttributeParallelTest.class);
 
     @BeforeClass
     public static void initApi() {
@@ -48,12 +46,7 @@ public class GinaLdapApplicationParallelTest extends GinaLdapApplicationTest {
         System.setProperty("com.sun.jndi.ldap.connect.pool.initsize", "3");
         System.setProperty("com.sun.jndi.ldap.connect.pool.debug", "fine");
 
-        String base = "ou=OAC,o=gina";
-        String server = System.getProperty("test.application.server");
-        String user = System.getProperty("test.application.user");
-        String password = System.getProperty("test.application.password");
-
-        GinaLdapConfiguration ldapConf = getGinaLdapConfiguration(server, user, password, DOMAIN, APPLICATION);
+        GinaLdapConfiguration ldapConf = getGinaLdapConfiguration();
         gina = new GinaLdapAccess(ldapConf);
 
         LOGGER.info(TestConstants.END_METHOD);

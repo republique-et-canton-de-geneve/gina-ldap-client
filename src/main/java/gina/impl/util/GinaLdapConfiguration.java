@@ -91,8 +91,6 @@ public class GinaLdapConfiguration {
             int ldapConnectionTimeout,
             int ldapReadTimeout) {
         Validate.notEmpty(server, "server");
-        Validate.notNull(user, "user");
-        Validate.notNull(password, "password");
         Validate.notNull(domain, "ginaDomain");
 
         this.ldapServerUrl = server;

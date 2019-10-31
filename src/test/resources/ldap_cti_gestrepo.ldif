@@ -1,0 +1,237 @@
+version: 1
+
+dn: o=gina
+objectClass: organization
+objectClass: ginaEnv
+objectClass: top
+o: gina
+environment: DEV
+
+dn: ou=CTI,o=gina
+objectClass: organizationalUnit
+objectClass: top
+ou: CTI
+
+dn: ou=GESTREPO,ou=CTI,o=gina
+objectClass: organizationalUnit
+objectClass: top
+ou: GESTREPO
+
+dn: ou=Users,ou=GESTREPO,ou=CTI,o=gina
+objectClass: organizationalUnit
+objectClass: top
+ou: Users
+
+dn: cn=DUBOISPELERINY,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+objectClass: ginaUser
+objectClass: withMemberOf
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: DUBOISPELERINY
+sn:: RHVib2lzLVDDqGxlcmlu
+departmentNumber: UO5751
+displayName:: RHVib2lzLVDDqGxlcmluIFl2ZXMgKERJKQ==
+employeeNumber: 40111337
+employeeType: interne-ge
+givenName: Yves
+initials: YD
+language: FR
+loginDisabled: FALSE
+mail: Yves.Dubois-Pelerin@etat.ge.ch
+memberOf: cn=ADMINISTRATEUR,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=CONCEPTEUR-CTI,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-AEL,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-ALL,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-CTI,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-ECO,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-EDG,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-GEOMATIQUE,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-JUS,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-PRE,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-RAD,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-SIEBEL,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=TECH-AUDITEUR-AUTORISATIONS,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=TECH-GESTIONNAIRE-AUTORISATIONS,ou=Groups,ou=GESTREPO,ou=CTI,o=
+ gina
+memberOf: cn=UTILISATEUR,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+telephoneNumber: +41223880925
+title:: RMOpdmVsb3BwZXVyIHPDqW5pb3I=
+uid: DUBOISPELERINY
+
+dn: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+objectClass: ginaUser
+objectClass: withMemberOf
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: LAROCHEP
+sn: Laroche
+departmentNumber: UO5751
+displayName: Laroche Pierre (DI)
+employeeNumber: 40109194
+employeeType: interne-ge
+givenName: Pierre
+initials: PL
+language: FR
+loginDisabled: FALSE
+mail: Pierre.Laroche@etat.ge.ch
+memberOf: cn=ADMINISTRATEUR,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=CONCEPTEUR-CTI,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-AEL,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-ALL,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-CTI,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-EDG,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-GEOMATIQUE,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-JUS,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-PRE,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-RAD,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-SI-SONDES,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=DEVELOPPEUR-SIEBEL,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=SONAR-USER-AFC,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=TECH-AUDITEUR-AUTORISATIONS,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=TECH-CONCEPTEUR,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+memberOf: cn=TECH-GESTIONNAIRE-AUTORISATIONS,ou=Groups,ou=GESTREPO,ou=CTI,o=
+ gina
+memberOf: cn=UTILISATEUR,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+telephoneNumber: +41223880525
+title: Gestionnaire de service
+uid: LAROCHEP
+
+dn: ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: organizationalUnit
+objectClass: top
+ou: Groups
+
+dn: cn=ADMINISTRATEUR,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: ADMINISTRATEUR
+member: cn=DUBOISPELERINY,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+member: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=ADMINISTRATEUR-AFC,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: ADMINISTRATEUR-AFC
+member: cn=FROUDJ,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+member: cn=RENAUDLI,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=ADMINISTRATEUR-GINA,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: ADMINISTRATEUR-GINA
+member: cn=CLARA,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+member: cn=PERRYM,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=CONCEPTEUR-CTI,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: CONCEPTEUR-CTI
+member: cn=DUBOISPELERINY,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+member: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=DEVELOPPEUR-AEL,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: DEVELOPPEUR-AEL
+member: cn=DUBOISPELERINY,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+member: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=DEVELOPPEUR-ALL,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: DEVELOPPEUR-ALL
+member: cn=DUBOISPELERINY,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+member: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+member: cn=PERRYM,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=DEVELOPPEUR-CTI,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: DEVELOPPEUR-CTI
+member: cn=DUBOISPELERINY,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+member: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=DEVELOPPEUR-EDG,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: DEVELOPPEUR-EDG
+member: cn=DUBOISPELERINY,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+member: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=DEVELOPPEUR-GEOMATIQUE,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: DEVELOPPEUR-GEOMATIQUE
+member: cn=DUBOISPELERINY,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+member: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=DEVELOPPEUR-JUS,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: DEVELOPPEUR-JUS
+member: cn=DUBOISPELERINY,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+member: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=DEVELOPPEUR-PRE,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: DEVELOPPEUR-PRE
+member: cn=DUBOISPELERINY,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+member: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=DEVELOPPEUR-RAD,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: DEVELOPPEUR-RAD
+member: cn=DUBOISPELERINY,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+member: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=DEVELOPPEUR-SI-SONDES,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: DEVELOPPEUR-SI-SONDES
+member: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=DEVELOPPEUR-SIEBEL,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: DEVELOPPEUR-SIEBEL
+member: cn=DUBOISPELERINY,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+member: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=SONAR-USER-AFC,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: SONAR-USER-AFC
+member: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=TECH-AUDITEUR-AUTORISATIONS,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: TECH-AUDITEUR-AUTORISATIONS
+member: cn=DUBOISPELERINY,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+member: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=TECH-CONCEPTEUR,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: TECH-CONCEPTEUR
+member: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=TECH-GESTIONNAIRE-AUTORISATIONS,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: TECH-GESTIONNAIRE-AUTORISATIONS
+member: cn=DUBOISPELERINY,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+member: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+
+dn: cn=UTILISATEUR,ou=Groups,ou=GESTREPO,ou=CTI,o=gina
+objectClass: groupOfNames
+objectClass: top
+cn: UTILISATEUR
+member: cn=DUBOISPELERINY,ou=Users,ou=GESTREPO,ou=CTI,o=gina
+member: cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina

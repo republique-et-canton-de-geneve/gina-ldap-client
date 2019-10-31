@@ -34,24 +34,23 @@ La bibliothèque peut être assemblée via Maven par la commande
 
 ```mvn -DskipTest clean install```
 
-Il est cependant utile ne pas sauter les tests unitaires JUnit. 
+Il est cependant utile ne pas sauter les tests JUnit.
 Ceux-ci peuvent être lancés selon deux modes : "Gina" et "local".
 
 ## Mode "Gina"
 
-Dans ce mode, les classes de tests se connectent sur l'annuaire Gina. Ce mode nécessite la
+Dans ce mode, les classes JUnit de tests se connectent sur l'annuaire Gina. Ce mode nécessite la
 connaissance de mots de passe de Gina.
 
 Dans le POM, ce mode correspond au profil ``etat-de-geneve`` (le profil par défaut) :
 
-```mvn -Dldap.domain.password=<MOT DE PASSE 1> -Dldap.application.password=<MOT DE PASSE 2> -Dldap.gestrepo.password=<MOT DE PASSE 3> clean install```
+```mvn -Dldap.gestrepo.password=<MOT DE PASSE> clean install```
 
-
-Les mots de passe sont stockés dans le Keypass du SMIL. S'adresser au SMIL pour les obtenir.
+ S'adresser au SMIL pour l'obtenir.
 
 ## Mode "local"
 
-Dans ce mode, les classes de tests utilisent des fichiers .ldif fournis.
+Dans ce mode, les classes JUnit de tests utilisent des fichiers .ldif fournis.
 Pour faire fonctionner les tests, il faut créer des serveurs LDAP locaux, qui exposent les fichiers .ldif fournis ;
 cette opération est décrite plus bas, en annexe.
 Aucun mot de passe n'est nécessaire.
@@ -59,8 +58,6 @@ Aucun mot de passe n'est nécessaire.
 Dans le POM, ce mode correspond au profil ``local`` :
 
 ```mvn -P local,!etat-de-geneve clean install```
-
-Attention : actuellement, certains tests unitaires ne fonctionnent pas dans ce mode.
 
 # 4. Intégration dans une application
 
@@ -70,7 +67,7 @@ Attention : actuellement, certains tests unitaires ne fonctionnent pas dans ce m
 <dependency>
 	<groupId>ch.ge.cti.ct</groupId>
 	<artifactId>gina-ldap-client</artifactId>
-	<version>${gina-ldap-client.version}</version>
+	<version> ... </version>
 </dependency>
 ```
 
@@ -80,19 +77,19 @@ L'API s'utilise en créant une ``GinaLdapConfiguration``, puis en obtenant un ob
 Par exemple :
 ```
 String server = "ldaps://...";
-String base = "ou=OAC,o=gina";
-String user = "cn=...";
+String user = "cn= ... ... o=gina";
 String password = <mot de passe>
-GinaLdapConfiguration.Type type = APPLICATION; 
+String domain = "CTI"
+String application = "GESTREPO"
 int connectionTimeout = 5000;
 int readTimeout = 3000;
 GinaLdapConfiguration ldapConf = new GinaLdapConfiguration(
-                server, base, user, password, type, connectionTimeout, readTimeout);
+                server, base, user, password, domain, application, connectionTimeout, readTimeout);
 GinaApiLdapBaseAble gina = new GinaLdapCommon(ldapConf);
-List<String> roles = gina.getUserRoles(<nom d'utilisateur>);
+List<String> roles = gina.getUserRoles(LAROCHEP);
 ```
 
-Pour davantage d'exemples, se référer aux tests unitaires.
+Pour davantage d'exemples, se référer aux tests JUnit.
 
 ## Activation du pooling
 
@@ -149,22 +146,22 @@ Chaque item annonce s'il respecte ou s'il rompt la compatibilité avec la versio
 ## Version 2.0.3
 - (compatible) ajout d'un paramètre `ldapConnexionTimeout` dans `GinaLdapConfiguration`.
 
-# Annexe 1. Serveur LDAP sur un poste de développeur
+# Annexe. Serveur LDAP sur un poste de développeur
 
 ## Serveur LDAP 
 
-Pour effectuer les tests unitaires en mode local, c'est-à-dire autonome, sans appel à Gina, on utilise les
+Pour effectuer les tests JUnit en mode local, c'est-à-dire autonome, sans appel à Gina, on utilise les
 fichiers .ldif fournis. Pour exposer un fichier .ldif, il faut lancer un serveur LDAP sur ce fichier.
 Pour cela, un serveur LDAP [UnboundID](https://ldap.com/unboundid-ldap-sdk-for-java) a été intégré dans 
 les sources de ce projet.
 
 Procédure :
-- Ouvrir une fenêtre DOS et aller dans le répertoire du projet
+- Ouvrir une fenêtre DOS et aller dans le répertoire du projet (le répertoire contenant le fichier `pom.xml`)
 - Exécuter les commandes suivantes :
 
 ```
 cd src\test\resources
-unboundid-ldapsdk-4.0.8\tools\in-memory-directory-server --baseDN "ou=CSBUGTRACK,o=gina" --port 30636 --ldifFile ldap_csbugtrack_full.ldif
+unboundid-ldapsdk-4.0.8\tools\in-memory-directory-server --baseDN "o=gina" --port 30636 --ldifFile ldap_cti_gestrepo.ldif
 ```
 
 Ceci doit afficher
@@ -172,17 +169,18 @@ Ceci doit afficher
 Listening for client connections on port 30636.
 ```
 
-Note. A ce jour, seule la classe de test ``GinaLdapDomainTest`` peut ainsi être testée. Les autres classes 
-``GinaLdapApplicationCtiGestrepoTest``, ``GinaLdapApplicationParallelTest`` et ``GinaLdapApplicationTest``
-n'ont pas de fichier .ldif disponible.
+Note. Le fichier `ldap_cti_gestrepo.ldif` est utilisable pour les classes de test suivantes :
+``UserRoleAttributeTest``, ``UserRoleAttributeParallelTest`` et ``UserRoleAttributeTimeoutTest``.
 
 ## Explorateur LDAP
 
 De façon facultative, on peut lancer un explorateur LDAP sur un serveur LDAP lancé (VLDAP Gina ou UnboundID).
 L'explorateur, par exemple [Apache Directory Studio](https://directory.apache.org/studio)
 ou [JXplorer](http://www.jxplorer.org), permet de parcourir de façon conviviale un annuaire LDAP.
+Il n'est pas nécessaire pour lancer les tests JUnit.
 
-Procédure pour brancher JXplorer sur le VLDAP Gina :
+### JXplorer
+Exemple: branchement de JXplorer sur le VLDAP Gina :
 - Installer JXplorer
 - Lancer JXplorer
 - Fichier > Se connecter
@@ -191,3 +189,10 @@ Procédure pour brancher JXplorer sur le VLDAP Gina :
 ![connexion LDAP](./doc/jxplorer_1.png)
 
 ![exploration LDAP](./doc/jxplorer_2.png)
+
+### Apache Directory Studio
+Exemple : branchement d'Apache Directory Studio sur un serveur UnboundID local pointant sur un fichier .ldif fourni :
+- nom d'hôte : `lochalhost`
+- port : `30636`
+- méthode d'encryption : `Pas d'encrytption`
+- authentification : `Pas d'authentification`

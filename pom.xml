@@ -100,12 +100,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <systemPropertyVariables>
-                        <test.domain.server>${ldap.domain.server}</test.domain.server>
-                        <test.domain.user>${ldap.domain.user}</test.domain.user>
-                        <test.domain.password>${ldap.domain.password}</test.domain.password>
-                        <test.application.server>${ldap.application.server}</test.application.server>
-                        <test.application.user>${ldap.application.user}</test.application.user>
-                        <test.application.password>${ldap.application.password}</test.application.password>
                         <test.gestrepo.server>${ldap.gestrepo.server}</test.gestrepo.server>
                         <test.gestrepo.user>${ldap.gestrepo.user}</test.gestrepo.user>
                         <test.gestrepo.password>${ldap.gestrepo.password}</test.gestrepo.password>
@@ -182,13 +176,7 @@
               -->
             <id>local</id>
             <properties>
-                <ldap.domain.server>ldap://127.0.0.1:30636</ldap.domain.server>
-                <ldap.domain.user />
-                <ldap.domain.password />
-                <ldap.application.server>ldap://127.0.0.1:30637</ldap.application.server>
-                <ldap.application.user />
-                <ldap.application.password />
-                <ldap.gestrepo.server>ldap://127.0.0.1:30638</ldap.gestrepo.server>
+                <ldap.gestrepo.server>ldap://127.0.0.1:30636</ldap.gestrepo.server>
                 <ldap.gestrepo.user />
                 <ldap.gestrepo.password />
             </properties>

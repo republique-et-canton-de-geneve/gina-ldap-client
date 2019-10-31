@@ -33,13 +33,13 @@ import org.slf4j.LoggerFactory;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * Ceci est la classe principale de cette bibliotheque. Elle fournit l'acces au VLDAP Gina et les methodes
@@ -59,7 +59,7 @@ public class GinaLdapAccess implements GinaApiLdapBaseAble {
 
     private static final String CLASS_PROPERTY_VALUES = "propertyValues";
 
-    private static final String ROLE_USER = "UTILISATEUR";
+    private static final String ROLE_UTILISATEUR = "UTILISATEUR";
 
     /**
      * Relative distinguished names.
@@ -385,15 +385,32 @@ public class GinaLdapAccess implements GinaApiLdapBaseAble {
      */
 
     @Override
-    public List<String> getUserRoles(String user, String domApp) {
+    public List<String> getUserRoles(String user) {
         long tm = System.currentTimeMillis();
-        List<String> result = getRoles(user, domApp);
-        logExecutionTime("getUserRoles(" + user + "," + domApp + ")", tm);
-        return result;
+        GinaLdapQuery qry = getLdapContext().newQuery()
+                .setBaseDn(getUserDn(user))
+                .setFilter(GinaLdapUtils.getLdapFilterUser()).setScope(GinaLdapQuery.Scope.OBJECT)
+                .setAttributes(GinaLdapUtils.ATTRIBUTE_MEMBEROF);
+        List<String> roles = qry.unique(new GinaLdapQuery.Consumer<List<String>>() {
+            @Override
+            public List<String> consume(String dn, Attributes attrs) {
+                List<String> result = new ArrayList<String>();
+                List<String> groups = GinaLdapUtils.allValues(attrs, GinaLdapUtils.ATTRIBUTE_MEMBEROF);
+                for (String group : groups) {
+                    result.add(GinaLdapUtils.roleDnToString(group));
+                }
+                return result;
+            }
+        });
+        logExecutionTime("getUserRoles(" + user + ")", tm);
+        return roles == null ? Collections.<String>emptyList() : roles;
     }
 
-    private List<String> getRoles(String user, String domApp) {
-        final String suffix = "," + getRoleBaseDn(domApp);
+    @Override
+    public List<String> getUserRoles(String user, String domApp) {
+        long tm = System.currentTimeMillis();
+
+        String suffix = "," + getRoleBaseDn(domApp);
         GinaLdapQuery qry = getLdapContext().newQuery()
                 .setBaseDn(getUserDn(user))
                 .setFilter(GinaLdapUtils.getLdapFilterUser()).setScope(GinaLdapQuery.Scope.OBJECT)
@@ -418,93 +435,16 @@ public class GinaLdapAccess implements GinaApiLdapBaseAble {
                 return result;
             }
         });
-        return roles == null ? Collections.<String>emptyList() : roles;
+        roles = roles == null ? Collections.<String>emptyList() : roles;
+
+        logExecutionTime("getUserRoles(" + user + "," + domApp + ")", tm);
+        return roles;
     }
 
     @Override
-    public List<String> getUserRoles(String user) {
-        long tm = System.currentTimeMillis();
-        GinaLdapQuery qry = getLdapContext().newQuery()
-                .setBaseDn(getUserDn(user))
-                .setFilter(GinaLdapUtils.getLdapFilterUser()).setScope(GinaLdapQuery.Scope.OBJECT)
-                .setAttributes(GinaLdapUtils.ATTRIBUTE_MEMBEROF);
-        List<String> roles = qry.unique(new GinaLdapQuery.Consumer<List<String>>() {
-            @Override
-            public List<String> consume(String dn, Attributes attrs) {
-                List<String> result = new ArrayList<String>();
-                List<String> groups = GinaLdapUtils.allValues(attrs, GinaLdapUtils.ATTRIBUTE_MEMBEROF);
-                for (String group : groups) {
-                    result.add(GinaLdapUtils.roleDnToString(group));
-                }
-                return result;
-            }
-        });
-        logExecutionTime("getUserRoles(" + user + ")", tm);
-        return roles == null ? Collections.<String>emptyList() : roles;
+    public boolean hasUserRole(String user, String role) {
+        return getUserRoles(user).contains(role);
     }
-
-    @Override
-    public boolean hasUserRole(String username, String role) {
-        return getUserRoles(username).contains(role);
-        /*
-        long tm = System.currentTimeMillis();
-        int ix = role.lastIndexOf('.');
-        if (ix < 0) {
-            return false;
-        }
-        String application = role.substring(0, ix);
-        String approle = role.substring(ix + 1);
-        Boolean result = hasUserDnRole(getUserDn(username), application, approle);
-        logExecutionTime("hasUserRole(" + username + "," + role + ")", tm);
-        return result != null ? result : false;
-         */
-    }
-
-    /*
-    @Override
-    public boolean hasUserRole(String user, String application, String role) {
-        final String encodedUser = GinaLdapEncoder.filterEncode(user);
-        final String encodedApplication = GinaLdapEncoder.filterEncode(application);
-        final String encodedRole = GinaLdapEncoder.filterEncode(role);
-
-        NamingEnumeration<?> answer = null;
-        NamingEnumeration<?> answerAtt = null;
-
-        try {
-            String ginaApplication = GinaLdapUtils.extractApplication(encodedApplication);
-
-            SearchControls searchControls = getSearchControls(new String[] { GinaLdapUtils.ATTRIBUTE_MEMBER });
-            answer = getLdapContext().search(GinaLdapUtils.getLdapFilterOu(ginaApplication),
-                    GinaLdapUtils.getLdapFilterCn(encodedRole), searchControls);
-
-            while (answer.hasMoreElements()) {
-                SearchResult sr = (SearchResult) answer.next();
-                LOGGER.debug("sr = {}", sr);
-                Attributes attrs = sr.getAttributes();
-                if (attrs != null && attrs.get(GinaLdapUtils.ATTRIBUTE_MEMBER) != null) {
-                    try {
-                        answerAtt = sr.getAttributes().get(GinaLdapUtils.ATTRIBUTE_MEMBER).getAll();
-                        while (answerAtt.hasMoreElements()) {
-                            String att = (String) answerAtt.next();
-                            if (att.toUpperCase().contains(encodedUser.toUpperCase())) {
-                                return true;
-                            }
-                        }
-                    } finally {
-                        GinaLdapUtils.closeQuietly(answerAtt);
-                    }
-                }
-            }
-        } catch (NamingException e) {
-            logException(e);
-            throw new GinaException(e.getMessage());
-        } finally {
-            GinaLdapUtils.closeQuietly(answer);
-        }
-
-        return false;
-    }
-     */
 
     @Override
     public boolean hasUserRole(String user, String application, String role) {
@@ -550,26 +490,18 @@ public class GinaLdapAccess implements GinaApiLdapBaseAble {
     }
 
     @Override
-    public List<String> getBusinessRoles(String application) throws RemoteException {
-        String encodedApplication = GinaLdapEncoder.filterEncode(application);
-
+    public List<String> getBusinessRoles(String domApp) {
+        String encodedApplication = GinaLdapEncoder.filterEncode(domApp);
         List<String> roles = getAppRoles(encodedApplication);
-
-        List<String> result = new ArrayList<String>();
-
-        if (roles != null) {
-            for (String role : roles) {
-                if (role.startsWith("RM-")) {
-                    result.add(role);
-                }
-            }
-        }
+        List<String> result = roles.stream()
+                .filter(r -> r.startsWith("RM-"))
+                .collect(Collectors.toList());
         return result;
     }
 
     @Override
     public List<Map<String, String>> getUsers(String application, String[] attrs) {
-        return getUsers(application, ROLE_USER, attrs);
+        return getUsers(application, ROLE_UTILISATEUR, attrs);
     }
 
     @Override
