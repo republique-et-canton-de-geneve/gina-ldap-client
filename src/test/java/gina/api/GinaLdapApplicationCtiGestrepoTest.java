@@ -22,12 +22,14 @@ import gina.api.utils.TestConstants;
 import gina.api.utils.TestLoggingWatcher;
 import gina.api.utils.TestTools;
 import gina.impl.GinaException;
-import gina.impl.GinaLdapCommon;
-import gina.impl.GinaLdapFactory;
+import gina.impl.GinaLdapAccess;
 import gina.impl.util.GinaLdapConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.CoreMatchers;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TestWatcher;
 import org.slf4j.Logger;
@@ -60,7 +62,7 @@ public class GinaLdapApplicationCtiGestrepoTest {
     // LDAP : role de test
     private static final String ROLE = "UTILISATEUR";
 
-    private static GinaApiLdapBaseAble api;
+    private static GinaApiLdapBaseAble gina;
 
     private static GinaLdapConfiguration ldapConf;
 
@@ -81,25 +83,25 @@ public class GinaLdapApplicationCtiGestrepoTest {
         String password = System.getProperty("test.gestrepo.password");
 
         ldapConf = getGinaLdapConfiguration(server, user, password, DOMAIN, APPLICATION);
-        api = GinaLdapFactory.getNewInstance(ldapConf);
+        gina = new GinaLdapAccess(ldapConf);
     }
 
     @AfterClass
     public static void releaseResources() {
-        IOUtils.closeQuietly(api);
+        IOUtils.closeQuietly(gina);
     }
 
     @Test
     public void getAllUsers() throws RemoteException {
         thrown.expect(GinaException.class);
-        thrown.expectMessage(CoreMatchers.containsString(GinaLdapCommon.NOT_IMPLEMENTED));
+        thrown.expectMessage(CoreMatchers.containsString(GinaLdapAccess.NOT_IMPLEMENTED));
 
-         api.getAllUsers("FILTER", TestConstants.TEST_ATTRS);
+         gina.getAllUsers("FILTER", TestConstants.TEST_ATTRS);
     }
 
     @Test
     public void getUserRoles() throws RemoteException {
-        List<String> roles = api.getUserRoles(USER);
+        List<String> roles = gina.getUserRoles(USER);
 
         assertThat(roles).isNotNull();
         assertThat(roles.size()).isGreaterThan(0);
@@ -113,18 +115,18 @@ public class GinaLdapApplicationCtiGestrepoTest {
     @Test
     public void isValidUser() throws RemoteException {
         // Utilisateur valide
-        boolean result = api.isValidUser(USER);
+        boolean result = gina.isValidUser(USER);
         assertThat(result).isTrue();
 
         // Utilisateur non valide
-        result = api.isValidUser("TAGADA");
+        result = gina.isValidUser("TAGADA");
         assertThat(result).isFalse();
     }
 
     @Test
     public void getUserAttrs() throws RemoteException {
         String[] requestedAttributes = TestConstants.TEST_ATTRS;
-        Map<String, String> attributes = api.getUserAttrs(USER, requestedAttributes);
+        Map<String, String> attributes = gina.getUserAttrs(USER, requestedAttributes);
 
         LOGGER.info("Attributs obtenus : {}", attributes.keySet());
 
@@ -135,19 +137,19 @@ public class GinaLdapApplicationCtiGestrepoTest {
         checkAttribute(attributes, LdapAttribute.DN, "cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina");
         checkAttribute(attributes, LdapAttribute.CN, "LAROCHEP");
         checkAttribute(attributes, LdapAttribute.GIVEN_NAME, "Pierre");
-        checkAttribute(attributes, LdapAttribute.INITIALS, "PL");
         checkAttribute(attributes, LdapAttribute.SN, "Laroche");
+        checkAttribute(attributes, LdapAttribute.UID, "LAROCHEP");
     }
 
     @Test
     public void getUserAllAttrs() throws RemoteException {
-        Map<String, String> attributes = api.getUserAttrs(USER, null);
+        Map<String, String> attributes = gina.getUserAttrs(USER, null);
 
         LOGGER.info("Attributs obtenus : {}", attributes.keySet());
 
         assertThat(attributes.size())
                 .as("Le nombre attendu d'attributs n'a pas a ete obtenu")
-                .isEqualTo(16);
+                .isEqualTo(17);
 
         checkAttribute(attributes, LdapAttribute.DN, "cn=LAROCHEP,ou=Users,ou=GESTREPO,ou=CTI,o=gina");
         checkAttribute(attributes, LdapAttribute.DEPARTMENT_NUMBER, "UO5751");
@@ -158,7 +160,7 @@ public class GinaLdapApplicationCtiGestrepoTest {
     public void hasRoleUserTest() throws RemoteException {
         String user = USER;
         String role = ROLE;
-        boolean ret = api.hasUserRole(user, role);
+        boolean ret = gina.hasUserRole(user, role);
         assertThat(ret)
                 .as("L'usager " + USER + " devrait avoir le role " + role + ". Configuration = " + ldapConf.toString())
                 .isTrue();
@@ -168,7 +170,7 @@ public class GinaLdapApplicationCtiGestrepoTest {
     public void hasRoleUser2() throws RemoteException {
         String user = USER;
         String role = "ROLE_BIDON_QUI_N_EXISTE_PAS_DANS_GINA";
-        boolean ret = api.hasUserRole(user, role);
+        boolean ret = gina.hasUserRole(user, role);
         assertThat(ret)
                 .as(user + " ne devrait avoir le role " + role + ". Configuration = " + ldapConf.toString())
                 .isFalse();
@@ -179,7 +181,7 @@ public class GinaLdapApplicationCtiGestrepoTest {
         String user = USER;
         String application = DOMAIN_APPLICATION;
         String role = ROLE;
-        boolean ret = api.hasUserRole(user, application, role);
+        boolean ret = gina.hasUserRole(user, application, role);
         assertThat(ret).as(user + " devrait avoir le role " + role + " pour l'application "
                            + application + ". Configuration = " + ldapConf.toString())
                        .isTrue();
@@ -187,7 +189,7 @@ public class GinaLdapApplicationCtiGestrepoTest {
 
     @Test
     public void getAppRoles() throws RemoteException {
-        List<String> roles = api.getAppRoles(DOMAIN_APPLICATION);
+        List<String> roles = gina.getAppRoles(DOMAIN_APPLICATION);
         assertThat(roles).isNotNull();
         assertThat(roles.size()).isGreaterThan(0);
         LOGGER.info("roles.size() = {}", roles.size());
@@ -215,7 +217,7 @@ public class GinaLdapApplicationCtiGestrepoTest {
                 .filter(e -> name.equalsIgnoreCase(e.getKey()))
                 .findAny();
         assertThat(entry)
-                .as("L'attribut '" + name + "' est manquant")
+                .as("L'attribut '" + name + "' n'a pas ete trouve dans le VLDAP")
                 .isPresent()
                 .hasValueSatisfying(e ->
                         assertThat(e.getValue())

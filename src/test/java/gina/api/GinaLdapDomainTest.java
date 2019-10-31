@@ -21,7 +21,7 @@ package gina.api;
 import gina.api.utils.TestConstants;
 import gina.api.utils.TestLoggingWatcher;
 import gina.api.utils.TestTools;
-import gina.impl.GinaLdapFactory;
+import gina.impl.GinaLdapAccess;
 import gina.impl.util.GinaLdapConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
@@ -72,13 +72,12 @@ public class GinaLdapDomainTest {
 
     @BeforeClass
     public static void initApi() {
-//        String base = "ou=CSBUGTRACK,o=gina";
         String server = System.getProperty("test.domain.server");
         String user = System.getProperty("test.domain.user");
         String password = System.getProperty("test.domain.password");
 
         GinaLdapConfiguration ldapConf = getGinaLdapConfiguration(server, user, password, DOMAIN, APPLICATION);
-        api = GinaLdapFactory.getNewInstance(ldapConf);
+        api = new GinaLdapAccess(ldapConf);
     }
 
     @AfterClass

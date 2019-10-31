@@ -22,7 +22,7 @@ Ce projet-ci permet d'établir la communication via LDAP plutôt qu'EJB. Ses cla
 interface ``gina.api.GinaApiLdapBaseAble`` que le JAR Gina interne. 
 On notera cependant que, comme Gina n'expose via LDAP qu'une
 partie de ses données, de nombreuses méthodes renvoient simplement une exception "méthode non implémentée" -
-voir la classe ``gina.impl.GinaLdapCommon``.
+voir la classe ``gina.impl.GinaLdapAccess``.
 A l'inverse, quelques méthodes ont été ajoutées.
 
 Cette bibliothèque peut être intégrée à toute application tournant sur JRE 8+.
@@ -88,8 +88,8 @@ int connectionTimeout = 5000;
 int readTimeout = 3000;
 GinaLdapConfiguration ldapConf = new GinaLdapConfiguration(
                 server, base, user, password, type, connectionTimeout, readTimeout);
-GinaApiLdapBaseAble api = GinaLdapFactory.getInstance(ldapConf);
-List<String> roles = api.getUserRoles(<nom d'utilisateur>);
+GinaApiLdapBaseAble gina = new GinaLdapCommon(ldapConf);
+List<String> roles = gina.getUserRoles(<nom d'utilisateur>);
 ```
 
 Pour davantage d'exemples, se référer aux tests unitaires.
@@ -115,14 +115,14 @@ Définition des propriétés : voir https://docs.oracle.com/javase/jndi/tutorial
 
 ```
 GinaApiLdapConfiguration ldapConf = new GinaApiLdapConfiguration(server, base, user, password, DOMAIN, timeout);  // 1
-try (GinaApiLdapBaseAble api = GinaApiLdapBaseFactory.getInstance(ldapConf)) {                                    // 2
-   List<String> roles = api.getUserRoles("LAURENTJ");                                                             // 3
+try (GinaApiLdapBaseAble gina = new GinaLdapCommon(ldapConf)) {                                                   // 2
+   List<String> roles = gina.getUserRoles("LAURENTJ");                                                            // 3
 }
 ```
 Légende :
 1. Paramétrisation du serveur LDAP
-2. Création de l'object de connexion au serveur LDAP
-3. Récupération d'informations (les rôles d'un utilisateur) sur le serveur LDAP
+2. Création de l'objet de connexion au VLDAP
+3. Récupération d'informations (les rôles d'un utilisateur) sur le VLDAP
 
 Pour un exemple d'utilisation de toutes les méthodes exposées, se référer :
 - aux classes de tests de l'api : ./src/test/java/gina/api
@@ -132,8 +132,11 @@ Pour un exemple d'utilisation de toutes les méthodes exposées, se référer :
 
 Chaque item annonce s'il respecte ou s'il rompt la compatibilité avec la version précédente.
 
-## Version 2.0.3
-- (compatible) ajout d'un paramètre `ldapConnexionTimeout` dans `GinaLdapConfiguration`.
+## Version 4.0.0
+- (incompatible) La version 3.0.0 nécessitait Java 7+. Désormais il faut Java 8+.
+- (incompatible) Suppression de la classe `GinaLdapFactory`. Désormais, pour obtenir une connexion, on passe directement
+  par le constructeur de `GinaLdapAccess`.
+- (compatible) Améliorations des requêtes LDAP.
 
 ## Version 3.0.0
 - (incompatible) La version 2.0.3 nécessitait Java 6+. Désormais il faut Java 7+.
@@ -142,6 +145,9 @@ Chaque item annonce s'il respecte ou s'il rompt la compatibilité avec la versio
   Désormais la connexion LDAP reste ouverte.
   C'est à l'utilisateur d'appeler la méthode `close` en fin d'utilisation de l'objet, par exemple avec un
   "try with resource".
+
+## Version 2.0.3
+- (compatible) ajout d'un paramètre `ldapConnexionTimeout` dans `GinaLdapConfiguration`.
 
 # Annexe 1. Serveur LDAP sur un poste de développeur
 
@@ -172,11 +178,11 @@ n'ont pas de fichier .ldif disponible.
 
 ## Explorateur LDAP
 
-De façon facultative, on peut lancer un explorateur LDAP sur un serveur LDAP lancé (Gina ou UnboundID).
+De façon facultative, on peut lancer un explorateur LDAP sur un serveur LDAP lancé (VLDAP Gina ou UnboundID).
 L'explorateur, par exemple [Apache Directory Studio](https://directory.apache.org/studio)
 ou [JXplorer](http://www.jxplorer.org), permet de parcourir de façon conviviale un annuaire LDAP.
 
-Procédure pour brancher JXplorer sur Gina :
+Procédure pour brancher JXplorer sur le VLDAP Gina :
 - Installer JXplorer
 - Lancer JXplorer
 - Fichier > Se connecter

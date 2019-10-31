@@ -20,7 +20,7 @@ package gina.api;
 
 import com.googlecode.junittoolbox.ParallelRunner;
 import gina.api.utils.TestConstants;
-import gina.impl.GinaLdapFactory;
+import gina.impl.GinaLdapAccess;
 import gina.impl.util.GinaLdapConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
@@ -54,14 +54,14 @@ public class GinaLdapApplicationParallelTest extends GinaLdapApplicationTest {
         String password = System.getProperty("test.application.password");
 
         GinaLdapConfiguration ldapConf = getGinaLdapConfiguration(server, user, password, DOMAIN, APPLICATION);
-        api = GinaLdapFactory.getNewInstance(ldapConf);
+        gina = new GinaLdapAccess(ldapConf);
 
         LOGGER.info(TestConstants.END_METHOD);
     }
 
     @AfterClass
     public static void releaseResources() {
-        IOUtils.closeQuietly(api);
+        IOUtils.closeQuietly(gina);
     }
 
 }

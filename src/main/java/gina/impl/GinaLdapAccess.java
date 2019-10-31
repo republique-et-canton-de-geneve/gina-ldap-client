@@ -42,24 +42,24 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * TODO renommer cette classe. Exemple : GinaLdapAccess.
+ * Ceci est la classe principale de cette bibliotheque. Elle fournit l'acces au VLDAP Gina et les methodes
+ * d'interrogation du VLDAP Gina, par exemple pour l'obtention de la liste des utilisateurs pouvant acceder
+ * a une application donnee.
  */
-public class GinaLdapCommon implements GinaApiLdapBaseAble {
+public class GinaLdapAccess implements GinaApiLdapBaseAble {
 
     /**
      * Message d'erreur pour les methodes non implementees.
      */
     public static final String NOT_IMPLEMENTED = "Not implemented";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GinaLdapCommon.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GinaLdapAccess.class);
 
     private static final String DEFAULT_LANG = "FR";
 
     private static final String CLASS_PROPERTY_VALUES = "propertyValues";
 
     private static final String ROLE_USER = "UTILISATEUR";
-
-    private static final String APP_PREFIX_PATTERN = "^[A-Za-z0-9][A-Za-z0-9-]*$";
 
     /**
      * Relative distinguished names.
@@ -77,6 +77,7 @@ public class GinaLdapCommon implements GinaApiLdapBaseAble {
         }
     }
 
+    /*
     private enum AttributeName {
         ENVIRONMENT("environment"),
         OWN_VALUE("ownValue"),
@@ -93,12 +94,13 @@ public class GinaLdapCommon implements GinaApiLdapBaseAble {
             this.value = value;
         }
     }
+     */
 
     private GinaLdapConfiguration ldapConf;
 
     private GinaLdapContext ldapContext;
 
-    public GinaLdapCommon(GinaLdapConfiguration ldapConf) {
+    public GinaLdapAccess(GinaLdapConfiguration ldapConf) {
         Validate.notNull(ldapConf);
         this.ldapConf = ldapConf;
         this.ldapContext = createLdapContext();

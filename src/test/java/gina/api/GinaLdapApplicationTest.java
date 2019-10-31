@@ -21,7 +21,7 @@ package gina.api;
 import gina.api.utils.TestConstants;
 import gina.api.utils.TestLoggingWatcher;
 import gina.api.utils.TestTools;
-import gina.impl.GinaLdapFactory;
+import gina.impl.GinaLdapAccess;
 import gina.impl.util.GinaLdapConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
@@ -60,7 +60,7 @@ public class GinaLdapApplicationTest {
 //    private static final String ROLE = DOMAIN_APPLICATION + "." + "UTILISATEUR";
     private static final String ROLE = "UTILISATEUR";
 
-    static GinaApiLdapBaseAble api;
+    static GinaApiLdapBaseAble gina;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -78,24 +78,24 @@ public class GinaLdapApplicationTest {
         String password = System.getProperty("test.application.password");
 
         GinaLdapConfiguration ldapConf = getGinaLdapConfiguration(server, user, password, DOMAIN, APPLICATION);
-        api = GinaLdapFactory.getNewInstance(ldapConf);
+        gina = new GinaLdapAccess(ldapConf);
     }
 
     @AfterClass
     public static void releaseResources() {
-        IOUtils.closeQuietly(api);
+        IOUtils.closeQuietly(gina);
     }
 
     @Test
     public void getAllUsersTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getAllUsers("FILTER", TestConstants.TEST_ATTRS);
+        gina.getAllUsers("FILTER", TestConstants.TEST_ATTRS);
     }
 
     @Test
     public void getUserRolesTest() throws RemoteException {
-        List<String> roles = api.getUserRoles(TestConstants.DRIVONOL_USERNAME);
+        List<String> roles = gina.getUserRoles(TestConstants.DRIVONOL_USERNAME);
 
         assertThat(roles).isNotEmpty();
         LOGGER.info("roles.size() = {}", roles.size());
@@ -108,17 +108,17 @@ public class GinaLdapApplicationTest {
     @Test
     public void getIsValidUserTest() throws RemoteException {
         // Utilisateur valide
-        boolean result = api.isValidUser(TestConstants.DRIVONOL_USERNAME);
+        boolean result = gina.isValidUser(TestConstants.DRIVONOL_USERNAME);
         assertThat(result).isTrue();
 
         // Utilisateur non valide
-        result = api.isValidUser(TestConstants.PINAUDJ_USERNAME);
+        result = gina.isValidUser(TestConstants.PINAUDJ_USERNAME);
         assertThat(result).isFalse();
     }
 
     @Test
     public void getUserAttrsTest() throws RemoteException {
-        Map<String, String> user = api.getUserAttrs(TestConstants.DRIVONOL_USERNAME, TestConstants.TEST_ATTRS);
+        Map<String, String> user = gina.getUserAttrs(TestConstants.DRIVONOL_USERNAME, TestConstants.TEST_ATTRS);
 
         for (Map.Entry<String, String> e : user.entrySet()) {
             LOGGER.info(e.getKey() + " = {}", e.getValue());
@@ -132,9 +132,9 @@ public class GinaLdapApplicationTest {
 
     @Test
     public void hasUserRoleUserTest() throws RemoteException {
-        boolean ret = api.hasUserRole(TestConstants.DRIVONOL_USERNAME, ROLE);
+        boolean ret = gina.hasUserRole(TestConstants.DRIVONOL_USERNAME, ROLE);
 
-        List<String> roles = api.getUserRoles(TestConstants.DRIVONOL_USERNAME, DOMAIN_APPLICATION);
+        List<String> roles = gina.getUserRoles(TestConstants.DRIVONOL_USERNAME, DOMAIN_APPLICATION);
         LOGGER.info("roles = {}", roles);
 
         assertThat(ret)
@@ -144,7 +144,7 @@ public class GinaLdapApplicationTest {
 
     @Test
     public void hasUserRoleWithUserAndApplicationAndRoleTest() throws RemoteException {
-        boolean ret = api.hasUserRole(TestConstants.DRIVONOL_USERNAME, DOMAIN_APPLICATION, ROLE);
+        boolean ret = gina.hasUserRole(TestConstants.DRIVONOL_USERNAME, DOMAIN_APPLICATION, ROLE);
         assertThat(ret)
                 .as(TestConstants.DRIVONOL_USERNAME + " devrait avoir le role " + ROLE + " pour l'application " + DOMAIN_APPLICATION)
                 .isTrue();
@@ -152,7 +152,7 @@ public class GinaLdapApplicationTest {
 
     @Test
     public void getAppRolesTest() throws RemoteException {
-        List<String> roles = api.getAppRoles(DOMAIN_APPLICATION);
+        List<String> roles = gina.getAppRoles(DOMAIN_APPLICATION);
 
         assertThat(roles).isNotEmpty();
         LOGGER.info("roles.size() = {}", roles.size());
@@ -165,47 +165,47 @@ public class GinaLdapApplicationTest {
     public void getUserTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getUser();
+        gina.getUser();
     }
 
     @Test
     public void getUserAttrsWithAttrsTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getUserAttrs(TestConstants.TEST_ATTRS);
+        gina.getUserAttrs(TestConstants.TEST_ATTRS);
     }
 
     @Test
     public void getLanguageTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getLanguage();
+        gina.getLanguage();
     }
 
     @Test
     public void getEnvironmentTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getEnvironment();
+        gina.getEnvironment();
     }
 
     @Test
     public void hasRoleWithApplicationAndRoleTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.hasRole(DOMAIN_APPLICATION, ROLE);
+        gina.hasRole(DOMAIN_APPLICATION, ROLE);
     }
 
     @Test
     public void getRolesWithApplicationTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getRoles(DOMAIN_APPLICATION);
+        gina.getRoles(DOMAIN_APPLICATION);
     }
 
     @Test
     public void getUserRolesWithUserAndApplicationTest() throws RemoteException {
-        List<String> roles = api.getUserRoles(TestConstants.DRIVONOL_USERNAME, DOMAIN_APPLICATION);
+        List<String> roles = gina.getUserRoles(TestConstants.DRIVONOL_USERNAME, DOMAIN_APPLICATION);
 
         assertThat(roles).isNotEmpty();
         LOGGER.info("roles.size() = {}", roles.size());
@@ -216,7 +216,7 @@ public class GinaLdapApplicationTest {
 
     @Test
     public void getUsersWithApplicationAndAttrsTest() throws RemoteException {
-        List<Map<String, String>> users = api.getUsers(DOMAIN_APPLICATION, TestConstants.TEST_ATTRS);
+        List<Map<String, String>> users = gina.getUsers(DOMAIN_APPLICATION, TestConstants.TEST_ATTRS);
 
         assertThat(users).isNotEmpty();
         LOGGER.info("users.size() = {}", users.size());
@@ -235,7 +235,7 @@ public class GinaLdapApplicationTest {
 
     @Test
     public void getUsersTest() throws RemoteException {
-        List<Map<String, String>> users = api.getUsers(DOMAIN_APPLICATION, ROLE, null /*TestConstants.TEST_ATTRS*/);
+        List<Map<String, String>> users = gina.getUsers(DOMAIN_APPLICATION, ROLE, null /*TestConstants.TEST_ATTRS*/);
 
         assertThat(users).isNotEmpty();
         LOGGER.info("users.size() = {}", users.size());
@@ -252,7 +252,7 @@ public class GinaLdapApplicationTest {
 
     @Test
     public void getBusinessRolesTest() throws RemoteException {
-        List<String> roles = api.getBusinessRoles(DOMAIN_APPLICATION);
+        List<String> roles = gina.getBusinessRoles(DOMAIN_APPLICATION);
         assertThat(roles).isNotNull();
         assertThat(roles).isEmpty();
     }
@@ -265,77 +265,77 @@ public class GinaLdapApplicationTest {
     public void getIntegrationUserRolesTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getIntegrationUserRoles(DOMAIN_APPLICATION, "ABC");
+        gina.getIntegrationUserRoles(DOMAIN_APPLICATION, "ABC");
     }
 
     @Test
     public void getIntegrationUserAttributesTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getIntegrationUserAttributes(DOMAIN, DOMAIN_APPLICATION);
+        gina.getIntegrationUserAttributes(DOMAIN, DOMAIN_APPLICATION);
     }
 
     @Test
     public void getUsersByPhoneTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getUsersByPhone("ABC", true, TestConstants.TEST_ATTRS);
+        gina.getUsersByPhone("ABC", true, TestConstants.TEST_ATTRS);
     }
 
     @Test
     public void getUsersBySIRHNumberTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getUsersBySIRHNumber("ABC", true, TestConstants.TEST_ATTRS);
+        gina.getUsersBySIRHNumber("ABC", true, TestConstants.TEST_ATTRS);
     }
 
     @Test
     public void getUsersByNameTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getUsersByName("ABC", true, TestConstants.TEST_ATTRS);
+        gina.getUsersByName("ABC", true, TestConstants.TEST_ATTRS);
     }
 
     @Test
     public void getInheritingRolesTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getInheritingRoles(DOMAIN_APPLICATION, ROLE);
+        gina.getInheritingRoles(DOMAIN_APPLICATION, ROLE);
     }
 
     @Test
     public void getPMProprieteMetierTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getPMProprieteMetier(DOMAIN_APPLICATION);
+        gina.getPMProprieteMetier(DOMAIN_APPLICATION);
     }
 
     @Test
     public void getOwnIDUniqueForPPorPseudoTest() throws RemoteException, NamingException {
         expectNotImplemented(thrown);
 
-        api.getOwnIDUniqueForPPorPseudo();
+        gina.getOwnIDUniqueForPPorPseudo();
     }
 
     @Test
     public void getOwnPMProprieteMetierTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getOwnPMProprieteMetier("");
+        gina.getOwnPMProprieteMetier("");
     }
 
     @Test
     public void getPPProprieteMetierTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getPPProprieteMetier("");
+        gina.getPPProprieteMetier("");
     }
 
     @Test
     public void getOwnPPProprieteMetierTest() throws RemoteException {
         expectNotImplemented(thrown);
 
-        api.getOwnPPProprieteMetier("");
+        gina.getOwnPPProprieteMetier("");
     }
 
     @Test
@@ -343,7 +343,7 @@ public class GinaLdapApplicationTest {
         expectNotImplemented(thrown);
 
         String[] foo = { "" };
-        api.sendMail("", foo, foo, "", "", "");
+        gina.sendMail("", foo, foo, "", "", "");
     }
 
 }

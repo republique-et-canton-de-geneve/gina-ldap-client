@@ -21,7 +21,7 @@ package gina.api;
 import gina.api.utils.TestConstants;
 import gina.api.utils.TestLoggingWatcher;
 import gina.impl.GinaException;
-import gina.impl.GinaLdapFactory;
+import gina.impl.GinaLdapAccess;
 import gina.impl.util.GinaLdapConfiguration;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -81,8 +81,8 @@ public class GinaLdapTimeoutTest {
         int readTimeout = 4000;
         GinaLdapConfiguration ldapConf = getGinaLdapConfiguration(server, user, password, DOMAIN, APPLICATION, connectionTimeout, readTimeout);
 
-        try (GinaApiLdapBaseAble api = GinaLdapFactory.getNewInstance(ldapConf)) {
-          assertThat(api).isNotNull();
+        try (GinaApiLdapBaseAble gina = new GinaLdapAccess(ldapConf)) {
+          assertThat(gina).isNotNull();
         }
     }
 
@@ -92,9 +92,9 @@ public class GinaLdapTimeoutTest {
         int connectionTimeout = 1;
         int readTimeout = 4000;
         GinaLdapConfiguration ldapConf = getGinaLdapConfiguration(server, user, password, DOMAIN, APPLICATION, connectionTimeout, readTimeout);
-        try (GinaApiLdapBaseAble api = GinaLdapFactory.getNewInstance(ldapConf)) {
+        try (GinaApiLdapBaseAble gina = new GinaLdapAccess(ldapConf)) {
             LOGGER.info("Une NamingException est attendue dans la ligne suivante");
-            Throwable thrown = catchThrowable(() -> api.isValidUser(TestConstants.GENERIC_USERNAME));
+            Throwable thrown = catchThrowable(() -> gina.isValidUser(TestConstants.GENERIC_USERNAME));
             LOGGER.info("cause : " + thrown.getCause());
             assertThat(thrown)
                     .isInstanceOf(GinaException.class)
@@ -109,9 +109,9 @@ public class GinaLdapTimeoutTest {
         int connexionTimeout = 5000;
         int readTimeout = 1;
         GinaLdapConfiguration ldapConf = getGinaLdapConfiguration(server, user, password, DOMAIN, APPLICATION, connexionTimeout, readTimeout);
-        try (GinaApiLdapBaseAble api = GinaLdapFactory.getNewInstance(ldapConf)) {
+        try (GinaApiLdapBaseAble gina = new GinaLdapAccess(ldapConf)) {
             LOGGER.info("Une NamingException est attendue dans la ligne suivante");
-            Throwable thrown = catchThrowable(() -> api.isValidUser(TestConstants.GENERIC_USERNAME));
+            Throwable thrown = catchThrowable(() -> gina.isValidUser(TestConstants.GENERIC_USERNAME));
             assertThat(thrown)
                     .isInstanceOf(GinaException.class)
                     .hasMessage("LDAP response read timed out, timeout used:1ms.");

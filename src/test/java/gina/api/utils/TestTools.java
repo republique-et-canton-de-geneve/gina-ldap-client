@@ -19,7 +19,7 @@
 package gina.api.utils;
 
 import gina.impl.GinaException;
-import gina.impl.GinaLdapCommon;
+import gina.impl.GinaLdapAccess;
 import gina.impl.util.GinaLdapConfiguration;
 import gina.impl.util.GinaLdapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -47,7 +47,7 @@ public class TestTools {
 
     public static void expectNotImplemented(ExpectedException thrown) {
         thrown.expect(GinaException.class);
-        thrown.expectMessage(CoreMatchers.containsString(GinaLdapCommon.NOT_IMPLEMENTED));
+        thrown.expectMessage(CoreMatchers.containsString(GinaLdapAccess.NOT_IMPLEMENTED));
     }
 
     public static GinaLdapConfiguration getGinaLdapConfiguration(
