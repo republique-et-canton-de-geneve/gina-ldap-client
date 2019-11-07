@@ -84,7 +84,7 @@ String application = "GESTREPO"
 int connectionTimeout = 5000;
 int readTimeout = 3000;
 GinaLdapConfiguration ldapConf = new GinaLdapConfiguration(
-                server, base, user, password, domain, application, connectionTimeout, readTimeout);
+                server, user, password, domain, application, connectionTimeout, readTimeout);
 GinaApiLdapBaseAble gina = new GinaLdapCommon(ldapConf);
 List<String> roles = gina.getUserRoles(LAROCHEP);
 ```
@@ -111,9 +111,10 @@ Définition des propriétés : voir https://docs.oracle.com/javase/jndi/tutorial
 ## Exemples d'utilisation
 
 ```
-GinaApiLdapConfiguration ldapConf = new GinaApiLdapConfiguration(server, base, user, password, DOMAIN, timeout);  // 1
-try (GinaApiLdapBaseAble gina = new GinaLdapCommon(ldapConf)) {                                                   // 2
-   List<String> roles = gina.getUserRoles("LAURENTJ");                                                            // 3
+GinaApiLdapConfiguration ldapConf = new GinaApiLdapConfiguration(                 // 1
+   server, user, password, domain, application, connectionTimeout, readTimeout);
+try (GinaApiLdapBaseAble gina = new GinaLdapCommon(ldapConf)) {                   // 2
+   List<String> roles = gina.getUserRoles("LAURENTJ");                            // 3
 }
 ```
 Légende :
