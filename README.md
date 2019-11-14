@@ -130,7 +130,11 @@ Pour un exemple d'utilisation de toutes les méthodes exposées, se référer :
 
 Chaque item annonce s'il respecte ou s'il rompt la compatibilité avec la version précédente.
 
-## Version 4.0.0
+## Version 4.1.X
+
+- (compatible) Ajout des méthodes d'accès aux propriétés métier. Précédemment elles renvoyaient toutes une exception.
+
+## Version 4.0.X
 - (incompatible) La version 3.0.0 nécessitait Java 7+. Désormais il faut Java 8+.
 - (incompatible) Suppression de la classe `GinaLdapFactory`. Désormais, pour obtenir une connexion, on passe directement
   par le constructeur de `GinaLdapAccess`.

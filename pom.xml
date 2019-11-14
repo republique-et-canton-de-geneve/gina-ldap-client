@@ -13,10 +13,27 @@
 
     <groupId>ch.ge.etat.securite</groupId>
     <artifactId>gina-ldap-client</artifactId>
-    <name>gina-ldap-client</name>
     <version>4.0.1-SNAPSHOT</version>
+    <name>gina-ldap-client</name>
 
     <url>https://prod.etat-ge.ch/wikiadm/x/ZABdPg</url>
+
+    <scm>
+        <connection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/gina-ldap-client.git</connection>
+        <developerConnection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/gina-ldap-client.git</developerConnection>
+        <url>https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/gina-ldap-client.git</url>
+      <tag>HEAD</tag>
+    </scm>
+
+    <issueManagement>
+        <system>jira</system>
+        <url>https://prod.etat-ge.ch/csbugtrack/projects/GINALDAPCLIENT</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>jenkins</system>
+        <url>https://prod.etat-ge.ch/jenkins_act/job/gina-ldap-client</url>
+    </ciManagement>
 
     <properties>
         <!-- versions des plugins -->
@@ -29,23 +46,6 @@
         <!-- autres proprietes -->
         <sonar.jacoco.reportPaths>target/jacoco.exec</sonar.jacoco.reportPaths>
     </properties>
-
-    <ciManagement>
-        <system>jenkins</system>
-        <url>https://prod.etat-ge.ch/jenkins_act/job/gina-ldap-client</url>
-    </ciManagement>
-
-    <issueManagement>
-        <system>jira</system>
-        <url>https://prod.etat-ge.ch/csbugtrack/projects/GINALDAPCLIENT</url>
-    </issueManagement>
-
-    <scm>
-        <connection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/gina-ldap-client.git</connection>
-        <developerConnection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/gina-ldap-client.git</developerConnection>
-        <url>https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/Securite/gina-ldap-client.git</url>
-      <tag>HEAD</tag>
-  </scm>
 
     <dependencies>
         <!-- Compile dependencies -->

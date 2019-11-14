@@ -42,7 +42,7 @@ public final class GinaLdapEncoder {
     private static final String[] FILTER_ESCAPE_TABLE = new String['\\' + 1];
 
     // Message d'erreur pour les paramètres non valides
-    public static final String PARAM_NOT_VALID = "Paramètre non valide (vide, null, ...) pour cette méthode";
+    private static final String PARAM_NOT_VALID = "Paramètre non valide (vide, null, ...) pour cette méthode";
 
     static {
 
@@ -85,7 +85,7 @@ public final class GinaLdapEncoder {
     private GinaLdapEncoder() {
     }
 
-    protected static String toTwoCharHex(char c) {
+    private static String toTwoCharHex(char c) {
 
         String raw = Integer.toHexString(c).toUpperCase();
 

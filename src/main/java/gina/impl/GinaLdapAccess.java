@@ -32,8 +32,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -55,10 +53,6 @@ public class GinaLdapAccess implements GinaApiLdapBaseAble {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GinaLdapAccess.class);
 
-    private static final String DEFAULT_LANG = "FR";
-
-    private static final String CLASS_PROPERTY_VALUES = "propertyValues";
-
     private static final String ROLE_UTILISATEUR = "UTILISATEUR";
 
     /**
@@ -70,31 +64,12 @@ public class GinaLdapAccess implements GinaApiLdapBaseAble {
         ROLE("ou=Groups"),
         USER("ou=Users");
 
-        public String value;
+        public final String value;
 
         Rdn(String value) {
             this.value = value;
         }
     }
-
-    /*
-    private enum AttributeName {
-        ENVIRONMENT("environment"),
-        OWN_VALUE("ownValue"),
-        VALUE("value"),
-        PROPERTY_NAME("propertyName"),
-        SURNAME("sn"),
-        LOGIN_DISABLED("loginDisabled"),
-        PHONE_NUMBER("phoneNumber"),
-        EMPLOYEE_NUMBER("employeeNumber");
-
-        public String value;
-
-        AttributeName(String value) {
-            this.value = value;
-        }
-    }
-     */
 
     private GinaLdapConfiguration ldapConf;
 
@@ -218,72 +193,12 @@ public class GinaLdapAccess implements GinaApiLdapBaseAble {
         return makeDn(getRoleBaseDn(application), DnPart.toString("cn", role));
     }
 
-/*
-    protected SearchControls getSearchControls() {
-        SearchControls searchControls = new SearchControls();
-        searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-        searchControls.setReturningObjFlag(false);
-
-        return searchControls;
-    }
-
-    protected SearchControls getSearchControls(final String[] attributes) {
-        final SearchControls searchControls = getSearchControls();
-
-        if (attributes != null && attributes.length > 0) {
-            searchControls.setReturningAttributes(attributes);
-        }
-
-        return searchControls;
-    }
-*/
-
     private GinaLdapContext getLdapContext() {
         if (ldapContext == null) {
             throw new GinaException("Pas de context LDAP. Il a probablement deja ete detruit par un appel a close()");
         }
         return ldapContext;
     }
-
-    /*
-    @Override
-    public boolean isValidUser(String user) {
-        final String encodedUser = GinaLdapEncoder.filterEncode(user);
-
-        NamingEnumeration<?> answer = null;
-        try {
-            SearchControls searchControls = getSearchControls();
-            Attributes matchAttrs = new BasicAttributes(true);
-            matchAttrs.put(new BasicAttribute("cn", encodedUser));
-            String searchFilter = GinaLdapUtils.getLdapFilterUser(encodedUser);
-            answer = getLdapContext().search("", searchFilter, searchControls);
-
-            while (answer.hasMoreElements()) {
-                SearchResult sr = (SearchResult) answer.next();
-                LOGGER.debug("sr = {}", sr);
-                Attributes attrs = sr.getAttributes();
-                if (attrs != null) {
-                    Attribute cn = attrs.get("cn");
-                    if (cn != null) {
-                        String cnString = (String) cn.get();
-                        Attribute departmentNumber = attrs.get(GinaLdapUtils.ATTRIBUTE_DEPARTMENT_NUMBER);
-                        if (encodedUser.equalsIgnoreCase(cnString) && departmentNumber != null && StringUtils
-                                .isNotBlank((String) departmentNumber.get())) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        } catch (NamingException e) {
-            logException(e);
-            throw new GinaException(e.getMessage());
-        } finally {
-            GinaLdapUtils.closeQuietly(answer);
-        }
-
-        return false;
-    }
-     */
 
     @Override
     public boolean isValidUser(String user) {
@@ -292,12 +207,7 @@ public class GinaLdapAccess implements GinaApiLdapBaseAble {
                     .setBaseDn(getUserBaseDn())
                     .setFilter(GinaLdapUtils.getLdapFilterUser(user))
                     .setScope(GinaLdapQuery.Scope.ONELEVEL);
-        Boolean result = qry.unique(new GinaLdapQuery.Consumer<Boolean>() {
-                @Override
-                public Boolean consume(String dn, Attributes attrs) throws NamingException {
-                    return true;
-                }
-            });
+        Boolean result = qry.unique((dn, attrs) -> true);
         logExecutionTime("isValidUser(" + user + ")", tm);
         return result != null ? result : false;
     }
@@ -316,73 +226,12 @@ public class GinaLdapAccess implements GinaApiLdapBaseAble {
                 .setAttributes(attrs)
                 .setScope(GinaLdapQuery.Scope.OBJECT)
                 .setBaseDn(userDn);
-        return qry.unique(new GinaLdapQuery.Consumer<Map<String, String>>() {
-            @Override
-            public Map<String, String> consume(String dn, Attributes names) {
-                LOGGER.debug("consume dn = {}, names = {}  ->  {}", dn, names, GinaLdapUtils.attributesToUser(dn, names, attrs));
-                return GinaLdapUtils.attributesToUser(dn, names, attrs);
-            }
+        return qry.unique((dn, names) -> {
+            LOGGER.debug("consume dn = {}, names = {}  ->  {}",
+                    dn, names, GinaLdapUtils.attributesToUser(dn, names, attrs));
+            return GinaLdapUtils.attributesToUser(dn, names, attrs);
         });
     }
-
-    /*
-    @Override
-    public List<String> getUserRoles(String user, String application) {
-        final String encodedUser = GinaLdapEncoder.filterEncode(user);
-        final String encodedApplication = GinaLdapEncoder.filterEncode(application);
-
-        List<String> roles = new ArrayList<String>();
-        NamingEnumeration<?> answer = null;
-        NamingEnumeration<?> answerAtt = null;
-
-        try {
-            String ginaDomain = GinaLdapUtils.extractDomain(encodedApplication);
-            String ginaApplication = GinaLdapUtils.extractApplication(encodedApplication);
-
-            SearchControls searchControls = getSearchControls(new String[] { GinaLdapUtils.ATTRIBUTE_MEMBEROF });
-            String searchFilter = GinaLdapUtils.getLdapFilterUser(encodedUser);
-            answer = getLdapContext().search("", searchFilter, searchControls);
-
-            if (answer != null) {
-                while (answer.hasMoreElements()) {
-                    SearchResult sr = (SearchResult) answer.next();
-                    LOGGER.debug("sr = {}", sr);
-                    if (sr != null) {
-                        final Attributes attrs = sr.getAttributes();
-                        LOGGER.debug("attrs = {}", attrs);
-                        if (attrs != null && attrs.get(GinaLdapUtils.ATTRIBUTE_MEMBEROF) != null) {
-                            try {
-                                answerAtt = attrs.get(GinaLdapUtils.ATTRIBUTE_MEMBEROF).getAll();
-                                while (answerAtt.hasMoreElements()) {
-                                    String att = (String) answerAtt.next();
-                                    LOGGER.debug(att);
-                                    String pattern =
-                                            ",ou=Groups,ou=" + ginaApplication + ",ou=" + ginaDomain + ",o=gina";
-                                    if (StringUtils.isNotBlank(att) && att.contains(pattern)) {
-                                        String roleClean = StringUtils.replaceOnce(att, "cn=", "");
-                                        roleClean = StringUtils.replaceOnce(roleClean, pattern, "");
-                                        roles.add(roleClean);
-                                    }
-                                }
-                            } finally {
-                                GinaLdapUtils.closeQuietly(answerAtt);
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (NamingException e) {
-            logException(e);
-            throw new GinaException(e.getMessage());
-        } finally {
-            GinaLdapUtils.closeQuietly(answer);
-        }
-
-        LOGGER.debug("roles = {}", roles);
-
-        return roles;
-    }
-     */
 
     @Override
     public List<String> getUserRoles(String user) {
@@ -391,17 +240,12 @@ public class GinaLdapAccess implements GinaApiLdapBaseAble {
                 .setBaseDn(getUserDn(user))
                 .setFilter(GinaLdapUtils.getLdapFilterUser()).setScope(GinaLdapQuery.Scope.OBJECT)
                 .setAttributes(GinaLdapUtils.ATTRIBUTE_MEMBEROF);
-        List<String> roles = qry.unique(new GinaLdapQuery.Consumer<List<String>>() {
-            @Override
-            public List<String> consume(String dn, Attributes attrs) {
-                List<String> result = new ArrayList<String>();
-                List<String> groups = GinaLdapUtils.allValues(attrs, GinaLdapUtils.ATTRIBUTE_MEMBEROF);
-                for (String group : groups) {
-                    result.add(GinaLdapUtils.roleDnToString(group));
-                }
-                return result;
-            }
-        });
+        List<String> roles = qry.unique((dn, attrs) ->
+            GinaLdapUtils.allValues(attrs, GinaLdapUtils.ATTRIBUTE_MEMBEROF)
+                    .stream()
+                    .map(group -> GinaLdapUtils.roleDnToString(group))
+                    .collect(Collectors.toList())
+        );
         logExecutionTime("getUserRoles(" + user + ")", tm);
         return roles == null ? Collections.<String>emptyList() : roles;
     }
@@ -415,27 +259,18 @@ public class GinaLdapAccess implements GinaApiLdapBaseAble {
                 .setBaseDn(getUserDn(user))
                 .setFilter(GinaLdapUtils.getLdapFilterUser()).setScope(GinaLdapQuery.Scope.OBJECT)
                 .setAttributes(GinaLdapUtils.ATTRIBUTE_MEMBEROF);
-        List<String> roles = qry.unique(new GinaLdapQuery.Consumer<List<String>>() {
-            @Override
-            public List<String> consume(String dn, Attributes attrs) {
-                List<String> result = new ArrayList<>();
-                List<String> groups = GinaLdapUtils.allValues(attrs, GinaLdapUtils.ATTRIBUTE_MEMBEROF);
-                for (String group : groups) {
-                    if (!group.endsWith(suffix)) {
-                        continue;
-                    }
-                    DnPart[] parts = DnPart.parse(group.substring(0, group.length() - suffix.length()));
-                    if (parts == null
-                            || parts.length != 1
-                            || !parts[0].getAttr().equalsIgnoreCase(GinaLdapUtils.ATTRIBUTE_CN)) {
-                        continue;
-                    }
-                    result.add(parts[0].getValue());
-                }
-                return result;
-            }
-        });
-        roles = roles == null ? Collections.<String>emptyList() : roles;
+        List<String> roles = qry.unique((dn, attrs) ->
+            GinaLdapUtils.allValues(attrs, GinaLdapUtils.ATTRIBUTE_MEMBEROF)
+                    .stream()
+                    .filter(group -> group.endsWith(suffix))
+                    .map(group -> DnPart.parse(group.substring(0, group.length() - suffix.length())))
+                    .filter(parts -> parts != null
+                            && parts.length == 1
+                            && parts[0].getAttr().equalsIgnoreCase(GinaLdapUtils.ATTRIBUTE_CN))
+                    .map(parts -> parts[0].getValue())
+                    .collect(Collectors.toList())
+        );
+        roles = roles == null ? Collections.emptyList() : roles;
 
         logExecutionTime("getUserRoles(" + user + "," + domApp + ")", tm);
         return roles;
@@ -462,12 +297,7 @@ public class GinaLdapAccess implements GinaApiLdapBaseAble {
                 .setBaseDn(userDn)
                 .setFilter(filter)
                 .setScope(GinaLdapQuery.Scope.OBJECT);
-        Boolean result = qry.first(new GinaLdapQuery.Consumer<Boolean>() {
-            @Override
-            public Boolean consume(String dn, Attributes attrs) {
-                return true;
-            }
-        });
+        Boolean result = qry.first((dn, attrs) -> true);
         return result != null ? result : false;
     }
 
@@ -479,12 +309,7 @@ public class GinaLdapAccess implements GinaApiLdapBaseAble {
                 .setFilter(GinaLdapUtils.getLdapFilterGroup())
                 .setScope(GinaLdapQuery.Scope.ONELEVEL)
                 .setAttributes(GinaLdapUtils.ATTRIBUTE_CN);
-        List<String> result = qry.forEach(new GinaLdapQuery.Consumer<String>() {
-            @Override
-            public String consume(String dn, Attributes attrs) {
-                return GinaLdapUtils.firstValue(attrs, GinaLdapUtils.ATTRIBUTE_CN);
-            }
-        });
+        List<String> result = qry.forEach((dn, attrs) -> GinaLdapUtils.firstValue(attrs, GinaLdapUtils.ATTRIBUTE_CN));
         logExecutionTime("getAppRoles(" + domApp + ")", tm);
         return result;
     }
@@ -493,10 +318,9 @@ public class GinaLdapAccess implements GinaApiLdapBaseAble {
     public List<String> getBusinessRoles(String domApp) {
         String encodedApplication = GinaLdapEncoder.filterEncode(domApp);
         List<String> roles = getAppRoles(encodedApplication);
-        List<String> result = roles.stream()
+        return roles.stream()
                 .filter(r -> r.startsWith("RM-"))
                 .collect(Collectors.toList());
-        return result;
     }
 
     @Override
@@ -523,12 +347,7 @@ public class GinaLdapAccess implements GinaApiLdapBaseAble {
                 .setFilter(filter)
                 .setAttributes(attrs)
                 .setScope(GinaLdapQuery.Scope.ONELEVEL);
-        return qry.forEach(new GinaLdapQuery.Consumer<Map<String, String>>() {
-            @Override
-            public Map<String, String> consume(String dn, Attributes names) {
-                return GinaLdapUtils.attributesToUser(dn, names, attrs);
-            }
-        });
+        return qry.forEach((dn, names) -> GinaLdapUtils.attributesToUser(dn, names, attrs));
     }
 
     @Override

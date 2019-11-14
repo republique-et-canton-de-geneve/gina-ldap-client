@@ -184,7 +184,7 @@ public class GinaLdapUtils {
 
     public static List<String> allValues(Attribute attr) {
         try {
-            List<String> result = new ArrayList<String>();
+            List<String> result = new ArrayList<>();
             for (int i = 0; i < attr.size(); ++i) {
                 result.add((String)attr.get(i));
             }

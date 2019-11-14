@@ -35,7 +35,7 @@ public class DnPart {
     }
 
     public static DnPart[] parse(String dn) {
-        List<DnPart> result = new ArrayList<DnPart>();
+        List<DnPart> result = new ArrayList<>();
         char chars[] = dn.toCharArray();
         int attrStart = 0;
         int attrLen = 0;
