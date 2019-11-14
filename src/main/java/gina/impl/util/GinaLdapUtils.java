@@ -47,8 +47,6 @@ public class GinaLdapUtils {
 
     public static final String ATTRIBUTE_OU = "ou";
 
-//    public static final String ATTRIBUTE_DEPARTMENT_NUMBER = "departmentNumber";
-
     /**
      * Temps maximal en millisecondes pour etablir la connexion au serveur LDAP.
      */
@@ -58,12 +56,6 @@ public class GinaLdapUtils {
      * Temps maximal en millisecondes pour une requete au serveur LDAP.
      */
     public static final int DEFAULT_LDAP_READ_TIMEOUT = 3000;
-
-    /**
-     * Depuis janv. 2019, utiliser {@link #DEFAULT_LDAP_READ_TIMEOUT}.
-     */
-    @Deprecated
-    public static final int LDAP_DEFAULT_TIMEOUT = DEFAULT_LDAP_READ_TIMEOUT;
 
     private GinaLdapUtils() {
     }
@@ -111,15 +103,10 @@ public class GinaLdapUtils {
         return "(objectClass=groupOfNames)";
     }
 
-/*
-    public static String getLdapFilterGroup(String role) {
-        return "ou=Groups,ou=" + role;
-    }
- */
-
     public static String getLdapFilterUser() {
         return "(objectClass=person)";
     }
+
     public static String getLdapFilterUser(String user) {
         return "(&(objectClass=person)(cn=" + user + "))";
     }
@@ -136,11 +123,6 @@ public class GinaLdapUtils {
                 && parts[1].getValue().equalsIgnoreCase("Groups")
                 && parts[2].getAttr().equalsIgnoreCase(ATTRIBUTE_OU)
                 && parts[3].getAttr().equalsIgnoreCase(ATTRIBUTE_OU)) {
-            /*
-            return parts[3].getValue()
-                    + "." + parts[2].getValue()
-                    + "." + parts[0].getValue();
-             */
             return parts[0].getValue();
         }
         return null;
@@ -169,7 +151,7 @@ public class GinaLdapUtils {
 
     public static String firstValue(Attribute attr) {
         try {
-            if (/*attr == null ||*/ attr.size() == 0) {
+            if (attr.size() == 0) {
                 return null;
             }
             return attr.get(0).toString();
