@@ -32,7 +32,7 @@ Elle est construite quasiment sans utilisation de librairies spécifiques, dans 
 
 La bibliothèque peut être assemblée via Maven par la commande
 
-```mvn -DskipTest clean install```
+```mvn -DskipTests clean install```
 
 Il est cependant utile ne pas sauter les tests JUnit.
 Ceux-ci peuvent être lancés selon deux modes : "Gina" et "local".
@@ -56,6 +56,8 @@ Aucun mot de passe n'est nécessaire.
 Dans le POM, ce mode correspond au profil ``local`` :
 
 ```mvn -P local,!etat-de-geneve clean install```
+
+Attention : en ligne de commande, il faut échapper le caractère ``!`` en ``\!``.
 
 # 4. Intégration dans une application
 
