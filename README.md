@@ -46,8 +46,6 @@ Dans le POM, ce mode correspond au profil ``etat-de-geneve`` (le profil par déf
 
 ```mvn -Dldap.gestrepo.password=<MOT DE PASSE> clean install```
 
- S'adresser au SMIL pour l'obtenir.
-
 ## Mode "local"
 
 Dans ce mode, les classes JUnit de tests utilisent des fichiers .ldif fournis.
